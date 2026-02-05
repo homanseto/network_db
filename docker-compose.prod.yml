@@ -1,0 +1,20 @@
+# Production override. Use on the production server only:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+# Do not use docker-compose.dev.yml on production.
+
+version: "3.9"
+
+services:
+  api:
+    # Ensure production uses image CMD (uvicorn), no debugger, no app volume
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8001:8000"
+    # Uncomment to override env for production (e.g. different DB or export path):
+    # environment:
+    #   DATABASE_URL: postgresql://postgres:postgres@postgis:5432/gis
+    #   EXPORT_RESULT_DIR: /data/result
+
+  postgis:
+    ports:
+      - "5433:5432"

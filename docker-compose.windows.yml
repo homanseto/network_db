@@ -1,0 +1,12 @@
+# Optional override for Windows (Docker Desktop).
+# Use with: docker compose -f docker-compose.yml -f docker-compose.windows.yml up --build
+# Same Dockerfile and base compose work on Windows; this file only pins Linux amd64
+# so image build/run is consistent on Windows hosts.
+
+version: "3.9"
+
+services:
+  api:
+    platform: linux/amd64
+  postgis:
+    platform: linux/amd64
