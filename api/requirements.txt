@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+psycopg2-binary
+sqlalchemy
+geoalchemy2
+python-dotenv
+debugpy
+pydantic
+shapely
+pyproj
+geojson
+python-multipart
+python-dotenv
+uuid
+motor

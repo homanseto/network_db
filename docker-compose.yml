@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  postgis:
+    image: postgis/postgis:16-3.4
+    container_name: indoor_postgis
+    restart: always
+    environment:
+      POSTGRES_DB: gis
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+    networks:
+      - indoor_net
+
+  api:
+    build: ./api
+    container_name: indoor_api
+    restart: always
+    depends_on:
+      - postgis
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgis:5432/gis
+      EXPORT_RESULT_DIR: /data/result
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./data:/data
+    networks:
+      - indoor_net
+
+volumes:
+  postgis_data:
+
+networks:
+  indoor_net:
+    driver: bridge

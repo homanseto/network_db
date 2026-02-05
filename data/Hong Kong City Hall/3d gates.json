@@ -1,0 +1,3284 @@
+{
+  "_id": {
+    "$oid": "67e37336a63db72963a427f8"
+  },
+  "type": "FeatureCollection",
+  "feature_type": "3D Gates",
+  "name": "3D Gates",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000001",
+        "GateID": "ce51bfec-d799-4552-81a9-16e2af3a1e33",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000027",
+        "GateID": "7c55804a-3614-4284-9925-50fbf9f048e0",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000021",
+        "GateID": "8cb5e9a2-135d-410a-a41d-9d8fe34af5e0",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000003",
+        "GateID": "e03c0ec4-b42c-4063-8d6d-0ae5e1cef0b0",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000022",
+        "GateID": "034a215e-4634-4f97-b52a-5ac29e714f50",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000031",
+        "GateID": "f37998fe-cbc6-40b0-b834-dc34017ce5fb",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000023",
+        "GateID": "b2bd0063-0722-4bb0-ae8e-a08c6170e026",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000024",
+        "GateID": "c21acabe-39a8-499c-aecd-316163b3847a",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000004",
+        "GateID": "0ddfb202-c15a-4fd8-b3d2-45e6a1d36e4c",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000028",
+        "GateID": "af2eec87-4ef8-4d4d-9285-aa8d9ac23a0b",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000005",
+        "GateID": "2cb9b4c4-64d8-4be0-af43-dea53ac2244f",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000020",
+        "GateID": "c2be6e6d-a51c-44cc-8d86-99f1abf8b55e",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000001",
+        "GateID": "74f4678c-19e1-43f1-ad79-3aa1e59ac7d6",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000008",
+        "GateID": "75cd3c5d-96c9-45ea-80b4-feab4be93ea0",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000002",
+        "GateID": "24a16918-3b2a-4c4d-91ab-54548033c127",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000009",
+        "GateID": "d0f36f56-0cd7-4f9d-9bc6-b4da7c015621",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000058",
+        "GateID": "b3dd676a-ae4e-4347-8b60-1201749cfa81",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000058",
+        "GateID": "a5631089-67cf-45ac-ad4b-5e30940a8c05",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000012",
+        "GateID": "10538900-e8d1-4c0a-86a7-ab86cc99ee54",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000059",
+        "GateID": "c9a7495a-7f14-4df7-9af9-1ad6ff964ead",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000011",
+        "GateID": "f9d04b3f-f751-47a8-81d0-fb5fa348e991",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000062",
+        "GateID": "79f46c45-a9b4-4fd2-9185-bb8489266490",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000026",
+        "GateID": "770c8051-c05d-4bef-873e-ba0679816010",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000023",
+        "GateID": "1e6491b8-8836-4dfb-8277-0bd43c16247a",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000025",
+        "GateID": "32056900-1181-483e-a8b8-66e9d117f977",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000042",
+        "GateID": "e7c37a37-b279-4c31-b365-a4da88face92",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000043",
+        "GateID": "78a8e6d6-6eea-4fa9-aa95-3eaa003d95f9",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000032",
+        "GateID": "56437f25-c906-4867-b7ea-1ee5e11ed4e6",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000056",
+        "GateID": "a64007fc-1ac5-4f49-be5a-bfe4dbaa469c",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000014",
+        "GateID": "a9417955-f2fa-4323-8a55-61f366b20297",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000036",
+        "GateID": "c0236491-d1a1-4bed-8089-15d98f2f64ac",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000019",
+        "GateID": "124a4a0c-91dd-4758-9737-7f8b5fc0e0f9",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000028",
+        "GateID": "f2ce12f8-5a96-4b67-a134-e10777838da1",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000011",
+        "GateID": "2fa1de7f-44c4-4da7-bea2-87b7f1aad737",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000018",
+        "GateID": "3c24182a-3d94-4b0a-9b3f-ca4b7f4fb813",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000056",
+        "GateID": "64072705-f26e-4e06-9eda-e763736744a2",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000017",
+        "GateID": "ffac59af-55bb-4a78-b8f3-02c25d09ee4f",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000012",
+        "GateID": "cbc1419c-c65c-4375-bf13-0f3089b3685d",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000013",
+        "GateID": "214da256-9358-4825-98be-3c21702bda04",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000004",
+        "GateID": "b183b2e9-bd73-4146-a8a4-c4739ed763f4",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000058",
+        "GateID": "6023a31b-27c6-4919-9e8d-0195ca7f0cfe",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000005",
+        "GateID": "e5ec743e-11d6-4f56-9b4a-26fc86b27d23",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000006",
+        "GateID": "219bbaef-d64c-43f6-a14f-fceee1694a5f",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000007",
+        "GateID": "4399a49b-e31a-43e8-9c19-59bb8564a135",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000008",
+        "GateID": "a65c80ce-c1a5-4085-be57-91af554c3a9e",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000009",
+        "GateID": "72baacdd-e4a7-47d5-8345-014d577c974b",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000025",
+        "GateID": "8c51021f-0138-49cb-85ad-da691a12798c",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000026",
+        "GateID": "bdc5e002-b03f-474e-a5e1-5bd952abc828",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:52:58",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000010",
+        "GateID": "8c83a857-e56f-43dd-9af7-7b4131d580dd",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:51:12",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000054",
+        "GateID": "ba4330e4-921d-4491-a2e0-5a03a09981f6",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000027",
+        "GateID": "25d6256a-28cc-4595-8825-b457382ae291",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:51:12",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000032",
+        "GateID": "dc6d0113-1787-4409-b393-1ec5a8286b8a",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:52:58",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000045",
+        "GateID": "483e1695-ff06-4566-b8f7-3af3bd18f545",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:51:12",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000045",
+        "GateID": "dfdbc525-0197-4716-9f85-80501af99557",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:51:12",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000048",
+        "GateID": "ea47d07f-e659-43ea-8d2d-91639d7fe71b",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:51:12",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000035",
+        "GateID": "2b60f7af-0f8e-452f-8103-96e7c56d1439",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:51:12",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000035",
+        "GateID": "2d6de406-f496-4c23-9ca3-d2a512d7af25",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:51:12",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000050",
+        "GateID": "9e543cc2-3b4a-4194-bb76-707051b111a0",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:51:12",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000035",
+        "GateID": "7c6646a2-57cb-46b1-937f-0f3917e83514",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:51:12",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000038",
+        "GateID": "f13439a8-055f-48f2-b50b-3caf4747324c",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000043",
+        "GateID": "02ceeba3-d356-4ffd-8e48-91e2737a6e9f",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000020",
+        "GateID": "348c5d1a-2a57-405f-96d1-813038e1cda6",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000072",
+        "GateID": "d6e97cff-92e4-44dd-aa81-2250f8876f00",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000075",
+        "GateID": "1517a26e-4406-49ec-a081-adf8ef2a94e0",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "05/12/2025 10:15:58",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000076",
+        "GateID": "c29ef030-2e9b-411d-b076-cd64ee88e227",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "05/12/2025 10:15:58",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000062",
+        "GateID": "a564f76f-f507-4f1e-9abc-efd88ff8b4cc",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000056",
+        "GateID": "93bc04c9-2c35-4dd5-99a5-96db2eeec3ab",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000037",
+        "GateID": "0a51c2b2-fbc3-4ef8-ac9f-ee4aa1fec70a",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000036",
+        "GateID": "53d7483e-5ba1-4058-8868-b53376a3b430",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000026",
+        "GateID": "0f07b2c4-0e21-49d6-91d4-3e850e53e2cd",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000034",
+        "GateID": "d55f4805-3ed2-481f-83f8-caf5cba63348",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000024",
+        "GateID": "bfee3db9-563b-420b-9bd2-c69a823d81fe",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000023",
+        "GateID": "f97f8f6d-a923-4b6e-82ae-7b444d3f7b15",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000022",
+        "GateID": "504dcfed-37ea-43d4-95f0-a2df8fb34a8b",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000018",
+        "GateID": "b1bde25f-8343-444d-a158-fe9d22f8ceff",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000020",
+        "GateID": "2fa20ea5-55a9-4e6d-956a-c1294c7104b8",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000021",
+        "GateID": "10d5d2d2-2bf0-4207-829b-02033dc02331",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000059",
+        "GateID": "0ccdac65-63f4-4f5b-be92-0911b0ccd722",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000018",
+        "GateID": "2a0fdde6-aa48-479d-9c4c-bd3db14f714b",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000021",
+        "GateID": "88d83ebe-d5e4-4508-8fe4-5cf5097a77a2",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000024",
+        "GateID": "e7712f64-3aa7-46ea-939e-0bf3809f7898",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000001",
+        "GateID": "a76daf48-2b1b-4104-85a8-a86c252f3170",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000002",
+        "GateID": "8eb423b3-7280-4d02-8d82-4bd36b5d4d06",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000002",
+        "GateID": "041ef236-d8b9-4a6d-b62a-76aff7910db2",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000003",
+        "GateID": "7c6684cb-f21d-45b4-8871-1b4848dd9576",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000051",
+        "GateID": "00acea35-ce37-4a56-98c1-098d0a847b1a",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000053",
+        "GateID": "3cf0068c-8e27-468d-af38-bfc58f9d0a64",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000006",
+        "GateID": "7d9fa130-ff2f-4575-a96d-6b3ddf672e75",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000008",
+        "GateID": "547adffb-476a-40fe-bea1-3fd0732744f8",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000010",
+        "GateID": "d98833a6-14c1-4ad0-b212-2089f7d78505",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000011",
+        "GateID": "e7c8b970-6160-4934-8242-c8fa8365a26e",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000011",
+        "GateID": "56cb046b-f591-424e-85b6-fa1360099d83",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000013",
+        "GateID": "33a870df-1fb1-40b5-9965-d84885a61492",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000014",
+        "GateID": "793c50f4-55e1-4d14-a479-9f2b2384dd99",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000018",
+        "GateID": "7ba2aee4-213a-409f-80eb-83ea9d25f8a6",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000067",
+        "GateID": "7ba14293-7024-4d93-85c2-ef6c2fe43ebd",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000015",
+        "GateID": "76af012e-18d9-4431-ba5b-51fe7ac711e1",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000018",
+        "GateID": "bdf1cb36-1cc9-4baf-b778-7ff66d4cd660",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000050",
+        "GateID": "d1a53e84-6eeb-4e41-8ae9-89c95a827abd",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000031",
+        "GateID": "c53504dc-4a16-458b-b77f-6cea5479477a",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000057",
+        "GateID": "ae59124e-4d3d-4d78-9008-856006a54ce6",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000054",
+        "GateID": "f02cd7e7-ca18-4c33-afac-12d371a409eb",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000049",
+        "GateID": "bb5ee768-de5e-4883-a170-24a8dab8fb82",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000044",
+        "GateID": "43f20e5a-096d-489e-8cec-a77b5132d17d",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000049",
+        "GateID": "71827c7a-de3d-41d8-a0fb-4b5d07a4d8ad",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000077",
+        "GateID": "f7e34f4c-4e3e-4b60-ba5e-5d31c9f64f23",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000078",
+        "GateID": "ecc44d28-e90a-41b2-81df-1c0537b197ee",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000024",
+        "GateID": "13a51d55-803e-4000-842a-c09a85b02e40",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000033",
+        "GateID": "32e5f715-6c7b-4623-bd5f-5d9923713726",
+        "Creation_by": "03",
+        "CreationDate": "03/12/2025",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "03/12/2025 18:04:16",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000023",
+        "GateID": "d132e0a3-8cef-4881-9b77-8a5194d870b7",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000026",
+        "GateID": "7bb4d3e0-68c5-4963-84f1-c54e22a75d1e",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000026",
+        "GateID": "ef011c55-8d57-4614-adc3-740150f9ccab",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000032",
+        "GateID": "fe44913f-f72e-48c0-8479-dc31eb554fde",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000025",
+        "GateID": "4b20a4fa-7ebb-4aba-9fa3-4f2400604806",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000011",
+        "GateID": "69353ffb-4827-4e56-8942-b6b270f91330",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000011",
+        "GateID": "01dd72d3-7410-499a-a339-c4e6069333df",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000012",
+        "GateID": "c2669e91-8d06-4187-8c33-1be037ef8a36",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000009",
+        "GateID": "ad502a60-9205-4c55-aa85-f4446f091b5a",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000016",
+        "GateID": "7023d424-c98f-423f-97ed-18b5ad386a23",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000017",
+        "GateID": "d25c9d50-48ff-4b14-b746-15af8911442f",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000008",
+        "GateID": "5d532977-7214-443d-90bb-4b74907e7b2e",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000015",
+        "GateID": "c9a22956-d6eb-4e84-b598-920d09eeb9e9",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000010",
+        "GateID": "b9267bb6-d2df-4342-806e-b3c4640b0320",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000014",
+        "GateID": "3ce2379f-41cc-48b2-9054-884c5f415e5d",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000005",
+        "GateID": "ce236e35-dd66-43fc-ad6c-b5cc7546a042",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000015",
+        "GateID": "ee664660-7731-4262-8ff6-72bac28ac00f",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000057",
+        "GateID": "d2e5a742-8c19-45c1-82d4-0cdb09556b13",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000024",
+        "GateID": "26b14dae-1ce2-4a6d-a07d-3ffc69ac01e0",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000020",
+        "GateID": "7041bd8d-20c5-4eea-849d-24c7f939ee84",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000022",
+        "GateID": "f1edbbce-936e-482e-8a59-2733bbb14cf6",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "05/12/2025 10:12:28",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000022",
+        "GateID": "4471a62e-5e69-4ba0-86ba-017f9d55abf9",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "05/12/2025 10:12:28",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000053",
+        "GateID": "1bb00ea4-5d20-47e2-86db-b4a41ca0f46b",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000053",
+        "GateID": "408acb63-1681-4277-9d50-904d6e4b84fd",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000063",
+        "GateID": "61e3a5f6-7e83-41b0-9f34-f43778ff6307",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000046",
+        "GateID": "1d1e0a86-4ca6-405f-9a1a-86cf94b52f57",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000047",
+        "GateID": "04c03a9b-b8be-4287-a91d-510c987a9a1c",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000047",
+        "GateID": "27354da1-2deb-4ff5-96c0-8b363186fa0f",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000060",
+        "GateID": "b68ee8ea-5411-404b-b74e-d6ad3e44ddd8",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000060",
+        "GateID": "fe725dba-ba8c-4e2b-912d-4312a755b03b",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000041",
+        "GateID": "47e3a915-96d5-4692-be69-245ddd74553b",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000061",
+        "GateID": "fccf19a0-f4e6-49ba-b73e-3726744ef611",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000061",
+        "GateID": "23ac2097-e9ce-40c6-86d7-866a9a70b0ba",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000054",
+        "GateID": "a541d005-a186-43e4-b66c-d751aadd1046",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000035",
+        "GateID": "3a788781-2b9d-4457-bb01-332dabec6f5f",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000055",
+        "GateID": "217a9338-2ce7-47fd-9eae-8e6bd33a450d",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000038",
+        "GateID": "9ac942b0-dfdb-40f4-a1e8-ae52c96e35b3",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000037",
+        "GateID": "74db948d-d498-49bc-9077-db1f33fa6adf",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000039",
+        "GateID": "83468612-72bc-40aa-8ec9-e78478fd218f",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000027",
+        "GateID": "a1ad3b39-61f2-434e-9847-fbc8863966d7",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000016",
+        "GateID": "32c43e30-2b0c-440f-ab3e-6b0db80f43f3",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000019",
+        "GateID": "32ae48b7-b938-4a78-96a0-bd76a7e7a926",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000057",
+        "GateID": "9c819731-c6d6-437d-b03a-2c4357ac96c0",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000023",
+        "GateID": "bae1c0db-900a-4b2d-845f-1c5d867e32d5",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000024",
+        "GateID": "d1ea2d43-0526-486e-bf8d-817a1bd8d768",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000053",
+        "GateID": "518cf113-f56b-4583-bc48-cb40a49e44df",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000030",
+        "GateID": "2ebce378-2099-4b57-9609-3b4e8be2326e",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000010",
+        "GateID": "124b90a6-ee27-4fe8-a0a5-f3a4880f06db",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "14/01/2026 09:52:58",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000031",
+        "GateID": "80375623-9296-435a-bde1-d82786d663ec",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000059",
+        "GateID": "6d3b9d13-2eb5-4a86-acf9-e9a0b64c8c94",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000040",
+        "GateID": "bac7c3df-a644-4769-8e39-af5a047fd3a5",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000035",
+        "GateID": "1ff534e7-b048-4aed-bacd-63b5e74137d4",
+        "CreationDate": "08/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "27/01/2026 10:45:53",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "Y"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000300",
+        "UnitPolyID": "U3469115940T20050430010003000052",
+        "GateID": "9f049dc8-6202-4c3e-8b59-e340fdd4419e",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 17:14:22",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000072",
+        "GateID": "0f56ccb9-8ae5-407e-9e9a-84e719677509",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000072",
+        "GateID": "8c0d30f5-b0d1-4262-b355-11d4e5bba538",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000041",
+        "GateID": "db8ad8c6-2bd0-4467-aaa1-6d4bef24c6dc",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000038",
+        "GateID": "4f37f52a-f36a-4169-8a43-5cff7bb4a5a0",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000068",
+        "GateID": "3d3de724-ea46-4da9-aedc-366bf33f84cc",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000046",
+        "GateID": "dcd7f91a-5b97-4790-a546-f4ed6ad0478a",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000069",
+        "GateID": "0dfe2fda-55ee-48f6-bd88-8e3bfb396e29",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000046",
+        "GateID": "2883ce6c-ef2c-4b4e-b5a5-5413358d4f31",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000070",
+        "GateID": "b9fab23c-d2a2-40bc-b3ec-90f8359db5ee",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000047",
+        "GateID": "d1da659e-1673-4733-8e2c-7395ed909696",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000042",
+        "GateID": "9773b476-bd4c-4cbc-86d0-f97183ffca4d",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000039",
+        "GateID": "fc53bd07-72bc-4c49-9d65-142264116c5f",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000040",
+        "GateID": "258f2a73-1aff-42e5-8671-0aa2d95fd770",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "feature_type": "3D Gates",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000035",
+        "GateID": "f382eeee-f0f1-4f07-88e9-9a8186bd737f",
+        "CreationDate": "26/10/2023",
+        "Creation_by": "03",
+        "LastAmendmentDate": "26/01/2026 17:12:34",
+        "LastAmendment_by": "03",
+        "OrganizationID": "03O0012102",
+        "Restricted": "N"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000074",
+        "GateID": "2861b744-40ad-4afd-85d2-e6c2e309938d",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000073",
+        "GateID": "eca1a216-2578-4d06-ba33-1df07a86f7d1",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000025",
+        "GateID": "5ae5d217-df4f-4101-af0a-97e9225a8441",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000019",
+        "GateID": "5ef2ddc0-2a71-430b-bac2-504752947ee4",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000004",
+        "GateID": "5b12760b-9cae-49fc-a946-d9fac9fcdcd5",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000005",
+        "GateID": "31085466-1c86-416c-9e17-5b7413e64fb7",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000012",
+        "GateID": "09270367-e077-4f57-ac7f-963476bb0d9b",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000018",
+        "GateID": "d3804813-25e4-4116-baba-36bc46f0566e",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "05/01/2026 15:22:30",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000018",
+        "GateID": "51dca0f6-f09d-442a-b884-383b0684110f",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "05/01/2026 15:22:30",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000035",
+        "GateID": "04539f25-b2b4-4421-94a7-c824411cd8e8",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000017",
+        "GateID": "f79f74ce-3206-42e8-8710-66c40a37ae47",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000016",
+        "GateID": "958d8720-539e-4dd5-a8ef-0fc3e875735b",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000048",
+        "GateID": "2f91b84c-7d6d-4c58-91df-01c0b5021545",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000028",
+        "GateID": "5be4d0a1-0b3b-471c-b664-ee3fc66e08ff",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000024",
+        "GateID": "745ef61b-d1ec-4005-bd37-a645b223d60b",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000060",
+        "GateID": "420e5856-d9e1-4d4c-ac21-e916d624a6fe",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000061",
+        "GateID": "5b0e5500-3cdb-4d5d-994c-5054151fd56f",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000055",
+        "GateID": "fb2aef82-549e-4067-88b4-fff08129571b",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000065",
+        "GateID": "e1f3f959-dcae-4c14-9e5c-2780cb986b7a",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000065",
+        "GateID": "81c49a85-78c2-4010-b423-b58f6cd25bb3",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000058",
+        "GateID": "7ad39d74-d464-4225-af97-65bc9ab038ac",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000045",
+        "GateID": "d9c884d6-21ec-4d54-b037-ea282e3fb9c6",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000063",
+        "GateID": "87bf3ea5-06fa-469d-bc21-bd2b6e6c21b8",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000063",
+        "GateID": "1b2527bb-4cce-4c4e-bb38-52f9043e3a24",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000066",
+        "GateID": "773c4868-ae2d-4797-b241-e65d5793c244",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000066",
+        "GateID": "66795fc0-85bb-4cee-ac2e-92dd7c6ecedd",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000072",
+        "GateID": "cd7687ec-c793-4601-9482-06e088474a8d",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000052",
+        "GateID": "26961168-1e24-4364-8281-9893ec4bf665",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000071",
+        "GateID": "79c9a0c7-c71d-407d-a780-5fa71fe67190",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000073",
+        "GateID": "ec8b4429-f0da-45ac-a3b7-80a29f32f5af",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000074",
+        "GateID": "0a19a1f5-6aac-48b8-ace1-a0c596172bba",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000054",
+        "GateID": "0ccdcf49-06b8-4f4b-9167-2a3c927f7c41",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 11:18:21",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000077",
+        "GateID": "959ca2ed-9e16-4284-a514-8750456dbff6",
+        "Creation_by": "03",
+        "CreationDate": "26/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "26/10/2023 10:39:10",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000100",
+        "UnitPolyID": "U3469115940T20050430010001000024",
+        "GateID": "b971e738-c7c9-4416-bf1b-0b9391f66a0b",
+        "Creation_by": "03",
+        "CreationDate": "08/10/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "08/10/2023 15:14:49",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000079",
+        "GateID": "67efc140-ef45-4de0-adb0-d40d3a6cddbe",
+        "Creation_by": "03",
+        "CreationDate": "09/11/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "09/11/2023 17:00:00",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000080",
+        "GateID": "f378cace-dfc1-496b-a82e-86800f1b51e5",
+        "Creation_by": "03",
+        "CreationDate": "09/11/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "09/11/2023 17:00:00",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000081",
+        "GateID": "9e3e2711-5038-4b32-bae0-1a725948d5e2",
+        "Creation_by": "03",
+        "CreationDate": "09/11/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "09/11/2023 17:00:00",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043002000000",
+        "UnitPolyID": "U3469115940T20050430020000000088",
+        "GateID": "c08bc9d9-8ce5-4c54-b270-52a85fcd400b",
+        "Creation_by": "03",
+        "CreationDate": "09/11/2023",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "09/11/2023 17:00:00",
+        "Restricted": "Y",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000045",
+        "GateID": "7d85d44c-da98-40d4-ba4a-ca6c27465c4e",
+        "Creation_by": "03",
+        "CreationDate": "05/12/2025",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "05/12/2025 10:09:33",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "FloorPolyID": "F3469115940T2005043001000200",
+        "UnitPolyID": "U3469115940T20050430010002000040",
+        "GateID": "35a35074-ead4-40b7-b3f4-67dd9a161e9e",
+        "Creation_by": "03",
+        "CreationDate": "05/12/2025",
+        "LastAmendment_by": "03",
+        "LastAmendmentDate": "05/12/2025 10:10:54",
+        "Restricted": "N",
+        "OrganizationID": "03O0012102"
+      }
+    }
+  ],
+  "displayName": "HK_1_Hong Kong City Hall",
+  "region": "HK",
+  "buildingCSUIDAndTeamId": [
+    {
+      "TeamID": 1,
+      "Batch": "2",
+      "BuildingCSUID": "3465915909T20050430"
+    },
+    {
+      "TeamID": 1,
+      "Batch": "2",
+      "BuildingCSUID": "3469115940T20050430"
+    },
+    {
+      "TeamID": 1,
+      "Batch": "2",
+      "BuildingCSUID": "3471315932T20050430"
+    }
+  ],
+  "buildingType": ["LCSD"]
+}

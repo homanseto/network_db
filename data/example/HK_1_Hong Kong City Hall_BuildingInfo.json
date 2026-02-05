@@ -1,0 +1,60 @@
+[{
+  "_id": {
+    "$oid": "68f8be9157a292302f3a754a"
+  },
+  "displayName": "HK_1_Hong Kong City Hall",
+  "buildingCSUID": "3465915909T20050430",
+  "buildingType": [
+    "LCSD"
+  ],
+  "Region": "HK",
+  "TeamID": 1,
+  "Name_CH": "香港大會堂",
+  "Name_EN": "Hong Kong City Hall",
+  "Batch": "2",
+  "ModelID": "B34659159090106010",
+  "Type": "Community Centre / Community Hall",
+  "SixDigitID": 100826,
+  "Index": 1,
+  "BuildingID": 1103125479
+},
+{
+  "_id": {
+    "$oid": "68f8be9157a292302f3a754b"
+  },
+  "displayName": "HK_1_Hong Kong City Hall",
+  "buildingCSUID": "3469115940T20050430",
+  "buildingType": [
+    "LCSD"
+  ],
+  "Region": "HK",
+  "TeamID": 1,
+  "Name_CH": "香港大會堂",
+  "Name_EN": "Hong Kong City Hall",
+  "Batch": "2",
+  "ModelID": "B346911594001062D0",
+  "Type": "Community Centre / Community Hall",
+  "SixDigitID": 100827,
+  "Index": 1,
+  "BuildingID": 1103125060
+},
+{
+  "_id": {
+    "$oid": "68f8be9157a292302f3a754c"
+  },
+  "displayName": "HK_1_Hong Kong City Hall",
+  "buildingCSUID": "3471315932T20050430",
+  "buildingType": [
+    "LCSD"
+  ],
+  "Region": "HK",
+  "TeamID": 1,
+  "Name_CH": "香港大會堂",
+  "Name_EN": "Hong Kong City Hall",
+  "Batch": "2",
+  "ModelID": "B34713159320106010",
+  "Type": "Community Centre / Community Hall",
+  "SixDigitID": 100828,
+  "Index": 1,
+  "BuildingID": 1103125375
+}]

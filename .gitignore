@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.venv/
+venv/
+
+# Tests / tooling
+.pytest_cache/
+.mypy_cache/
+
+# IDE / OS
+.vscode/
+.cursor/
+.DS_Store
+
+# Env / secrets
+.env
+*.env
+
+# Data – large inputs you don't want in git
+data/wing/
+data/indoor/
+data/pedestrian/
+data/Hong Kong City Hall.zip
+
+# Data – generated outputs
+data/result/
