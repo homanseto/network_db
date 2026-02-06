@@ -5,8 +5,8 @@ router = APIRouter()
 
 @router.post("/import-network/")
 async def import_network():
-    displayName = "HK_6_Hong Kong Central Library"
-    file = "/data/wing/HK_6_Hong Kong Central Library/"
+    displayName = "KLN_256_Ho Man Tin Sports Centre"
+    file = "/data/wing/KLN_256_Ho Man Tin Sports Centre/SHP/"
     result = await process_network_import( displayName,file)
     return result
 

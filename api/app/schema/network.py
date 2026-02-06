@@ -18,9 +18,9 @@ class NetworkStagingRow(BaseModel):
     wheelchair: Optional[str] = None     # e.g. "yes"/"no"
     flpolyid: str
     crtdt: Optional[str] = None          # default "03"; can be date string e.g. "28/11/2025"
-    crtby: str = "03"
+    crtby:  Optional[str] = "03"
     lstamddt: Optional[str] = None  # "28/11/2025 09:21:41"
-    lstamdby: str = "03"
+    lstamdby: Optional[str] = "03"
     restricted: str                     # e.g. "Y"/"N" (for later use)
     shape: str                               # WKB string; you can model this more strictly later
     level_id: Optional[str] = None         # Level UUID; filter unit_features to same level for intersection

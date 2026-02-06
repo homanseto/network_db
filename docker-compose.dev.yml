@@ -1,10 +1,19 @@
 version: "3.9"
 
 services:
-
   api:
+    # 1. This is the "Magic Link".
+    # It says: "Map the folder ./api/app on Windows to /app/app inside the Container".
+    # This is why you can edit code on Windows and it updates inside Docker immediately.
     volumes:
       - ./api/app:/app/app
+    # 2. As overrides the Dockerfile's "CMD".
+    # Instead of just starting the server, it starts the Debugger (debugpy).
+    #
+    # 3. Tell the debugger to listen for connections from ANY IP address (0.0.0.0) on port 5678 inside the container.
+    # 4. IMPORTANT: The app will PAUSE here and won't actually start running until VS Code connects to it.
+    # 5. This is the command to actually run your web server (Uvicorn).
+    # 6. If you change a file, restart the server automatically.
     command: >
       python -Xfrozen_modules=off -m debugpy
       --listen 0.0.0.0:5678
@@ -27,6 +36,5 @@ services:
     ports:
       - "5433:5432"
 
-
-# Prevents app from starting until VSCode attaches. Guarantees debugger hooks correctly. 
+# Prevents app from starting until VSCode attaches. Guarantees debugger hooks correctly.
 # Attach to subprocesses too, Without this, reload child process won’t be debugged.

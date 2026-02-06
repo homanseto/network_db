@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.get("/export-indoor-network/")
 def export_indoor_network(
-    displayname: str = "HK_6_Hong Kong Central Library",
+    displayname: str = "KLN_256_Ho Man Tin Sports Centre",
     output_dir: Optional[str] = None,
 ):
     """

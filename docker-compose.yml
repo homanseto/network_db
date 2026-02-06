@@ -27,6 +27,16 @@ services:
       EXPORT_RESULT_DIR: /data/result
     ports:
       - "8001:8000"
+
+    # The issue is that your MongoDB is running as a Replica Set.
+    # When the client connects (even using the IP 10.77.159.237), the MongoDB server responds with its configuration: "I am part of a replica set, and my canonical hostname is 3dm-db4."
+    # The driver then tries to verify/connect using that hostname 3dm-db4.
+    # On your Windows Machine: The DNS (or hosts file) resolves 3dm-db4 correctly.
+    # Inside the Container: It has no idea who 3dm-db4 is, so it fails with Name or service not known.
+    # I have updated your docker-compose.dev.yml to manually "teach" the container that 3dm-db4 refers to 10.77.159.237.
+    # You need to restart your containers for this to take effect:
+    extra_hosts:
+      - "3dm-db4:10.77.159.237"
     volumes:
       - ./data:/data
     networks:

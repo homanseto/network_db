@@ -80,7 +80,20 @@ async def process_network_import(displayName:str, filePath:str):
                     dict(zip(staging_result.keys(), r))
                      for r in staging_result.fetchall()
                      ]
-            rows_result = [NetworkStagingRow.model_validate(r) for r in staging_rows]
+            # rows_result = [NetworkStagingRow.model_validate(r) for r in staging_rows]
+            
+            rows_result = []
+            for i, r in enumerate(staging_rows):
+                try:
+                    rows_result.append(NetworkStagingRow.model_validate(r))
+                except Exception as e:
+                    # Provide helpful context: which row failed and why
+                    return {
+                        "status": "error",
+                        "message": f"Validation failed at row index {i} (ID: {r.get('inetworkid')}). Error: {str(e)}",
+                        "row_data": r  # optionally return the bad data so you can see what failed
+                    }
+
             session.execute(text("TRUNCATE TABLE network_staging"))
             # Update only property fields; geometry (shape/geojson) from staging must not be changed.
             await update_pedestrian_fields(displayName, rows_result)
@@ -153,7 +166,7 @@ async def update_pedestrian_fields(displayName: str, rows: list[NetworkStagingRo
             )
             else 2
         )
-        row.wc_access = calculate_wheelchair_access(row, (opening_features or {}).get("features") or [])
+        row.wc_access = calculate_wheelchair_access(row, (opening_name_features or []))
         get_alias_name(row, opening_name_features or [])
     return rows
 
@@ -185,15 +198,31 @@ def export_indoor_network_by_displayname(
         "ogr2ogr",
         "-f", "ESRI Shapefile",
         "-overwrite",
+        "-lco", "ENCODING=UTF-8",  # Force UTF-8 encoding for the DBF
         shape_path,
         PG_CONNECTION,
         "indoor_network",
         "-where", f"displayname='{displayname_escaped}'",
     ]
+    
+    # Ensure environment variables are set for UTF-8 handling
+    env = os.environ.copy()
+    env["PGCLIENTENCODING"] = "UTF8"
+    env["SHAPE_ENCODING"] = "UTF-8" # Helps some GDAL versions
+
     try:
-        subprocess.run(cmd, check=True)
+        subprocess.run(cmd, check=True, env=env)
+        
+        # Create a .cpg file to explicitly tell ArcGIS/QGIS the encoding is UTF-8
+        cpg_path = os.path.splitext(shape_path)[0] + ".cpg"
+        with open(cpg_path, "w", encoding="utf-8") as f:
+            f.write("UTF-8")
+            
     except subprocess.CalledProcessError as e:
         return {"status": "error", "message": str(e), "path": None}
+    except Exception as e:
+        return {"status": "error", "message": f"Failed to create CPG file: {str(e)}", "path": None}
+        
     return {
         "status": "success",
         "path": shape_path,
