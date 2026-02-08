@@ -1,0 +1,254 @@
+[
+  {
+    "database": "pedrouteid",
+    "shapefile": "PedRouteID",
+    "geojson": "PedestrianRouteID",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "displayname",
+    "shapefile": "DisplayNam",
+    "geojson": "DisplayName",
+    "output": ["internal"]
+  },
+  {
+    "database": "inetworkid",
+    "shapefile": "INETWORKID",
+    "geojson": "iNetworkID",
+    "output": ["indoor"]
+  },
+  {
+    "database": "highway",
+    "shapefile": "HIGHWAY",
+    "geojson": "highway",
+    "output": ["indoor"]
+  },
+  {
+    "database": "oneway",
+    "shapefile": "ONEWAY",
+    "geojson": "oneway",
+    "output": ["indoor"]
+  },
+  {
+    "database": "emergency",
+    "shapefile": "EMERGENCY",
+    "geojson": "emergency",
+    "output": ["indoor"]
+  },
+  {
+    "database": "wheelchair",
+    "shapefile": "WHEELCHAIR",
+    "geojson": "wheelchair",
+    "output": ["indoor"]
+  },
+  {
+    "database": "flpolyid",
+    "shapefile": "FLPOLYID",
+    "geojson": "FloorPolyID",
+    "output": ["indoor"]
+  },
+  {
+    "database": "crtdt",
+    "shapefile": "CrtDt",
+    "geojson": "CreationDate",
+    "output": ["indoor", "pedestrian"]
+  },
+  {
+    "database": "crtby",
+    "shapefile": "CRTBY",
+    "geojson": "Creation_by",
+    "output": ["indoor"]
+  },
+  {
+    "database": "lstamddt",
+    "shapefile": "LstAmdDt",
+    "geojson": "LastAmendmentDate",
+    "output": ["indoor", "pedestrian"]
+  },
+  {
+    "database": "lstamdby",
+    "shapefile": "LSTAMDBY",
+    "geojson": "LastAmendment_by",
+    "output": ["indoor"]
+  },
+  {
+    "database": "restricted",
+    "shapefile": "RESTRICTED",
+    "geojson": "Restricted",
+    "output": ["indoor"]
+  },
+  {
+    "database": "shape",
+    "shapefile": "SHAPE",
+    "geojson": "geometry",
+    "output": ["indoor", "pedestrian"]
+  },
+  {
+    "database": "level_id",
+    "shapefile": "level_id",
+    "geojson": "level_id",
+    "output": ["indoor"]
+  },
+  {
+    "database": "feattype",
+    "shapefile": "FeatType",
+    "geojson": "FeatureType",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "floorid",
+    "shapefile": "FloorID",
+    "geojson": "FloorID",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "location",
+    "shapefile": "Location",
+    "geojson": "Location",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "gradient",
+    "shapefile": "Gradient",
+    "geojson": "Gradient",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "wc_access",
+    "shapefile": "WC_Access",
+    "geojson": "WheelchairAccess",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "wc_barrier",
+    "shapefile": "WC_Barrier",
+    "geojson": "WheelchairBarrier",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "direction",
+    "shapefile": "Direction",
+    "geojson": "Direction",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "bldgid_1",
+    "shapefile": "BldgID_1",
+    "geojson": "BuildingID_1",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "bldgid_2",
+    "shapefile": "BldgID_2",
+    "geojson": "BuildingID_2",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "aliasnamen",
+    "shapefile": "AliasNamEN",
+    "geojson": "AliasNameEN",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "aliasnamtc",
+    "shapefile": "AliasNamTC",
+    "geojson": "AliasNameTC",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "terminalid",
+    "shapefile": "TerminalID",
+    "geojson": "TerminalID",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "acstimeid",
+    "shapefile": "AcsTimeID",
+    "geojson": "AccessTimeID",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "crossfeat",
+    "shapefile": "CrossFeat",
+    "geojson": "CrossingFeature",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "st_code",
+    "shapefile": "ST_CODE",
+    "geojson": "ST_CODE",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "st_nametc",
+    "shapefile": "ST_NameTC",
+    "geojson": "StreetNameTC",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "st_nameen",
+    "shapefile": "ST_NameEN",
+    "geojson": "StreetNameEN",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "poscertain",
+    "shapefile": "PosCertain",
+    "geojson": "PositionCertainty",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "datasrc",
+    "shapefile": "DataSrc",
+    "geojson": "DataSource",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "levelsrc",
+    "shapefile": "LevelSrc",
+    "geojson": "LevelSource",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "enabled",
+    "shapefile": "Enabled",
+    "geojson": "Enabled",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "shape_len",
+    "shapefile": "Shape_Len",
+    "geojson": "Shape_Len",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "modifiedby",
+    "shapefile": "ModifiedBy",
+    "geojson": "ModifiedBy",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "buildnamen",
+    "shapefile": "buildnamen",
+    "geojson": "buildnamen",
+    "output": ["internal"]
+  },
+  {
+    "database": "buildnamzh",
+    "shapefile": "buildnamzh",
+    "geojson": "buildnamzh",
+    "output": ["internal"]
+  },
+  {
+    "database": "leveleng",
+    "shapefile": "leveleng",
+    "geojson": "leveleng",
+    "output": ["internal"]
+  },
+  {
+    "database": "levelzh",
+    "shapefile": "levelzh",
+    "geojson": "levelzh",
+    "output": ["internal"]
+  }
+]

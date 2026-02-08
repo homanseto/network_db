@@ -76,7 +76,7 @@ def calculate_wheelchair_access(nf: "NetworkStagingRow", opening_features: list[
 
 def get_alias_name(nf: "NetworkStagingRow", opening_features: list[dict]) -> None:
     """
-    Update aliasnamen and aliasaamtc on nf from reference.ts getAliasName.
+    Update aliasnamen and aliasnamtc on nf from reference.ts getAliasName.
     opening_features = get_openings_with_name_by_displayName (only features with name !== null).
     nf geometry EPSG:2326; opening features EPSG:4326.
     """
@@ -123,10 +123,10 @@ def get_alias_name(nf: "NetworkStagingRow", opening_features: list[dict]) -> Non
                 exit_zh = (name_obj.get("zh") or "").strip()
                 if facility:
                     nf.aliasnamen = f"{building_eng} {exit_en} {facility['name_en']}".strip()
-                    nf.aliasaamtc = "".join((f"{building_zh}{exit_zh}{facility['name_zh']}").split())
+                    nf.aliasnamtc = "".join((f"{building_zh}{exit_zh}{facility['name_zh']}").split())
                 else:
                     nf.aliasnamen = f"{building_eng} {exit_en}".strip()
-                    nf.aliasaamtc = "".join((f"{building_zh}{exit_zh}").split())
+                    nf.aliasnamtc = "".join((f"{building_zh}{exit_zh}").split())
                 match_exit = True
                 break
             except (TypeError, KeyError):
@@ -134,17 +134,17 @@ def get_alias_name(nf: "NetworkStagingRow", opening_features: list[dict]) -> Non
         if not match_exit:
             if facility:
                 nf.aliasnamen = f"{building_eng} {facility['name_en']}".strip()
-                nf.aliasaamtc = "".join((f"{building_zh}{facility['name_zh']}").split())
+                nf.aliasnamtc = "".join((f"{building_zh}{facility['name_zh']}").split())
             else:
                 nf.aliasnamen = f"{building_eng} {level_eng}".strip()
-                nf.aliasaamtc = "".join((f"{building_zh}{level_zh}").split())
+                nf.aliasnamtc = "".join((f"{building_zh}{level_zh}").split())
     else:
         if facility:
             nf.aliasnamen = f"{building_eng} {facility['name_en']}".strip()
-            nf.aliasaamtc = "".join((f"{building_zh}{facility['name_zh']}").split())
+            nf.aliasnamtc = "".join((f"{building_zh}{facility['name_zh']}").split())
         else:
             nf.aliasnamen = f"{building_eng} {level_eng}".strip()
-            nf.aliasaamtc = "".join((f"{building_zh}{level_zh}").split())
+            nf.aliasnamtc = "".join((f"{building_zh}{level_zh}").split())
 
 
 # SRID for Hong Kong 1980 Grid (indoor network geometry with Z)
@@ -156,14 +156,14 @@ INSERT INTO indoor_network (
   flpolyid, crtdt, lstamddt, lstamdby, restricted,
   shape, level_id, feattype, floorId, location, wc_access, wc_barrier, direction,
   bldgid_1, buildingnameeng, buildingnamechi, levelenglishname, levelchinesename,
-  aliasaamtc, aliasnamen
+  aliasnamtc, aliasnamen
 )
 VALUES (
   :displayname, :inetworkid, :highway, :oneway, :emergency, :wheelchair,
   :flpolyid, :crtdt, :lstamddt, :lstamdby, :restricted,
   ST_GeomFromText(:shape_wkt, :srid), :level_id, :feattype, :floorId, :location, :wc_access, :wc_barrier, :direction,
   :bldgid_1, :buildingnameeng, :buildingnamechi, :levelenglishname, :levelchinesename,
-  :aliasaamtc, :aliasnamen
+  :aliasnamtc, :aliasnamen
 )
 ON CONFLICT (inetworkid) DO UPDATE SET
   displayname       = EXCLUDED.displayname,
@@ -189,7 +189,7 @@ ON CONFLICT (inetworkid) DO UPDATE SET
   buildingnamechi   = EXCLUDED.buildingnamechi,
   levelenglishname  = EXCLUDED.levelenglishname,
   levelchinesename  = EXCLUDED.levelchinesename,
-  aliasaamtc        = EXCLUDED.aliasaamtc,
+  aliasnamtc        = EXCLUDED.aliasnamtc,
   aliasnamen        = EXCLUDED.aliasnamen
 """)
 
@@ -260,7 +260,7 @@ def insert_network_rows_into_indoor_network(session, displayname: str, rows: lis
                 "buildingnamechi": row.buildingnamechi,
                 "levelenglishname": row.levelenglishname,
                 "levelchinesename": row.levelchinesename,
-                "aliasaamtc": row.aliasaamtc,
+                "aliasnamtc": row.aliasnamtc,
                 "aliasnamen": row.aliasnamen,
             },
         )

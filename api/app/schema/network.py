@@ -9,7 +9,8 @@ class NetworkStagingRow(BaseModel):
     Fields here match current columns; you can safely add more later
     as the table evolves.
     """
-
+    pedrouteid: Optional[int] = None
+    displayname: Optional[str] = None
     inetworkid: str
     geojson: str
     highway: str
@@ -25,20 +26,33 @@ class NetworkStagingRow(BaseModel):
     shape: str                               # WKB string; you can model this more strictly later
     level_id: Optional[str] = None         # Level UUID; filter unit_features to same level for intersection
     feattype: Optional[int] = None         # FeatureType code (1=walkway, 8=escalator, etc.)
-    floorId: Optional[int] = None          # Computed from SixDigitID + floorNumber
+    floorid: Optional[int] = None          # Computed from SixDigitID + floorNumber
     location: Optional[int] = 2
+    gradient: Optional[float] = None
     wc_access: Optional[int] = None
     wc_barrier: Optional[int] = None
     direction: Optional[int] = None
     bldgid_1: Optional[int] = None
-    buildingnameeng: Optional[str] = None
-    buildingnamechi: Optional[str] = None
-    levelenglishname: Optional[str] = None
-    levelchinesename: Optional[str] = None
-    aliasaamtc: Optional[str] = None
+    bldgid_2: Optional[int] = None
+    aliasnamtc: Optional[str] = None
     aliasnamen: Optional[str] = None
-    displayname: Optional[str] = None
-    pedrouteid: Optional[int] = None
+    terminalid: Optional[int] = None
+    acstimeid: Optional[int] = None
+    crossfeat: Optional[str] = None
+    st_code: Optional[str] = None
+    st_nametc: Optional[str] = None
+    st_nameen: Optional[str] = None
+    modifiedby: Optional[str] = "LANDSD"
+    poscertain: Optional[int] = 1
+    datasrc: Optional[int] = 1 
+    levelsrc: Optional[int] = 2
+    enabled: Optional[int] = 1
+    shape_len: Optional[float] = None
+    buildnamen: Optional[str] = None
+    buildnamzh: Optional[str] = None
+    leveleng: Optional[str] = None
+    levelzh: Optional[str] = None
+
 
   
 

@@ -161,10 +161,11 @@ CREATE TABLE indoor_network (
     wc_barrier INTEGER,
     direction INTEGER,
     bldgid_1 TEXT,
+    bldgid_2 TEXT,
     buildingnameeng TEXT,
     buildingnamechi TEXT,
     levelenglishname TEXT,
     levelchinesename TEXT,
-    aliasaamtc TEXT,
+    aliasnamtc TEXT,
     aliasnamen TEXT
 );
