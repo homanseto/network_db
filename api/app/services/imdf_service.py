@@ -75,25 +75,3 @@ def flpolyid_slices(flpolyid: str):
     floorNumber = flpolyid[22:26]    # JS slice(22, 26)
     return buildingCSUID, floorNumber
 
-async def enrich_staging_row(row: dict) -> dict | None:
-
-    d = row.get("flpolyid") or row.get("flpoly_id")  # use actual column name
-    if not d:
-        return None
-    buildingCSUID, floorNumber = flpolyid_slices(d)
-    if buildingCSUID is None:
-        return None
-
-    buildingCSUIDInfo = await get_buildinginfo_by_buildingCSUID(buildingCSUID)
-    sixDigitID = buildingCSUIDInfo.get("SixDigitID")
-    floorId = f"{sixDigitID}{floorNumber}"
-    if not buildingCSUIDInfo:
-        # same as "continue" in your TS
-        return None
-
-    return {
-        "buildingCSUID": buildingCSUID,
-        "floorNumber": floorNumber,
-        "floorId": floorId,
-        "buildingCSUIDInfo": buildingCSUIDInfo,
-    }

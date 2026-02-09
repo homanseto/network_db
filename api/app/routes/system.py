@@ -8,7 +8,7 @@ router = APIRouter()
 @router.get("/test-db")
 def test_db():
     with engine.connect() as conn:
-        result = conn.execute(text("SELECT pedrouteid, aliasnamen, aliasnamtc, levelid, ST_AsGeoJSON(shape) AS geojson FROM network_test;"))
+        result = conn.execute(text("SELECT pedrouteid, aliasnamen, aliasnamtc, levelid, ST_AsGeoJSON(shape) AS geojson FROM indoor_network;"))
         rows = result.fetchall()
         columns = result.keys()
         result_list = [dict(zip(columns, row)) for row in rows]

@@ -7,6 +7,25 @@ import zipfile
 import subprocess
 from sqlalchemy import text
 from app.core.database import SessionLocal
+from app.services.imdf_service import (
+    flpolyid_slices,
+    get_opening_by_displayName,
+    get_openings_with_name_by_displayName,
+    get_unit_by_displayName,
+    get_3d_units_by_displayName,
+    get_buildinginfo_by_buildingCSUID,
+    get_buildinginfo_by_displayName,
+    get_level_by_displayName
+)
+from app.services.utils import (calculate_feature_type,calculate_gradient)
+from app.services.pedestrian_service import (
+    sync_pedrouterelfloorpoly_from_imdf,
+    calculate_wheelchair_access,
+    get_alias_name,
+    insert_network_rows_into_indoor_network,
+)
+from app.schema.network import NetworkStagingRow
+
 
 # Project root: api/app/services -> up 3 levels -> network-db
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
@@ -19,24 +38,6 @@ PG_CONNECTION = "PG:host=postgis user=postgres dbname=gis password=postgres"
 # Base path for user-provided folder paths (e.g. /data when Docker mounts host ./data here)
 IMPORT_BASE_PATH = os.path.normpath(os.environ.get("IMPORT_BASE_PATH", "/data"))
 
-from app.services.imdf_service import (
-    flpolyid_slices,
-    get_opening_by_displayName,
-    get_openings_with_name_by_displayName,
-    get_unit_by_displayName,
-    get_3d_units_by_displayName,
-    get_buildinginfo_by_buildingCSUID,
-    get_buildinginfo_by_displayName,
-    get_level_by_displayName
-)
-from app.services.utils import calculate_feature_type
-from app.services.pedestrian_service import (
-    sync_pedrouterelfloorpoly_from_imdf,
-    calculate_wheelchair_access,
-    get_alias_name,
-    insert_network_rows_into_indoor_network,
-)
-from app.schema.network import NetworkStagingRow
 
 def _resolve_import_folder_path(folder_path: str) -> tuple[str, str | None]:
     """
@@ -155,11 +156,26 @@ async def process_network_import(displayName:str, filePath:str):
                     "status": "validation_failed",
                     "errors": errors
                 }
-            staging_result = session.execute(text("SELECT inetworkid,ST_AsGeoJSON(shape) AS geojson, highway, oneway, emergency, wheelchair,flpolyid,crtdt, crtby, lstamddt, lstamdby, restricted, shape FROM network_staging"))
-            staging_rows = [
-                    dict(zip(staging_result.keys(), r))
-                     for r in staging_result.fetchall()
-                     ]
+            # Select all columns + explicitly convert shape to WKB Hex for validation
+            # We use ST_AsBinary -> encode hex to match Pydantic expectation of 'shape' string
+            staging_result = session.execute(text("SELECT *, ST_AsGeoJSON(shape) AS geojson FROM network_staging"))
+            
+            staging_rows = []
+            for r in staging_result.mappings().all():
+                # Convert RowMapping to dict
+                row_dict = dict(r)
+                
+                
+                # 2. Key Step: specific handling for 'crtby' default behavior
+                # If crtby is None (NULL in DB), remove it so Pydantic uses the default "03".
+                # (We can do this for all attributes if we want NULL -> Default behavior generally)
+                if row_dict.get("crtby") is None:
+                    row_dict.pop("crtby", None)
+                if row_dict.get("lstamdby") is None:
+                    row_dict.pop("lstamdby", None)
+
+                staging_rows.append(row_dict)
+
             # rows_result = [NetworkStagingRow.model_validate(r) for r in staging_rows]
             
             rows_result = []
@@ -213,6 +229,8 @@ async def update_pedestrian_fields(displayName: str, rows: list[NetworkStagingRo
             if row.flpolyid == floor_poly_id:
                 row.level_id = level_id
     for row in rows:
+        if row.pedrouteid is not None:
+            row.pedrouteid = int(row.pedrouteid)
         row.displayname = displayName
         row.feattype = calculate_feature_type(row, unit_features, unit3d_features)
         flpolyid = row.flpolyid
@@ -221,12 +239,12 @@ async def update_pedestrian_fields(displayName: str, rows: list[NetworkStagingRo
         sixDigitID = buildingCSUIDInfo.get("SixDigitID")
         floorId = f"{sixDigitID}{floorNumber}"
         row.bldgid_1 = buildingCSUIDInfo.get("BuildingID")
-        row.buildingnameeng = buildingCSUIDInfo.get("Name_EN")
-        row.buildingnamechi = buildingCSUIDInfo.get("Name_CH")
+        row.buildnamen = buildingCSUIDInfo.get("Name_EN")
+        row.buildnamzh = buildingCSUIDInfo.get("Name_CH")
         matched_level_feature = next((f for f in level_features if f.get("id") == row.level_id), None)
-        row.levelenglishname = matched_level_feature.get("properties", {}).get("name",{}).get("en","")
-        row.levelchinesename = matched_level_feature.get("properties",{}).get("name",{}).get("zh","")
-        row.floorId = floorId
+        row.leveleng = matched_level_feature.get("properties", {}).get("name",{}).get("en","")
+        row.levelzh = matched_level_feature.get("properties",{}).get("name",{}).get("zh","")
+        row.floorid = floorId
         row.emergency = (
             'no' if row.feattype == 10
             else 'yes'
@@ -248,6 +266,10 @@ async def update_pedestrian_fields(displayName: str, rows: list[NetworkStagingRo
         )
         row.wc_access = calculate_wheelchair_access(row, (opening_name_features or []))
         get_alias_name(row, opening_name_features or [])
+        # if not mtr 
+        row.location = 2
+        # calculate gradient for walkways if elevation data is present (e.g. escalators)
+        row.gradient = calculate_gradient(row.highway, row.geojson)
     return rows
 
 
@@ -258,32 +280,84 @@ def _sanitize_displayname_for_filename(displayname: str) -> str:
     return re.sub(r'[^\w\-.]', "_", displayname).strip("_") or "indoor_network"
 
 
+
 def export_indoor_network_by_displayname(
     displayname: str,
     output_dir: str | None = None,
+    export_type: str | None = None,  # "indoor", "pedestrian", or None (all)
+    export_format: str = "shapefile",  # "shapefile" or "geojson"
 ) -> dict:
     """
     Get data from indoor_network table by displayname, write to output_dir (default data/result),
-    and convert to shapefile using ogr2ogr. Returns status and path to the generated .shp.
+    and convert to shapefile using ogr2ogr with field remapping based on export_type.
     """
+    import json
+    
     out_dir = output_dir or DEFAULT_EXPORT_RESULT_DIR
     out_dir = os.path.abspath(out_dir)
     os.makedirs(out_dir, exist_ok=True)
     safe_name = _sanitize_displayname_for_filename(displayname)
-    shape_path = os.path.join(out_dir, f"{safe_name}_indoor_network.shp")
-    # SQL-safe: escape single quotes in displayname
+    
+    # Load mapping table
+    # Use relative path from this file to ensure it works in both Docker and local dev
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    mapping_path = os.path.join(os.path.dirname(current_dir), "reference", "pedestrian_convert_table.json")
+
+    try:
+        with open(mapping_path, "r", encoding="utf-8") as f:
+            mapping = json.load(f)
+    except Exception as e:
+        return {"status": "error", "message": f"Failed to load field mapping: {str(e)}", "path": None}
+
+    # Build SQL select based on export_type
+    select_fields = []
+    
+    # Fields that should be cast to TEXT to preserve NULLs or handle large integers in Shapefiles
+    force_text_fields = ["bldgid_2", "siteid", "terminalid", "acstimeid", "bldgid_1", "floorid"]
+
+    for field in mapping:
+        db_col = field.get("database")
+        output_cats = field.get("output", [])
+        
+        # If export_type is None, include all fields
+        # If export_type is specified, only include fields tagged with that type
+        if export_type is None or export_type in output_cats:
+            target_name = field.get("shapefile") if export_format == "shapefile" else field.get("geojson")
+            if db_col and target_name:
+                # Cast IDs to text for Shapefiles to prevent 0 instead of NULL and handle potential large ID overflows
+                if export_format == "shapefile" and db_col in force_text_fields:
+                    select_fields.append(f'CAST("{db_col}" AS TEXT) AS "{target_name}"')
+                else:
+                    select_fields.append(f'"{db_col}" AS "{target_name}"')
+
+    if not select_fields:
+        return {"status": "error", "message": "No fields selected for export", "path": None}
+    
+    sql_select = ", ".join(select_fields)
     displayname_escaped = (displayname or "").replace("'", "''")
-    # Export from PostGIS: indoor_network filtered by displayname
+    sql_query = f"SELECT {sql_select} FROM indoor_network WHERE displayname='{displayname_escaped}'"
+
+    # Define output file extension and creation options
+    if export_format.lower() == "geojson":
+        ext = ".geojson"
+        driver = "GeoJSON"
+        lco_opts = [] # GeoJSON typically doesn't need encoding options like shapefile
+    else:
+        ext = ".shp"
+        driver = "ESRI Shapefile"
+        lco_opts = ["-lco", "ENCODING=UTF-8"]
+
+    output_filename = f"{safe_name}_{export_type or 'all'}_network{ext}"
+    output_path = os.path.join(out_dir, output_filename)
+
     cmd = [
         "ogr2ogr",
-        "-f", "ESRI Shapefile",
+        "-f", driver,
         "-overwrite",
-        "-lco", "ENCODING=UTF-8",  # Force UTF-8 encoding for the DBF
-        shape_path,
+        output_path,
         PG_CONNECTION,
-        "indoor_network",
-        "-where", f"displayname='{displayname_escaped}'",
-    ]
+        "-sql", sql_query
+    ] + lco_opts
     
     # Ensure environment variables are set for UTF-8 handling
     env = os.environ.copy()
@@ -293,19 +367,20 @@ def export_indoor_network_by_displayname(
     try:
         subprocess.run(cmd, check=True, env=env)
         
-        # Create a .cpg file to explicitly tell ArcGIS/QGIS the encoding is UTF-8
-        cpg_path = os.path.splitext(shape_path)[0] + ".cpg"
-        with open(cpg_path, "w", encoding="utf-8") as f:
-            f.write("UTF-8")
+        # Create a .cpg file to explicitly tell ArcGIS/QGIS the encoding is UTF-8 (only for Shapefiles)
+        if driver == "ESRI Shapefile":
+            cpg_path = os.path.splitext(output_path)[0] + ".cpg"
+            with open(cpg_path, "w", encoding="utf-8") as f:
+                f.write("UTF-8")
             
     except subprocess.CalledProcessError as e:
         return {"status": "error", "message": str(e), "path": None}
     except Exception as e:
-        return {"status": "error", "message": f"Failed to create CPG file: {str(e)}", "path": None}
+        return {"status": "error", "message": f"Export failed: {str(e)}", "path": None}
         
     return {
         "status": "success",
-        "path": shape_path,
+        "path": output_path,
         "displayname": displayname,
         "output_dir": out_dir,
     }

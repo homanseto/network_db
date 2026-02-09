@@ -83,10 +83,10 @@ def get_alias_name(nf: "NetworkStagingRow", opening_features: list[dict]) -> Non
     nf_dict = nf.model_dump() if hasattr(nf, "model_dump") else nf
     level_id = nf_dict.get("level_id")
     feattype = nf_dict.get("feattype")
-    building_eng = (nf_dict.get("buildingnameeng") or "").strip()
-    building_zh = (nf_dict.get("buildingnamechi") or "").strip()
-    level_eng = (nf_dict.get("levelenglishname") or "").strip()
-    level_zh = (nf_dict.get("levelchinesename") or "").strip()
+    building_eng = (nf_dict.get("buildnamen") or "").strip()
+    building_zh = (nf_dict.get("buildnamzh") or "").strip()
+    level_eng = (nf_dict.get("leveleng") or "").strip()
+    level_zh = (nf_dict.get("levelzh") or "").strip()
 
     facility = FACILITY_MAP.get(feattype) if isinstance(feattype, int) else None
     exits = [
@@ -128,6 +128,7 @@ def get_alias_name(nf: "NetworkStagingRow", opening_features: list[dict]) -> Non
                     nf.aliasnamen = f"{building_eng} {exit_en}".strip()
                     nf.aliasnamtc = "".join((f"{building_zh}{exit_zh}").split())
                 match_exit = True
+                nf.mainexit = True
                 break
             except (TypeError, KeyError):
                 continue
@@ -138,6 +139,7 @@ def get_alias_name(nf: "NetworkStagingRow", opening_features: list[dict]) -> Non
             else:
                 nf.aliasnamen = f"{building_eng} {level_eng}".strip()
                 nf.aliasnamtc = "".join((f"{building_zh}{level_zh}").split())
+            nf.mainexit = False
     else:
         if facility:
             nf.aliasnamen = f"{building_eng} {facility['name_en']}".strip()
@@ -145,7 +147,7 @@ def get_alias_name(nf: "NetworkStagingRow", opening_features: list[dict]) -> Non
         else:
             nf.aliasnamen = f"{building_eng} {level_eng}".strip()
             nf.aliasnamtc = "".join((f"{building_zh}{level_zh}").split())
-
+        nf.mainexit = False
 
 # SRID for Hong Kong 1980 Grid (indoor network geometry with Z)
 INDOOR_NETWORK_SRID = 2326
@@ -153,17 +155,19 @@ INDOOR_NETWORK_SRID = 2326
 UPSERT_INDOOR_NETWORK = text("""
 INSERT INTO indoor_network (
   displayname, inetworkid, highway, oneway, emergency, wheelchair,
-  flpolyid, crtdt, lstamddt, lstamdby, restricted,
-  shape, level_id, feattype, floorId, location, wc_access, wc_barrier, direction,
-  bldgid_1, buildingnameeng, buildingnamechi, levelenglishname, levelchinesename,
-  aliasnamtc, aliasnamen
+  flpolyid, crtdt, crtby, lstamddt, lstamdby, restricted,
+  shape, level_id, feattype, floorid, location, gradient, wc_access, wc_barrier, direction,
+  bldgid_1, bldgid_2, siteid, buildnamen, buildnamzh, leveleng, levelzh,
+  aliasnamtc, aliasnamen, terminalid, acstimeid, crossfeat, st_code, st_nametc, st_nameen,
+  modifiedby, poscertain, datasrc, levelsrc, enabled, shape_len, mainexit
 )
 VALUES (
   :displayname, :inetworkid, :highway, :oneway, :emergency, :wheelchair,
-  :flpolyid, :crtdt, :lstamddt, :lstamdby, :restricted,
-  ST_GeomFromText(:shape_wkt, :srid), :level_id, :feattype, :floorId, :location, :wc_access, :wc_barrier, :direction,
-  :bldgid_1, :buildingnameeng, :buildingnamechi, :levelenglishname, :levelchinesename,
-  :aliasnamtc, :aliasnamen
+  :flpolyid, :crtdt, :crtby, :lstamddt, :lstamdby, :restricted,
+  ST_GeomFromWKB(decode(:shape_hex, 'hex'), :srid), :level_id, :feattype, :floorid, :location, :gradient, :wc_access, :wc_barrier, :direction,
+  :bldgid_1, :bldgid_2, :siteid, :buildnamen, :buildnamzh, :leveleng, :levelzh,
+  :aliasnamtc, :aliasnamen, :terminalid, :acstimeid, :crossfeat, :st_code, :st_nametc, :st_nameen,
+  :modifiedby, :poscertain, :datasrc, :levelsrc, :enabled, :shape_len, :mainexit
 )
 ON CONFLICT (inetworkid) DO UPDATE SET
   displayname       = EXCLUDED.displayname,
@@ -173,24 +177,41 @@ ON CONFLICT (inetworkid) DO UPDATE SET
   wheelchair        = EXCLUDED.wheelchair,
   flpolyid          = EXCLUDED.flpolyid,
   crtdt             = EXCLUDED.crtdt,
+  crtby             = EXCLUDED.crtby,
   lstamddt          = EXCLUDED.lstamddt,
   lstamdby          = EXCLUDED.lstamdby,
   restricted        = EXCLUDED.restricted,
   shape             = EXCLUDED.shape,
   level_id          = EXCLUDED.level_id,
   feattype          = EXCLUDED.feattype,
-  floorId           = EXCLUDED.floorId,
+  floorid           = EXCLUDED.floorid,
   location          = EXCLUDED.location,
+  gradient          = EXCLUDED.gradient,
   wc_access         = EXCLUDED.wc_access,
   wc_barrier        = EXCLUDED.wc_barrier,
   direction         = EXCLUDED.direction,
   bldgid_1          = EXCLUDED.bldgid_1,
-  buildingnameeng   = EXCLUDED.buildingnameeng,
-  buildingnamechi   = EXCLUDED.buildingnamechi,
-  levelenglishname  = EXCLUDED.levelenglishname,
-  levelchinesename  = EXCLUDED.levelchinesename,
+  bldgid_2          = EXCLUDED.bldgid_2,
+  siteid            = EXCLUDED.siteid,
+  buildnamen        = EXCLUDED.buildnamen,
+  buildnamzh        = EXCLUDED.buildnamzh,
+  leveleng          = EXCLUDED.leveleng,
+  levelzh           = EXCLUDED.levelzh,
   aliasnamtc        = EXCLUDED.aliasnamtc,
-  aliasnamen        = EXCLUDED.aliasnamen
+  aliasnamen        = EXCLUDED.aliasnamen,
+  terminalid        = EXCLUDED.terminalid,
+  acstimeid         = EXCLUDED.acstimeid,
+  crossfeat         = EXCLUDED.crossfeat,
+  st_code           = EXCLUDED.st_code,
+  st_nametc         = EXCLUDED.st_nametc,
+  st_nameen         = EXCLUDED.st_nameen,
+  modifiedby        = EXCLUDED.modifiedby,
+  poscertain        = EXCLUDED.poscertain,
+  datasrc           = EXCLUDED.datasrc,
+  levelsrc          = EXCLUDED.levelsrc,
+  enabled           = EXCLUDED.enabled,
+  shape_len         = EXCLUDED.shape_len,
+  mainexit          = EXCLUDED.mainexit
 """)
 
 
@@ -212,7 +233,7 @@ def _geojson_to_wkt_2326(geojson_str: str) -> str | None:
 def insert_network_rows_into_indoor_network(session, displayname: str, rows: list["NetworkStagingRow"]) -> int:
     """
     Upsert processed network staging rows into indoor_network.
-    Shape is inserted as geometry SRID 2326 with Z from each row's GeoJSON.
+    Shape is inserted as geometry SRID 2326 with Z from each row's shape (WKB Hex).
     Returns the number of rows upserted.
     """
     from app.schema.network import NetworkStagingRow as NSR
@@ -220,48 +241,58 @@ def insert_network_rows_into_indoor_network(session, displayname: str, rows: lis
     for row in rows:
         if not isinstance(row, NSR):
             continue
-        shape_wkt = _geojson_to_wkt_2326(row.geojson or "")
-        if shape_wkt is None:
-            continue
-        try:
-            floor_id_val = row.floorId
-            if floor_id_val is not None and not isinstance(floor_id_val, int):
-                s = str(floor_id_val).strip()
-                floor_id_val = int(s) if s.isdigit() else None
-        except (TypeError, ValueError):
-            floor_id_val = None
-        feattype_str = str(row.feattype) if row.feattype is not None else None
-        bldgid_str = str(row.bldgid_1) if row.bldgid_1 is not None else None
+        
+        # row.shape is expected to be WKB hex string from DB
+        if not row.shape:
+             continue
+
         session.execute(
             UPSERT_INDOOR_NETWORK,
             {
                 "displayname": displayname,
                 "inetworkid": row.inetworkid,
-                "highway": row.highway or "",
-                "oneway": row.oneway or "",
-                "emergency": row.emergency or "",
-                "wheelchair": row.wheelchair or "",
-                "flpolyid": row.flpolyid or "",
+                "highway": row.highway,
+                "oneway": row.oneway,
+                "emergency": row.emergency,
+                "wheelchair": row.wheelchair,
+                "flpolyid": row.flpolyid,
                 "crtdt": row.crtdt,
+                "crtby": row.crtby,
                 "lstamddt": row.lstamddt,
-                "lstamdby": row.lstamdby or "",
-                "restricted": row.restricted or "",
-                "shape_wkt": shape_wkt,
+                "lstamdby": row.lstamdby,
+                "restricted": row.restricted,
+                "shape_hex": row.shape, # Pass WKB hex
                 "srid": INDOOR_NETWORK_SRID,
                 "level_id": row.level_id,
-                "feattype": feattype_str,
-                "floorId": floor_id_val,
-                "location": row.location if row.location is not None else 2,
+                "feattype": row.feattype,
+                "floorid": row.floorid,
+                "location": row.location,
+                "gradient": row.gradient,
                 "wc_access": row.wc_access,
                 "wc_barrier": row.wc_barrier,
                 "direction": row.direction,
-                "bldgid_1": bldgid_str,
-                "buildingnameeng": row.buildingnameeng,
-                "buildingnamechi": row.buildingnamechi,
-                "levelenglishname": row.levelenglishname,
-                "levelchinesename": row.levelchinesename,
+                "bldgid_1": row.bldgid_1,
+                "bldgid_2": row.bldgid_2,
+                "siteid": row.siteid,
+                "buildnamen": row.buildnamen,
+                "buildnamzh": row.buildnamzh,
+                "leveleng": row.leveleng,
+                "levelzh": row.levelzh,
                 "aliasnamtc": row.aliasnamtc,
                 "aliasnamen": row.aliasnamen,
+                "terminalid": row.terminalid,
+                "acstimeid": row.acstimeid,
+                "crossfeat": row.crossfeat,
+                "st_code": row.st_code,
+                "st_nametc": row.st_nametc,
+                "st_nameen": row.st_nameen,
+                "modifiedby": row.modifiedby,
+                "poscertain": row.poscertain,
+                "datasrc": row.datasrc,
+                "levelsrc": row.levelsrc,
+                "enabled": row.enabled,
+                "shape_len": row.shape_len,
+                "mainexit": row.mainexit
             },
         )
         count += 1
@@ -280,7 +311,8 @@ INSERT INTO pedrouterelfloorpoly (
   buildingtype,
   creation_date,
   last_amendment_date,
-  modified_by
+  modified_by,
+  updated_at
 )
 VALUES (
   :level_id,
@@ -293,7 +325,8 @@ VALUES (
   :buildingtype,
   CURRENT_TIMESTAMP,
   CURRENT_TIMESTAMP,
-  :modified_by
+  :modified_by,
+  CURRENT_TIMESTAMP
 )
 ON CONFLICT (level_id) DO UPDATE SET
   floor_id           = EXCLUDED.floor_id,
@@ -304,7 +337,8 @@ ON CONFLICT (level_id) DO UPDATE SET
   buildingcsuid      = EXCLUDED.buildingcsuid,
   buildingtype       = EXCLUDED.buildingtype,
   last_amendment_date= CURRENT_TIMESTAMP,
-  modified_by        = EXCLUDED.modified_by
+  modified_by        = EXCLUDED.modified_by,
+  updated_at         = CURRENT_TIMESTAMP
 ;
 """)
 async def sync_pedrouterelfloorpoly_from_imdf(displayName: str, modified_by: str = "system"):
