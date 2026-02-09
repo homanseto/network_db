@@ -13,3 +13,5 @@ python-multipart
 python-dotenv
 uuid
 motor
+zipfile
+subprocess

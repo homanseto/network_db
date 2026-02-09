@@ -9,49 +9,50 @@ class NetworkStagingRow(BaseModel):
     Fields here match current columns; you can safely add more later
     as the table evolves.
     """
-    pedrouteid: Optional[int] = None
-    displayname: Optional[str] = None
+    pedrouteid: int
+    displayname: str
     inetworkid: str
-    geojson: str
     highway: str
     oneway: str      # could narrow later: Literal["yes", "no"]
-    emergency: Optional[str] = None      # e.g. "yes"/"no"
-    wheelchair: Optional[str] = None     # e.g. "yes"/"no"
+    emergency: str     # e.g. "yes"/"no"
+    wheelchair: str     # e.g. "yes"/"no"
     flpolyid: str
-    crtdt: Optional[str] = None          # default "03"; can be date string e.g. "28/11/2025"
-    crtby:  Optional[str] = "03"
-    lstamddt: Optional[str] = None  # "28/11/2025 09:21:41"
-    lstamdby: Optional[str] = "03"
-    restricted: str                     # e.g. "Y"/"N" (for later use)
+    crtdt: str        # default "03"; can be date string e.g. "28/11/2025"
+    crtby:  str = "03"
+    lstamddt: str  # "28/11/2025 09:21:41"
+    lstamdby: str = "03"
+    restricted: Literal["Y", "N"]
     shape: str                               # WKB string; you can model this more strictly later
-    level_id: Optional[str] = None         # Level UUID; filter unit_features to same level for intersection
-    feattype: Optional[int] = None         # FeatureType code (1=walkway, 8=escalator, etc.)
-    floorid: Optional[int] = None          # Computed from SixDigitID + floorNumber
-    location: Optional[int] = 2
-    gradient: Optional[float] = None
-    wc_access: Optional[int] = None
-    wc_barrier: Optional[int] = None
-    direction: Optional[int] = None
-    bldgid_1: Optional[int] = None
+    level_id: str          # Level UUID; filter unit_features to same level for intersection
+    feattype: Literal[1,8,9,10,11,12,13]         # FeatureType code (1=walkway, 8=escalator, etc.)
+    floorid: int = Field(..., ge=1_000_000_000, le=9_999_999_999)  # 10-digit number, e.g. 1009790001
+    location: Literal[1, 2, 3]
+    gradient: float
+    wc_access: Literal[1, 2]
+    wc_barrier: Literal[1, 2]
+    direction: Literal[0, 1, -1]
+    bldgid_1: int
     bldgid_2: Optional[int] = None
-    aliasnamtc: Optional[str] = None
-    aliasnamen: Optional[str] = None
-    terminalid: Optional[int] = None
-    acstimeid: Optional[int] = None
+    siteid: Optional[int] = None
+    aliasnamtc: str
+    aliasnamen: str
+    terminalid: int = Field(..., ge=1_000_000_000, le=9_999_999_999)  # 10-digit number
+    acstimeid: Optional[int] = None  # exists but can be null
     crossfeat: Optional[str] = None
     st_code: Optional[str] = None
     st_nametc: Optional[str] = None
     st_nameen: Optional[str] = None
-    modifiedby: Optional[str] = "LANDSD"
-    poscertain: Optional[int] = 1
-    datasrc: Optional[int] = 1 
-    levelsrc: Optional[int] = 2
-    enabled: Optional[int] = 1
+    modifiedby: str= "LANDSD"
+    poscertain: int = 1
+    datasrc: int = 1 
+    levelsrc: int = 2
+    enabled: int = 1
     shape_len: Optional[float] = None
     buildnamen: Optional[str] = None
     buildnamzh: Optional[str] = None
     leveleng: Optional[str] = None
     levelzh: Optional[str] = None
+    mainexit: Optional[bool] = None  # aligns with pedestrian_convert_table.json
 
 
   

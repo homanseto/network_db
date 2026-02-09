@@ -144,6 +144,12 @@
     "output": ["pedestrian"]
   },
   {
+    "database": "siteid",
+    "shapefile": "SiteID",
+    "geojson": "SiteID",
+    "output": ["pedestrian"]
+  },
+  {
     "database": "aliasnamen",
     "shapefile": "AliasNamEN",
     "geojson": "AliasNameEN",
@@ -249,6 +255,12 @@
     "database": "levelzh",
     "shapefile": "levelzh",
     "geojson": "levelzh",
+    "output": ["internal"]
+  },
+  {
+    "database": "mainexit",
+    "shapefile": "mainexit",
+    "geojson": "mainexit",
     "output": ["internal"]
   }
 ]

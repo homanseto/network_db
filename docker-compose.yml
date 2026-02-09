@@ -25,6 +25,7 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgis:5432/gis
       EXPORT_RESULT_DIR: /data/result
+      IMPORT_BASE_PATH: /data
     ports:
       - "8001:8000"
 

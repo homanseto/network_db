@@ -1,7 +1,52 @@
-from fastapi import UploadFile, File, APIRouter
-from app.services.network_services import process_network_import
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from pydantic import BaseModel, Field
+
+from app.services.network_services import (
+    process_network_import,
+    process_network_import_from_folder_path,
+    process_network_import_from_zip,
+)
 
 router = APIRouter()
+
+
+class ImportFromPathRequest(BaseModel):
+    """Request body for import-network-from-path. folder_path is relative to the server's import base (e.g. /data in Docker)."""
+    folder_path: str = Field(..., description="Path to folder containing '3D Indoor Network.shp', relative to import base (e.g. wing/HK_1_Hong Kong City Hall/SHP). Use forward slashes; backslashes from Windows are accepted.")
+    displayname: str = Field(..., description="Display name for the building/venue (e.g. HK_1_Hong Kong City Hall). Must match IMDF data.")
+
+
+@router.post("/import-network-upload/")
+async def import_network_upload(
+    file: UploadFile = File(..., description="ZIP file containing a folder with '3D Indoor Network.shp' (and .shx, .dbf, etc.)"),
+    displayname: str = Form(..., description="Display name for the building/venue (e.g. HK_1_Hong Kong City Hall). Must match IMDF data."),
+):
+    """
+    Import network from an uploaded ZIP file. The ZIP must contain '3D Indoor Network.shp' (at root or in any subfolder).
+    Same validation and processing as POST /import-network/. Use from Swagger (Choose File + displayname) or Postman (form-data: file + displayname).
+    """
+    if not file.filename or not file.filename.lower().endswith(".zip"):
+        raise HTTPException(status_code=400, detail={"status": "error", "message": "File must be a ZIP archive (.zip)"})
+    content = await file.read()
+    result = await process_network_import_from_zip(displayname, content)
+    if result.get("status") == "error":
+        raise HTTPException(status_code=400, detail=result)
+    return result
+
+
+@router.post("/import-network-from-path/")
+async def import_network_from_path(body: ImportFromPathRequest):
+    """
+    Import network from a folder path. The folder must contain '3D Indoor Network.shp'.
+    On Docker, the host folder (e.g. Windows PC) should be mounted under the container's import base
+    (default /data). Pass the path relative to that base, e.g. wing/HK_1_Hong Kong City Hall/SHP.
+    Performs the same validation and processing as POST /import-network/.
+    """
+    result = await process_network_import_from_folder_path(body.displayname, body.folder_path)
+    if result.get("status") == "error":
+        raise HTTPException(status_code=400, detail=result)
+    return result
+
 
 @router.post("/import-network/")
 async def import_network():

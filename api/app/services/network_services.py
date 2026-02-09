@@ -1,6 +1,9 @@
 import os
 import re
+import shutil
+import tempfile
 import uuid
+import zipfile
 import subprocess
 from sqlalchemy import text
 from app.core.database import SessionLocal
@@ -13,6 +16,9 @@ DEFAULT_EXPORT_RESULT_DIR = os.environ.get(
     os.path.join(_PROJECT_ROOT, "data", "result"),
 )
 PG_CONNECTION = "PG:host=postgis user=postgres dbname=gis password=postgres"
+# Base path for user-provided folder paths (e.g. /data when Docker mounts host ./data here)
+IMPORT_BASE_PATH = os.path.normpath(os.environ.get("IMPORT_BASE_PATH", "/data"))
+
 from app.services.imdf_service import (
     flpolyid_slices,
     get_opening_by_displayName,
@@ -32,11 +38,85 @@ from app.services.pedestrian_service import (
 )
 from app.schema.network import NetworkStagingRow
 
+def _resolve_import_folder_path(folder_path: str) -> tuple[str, str | None]:
+    """
+    Resolve user-provided folder path (e.g. from Windows PC) to a path inside IMPORT_BASE_PATH.
+    Returns (resolved_abs_path, error_message). error_message is None if valid.
+    """
+    if not folder_path or not folder_path.strip():
+        return "", "folder_path is required and cannot be empty"
+    # Normalize: Windows backslashes -> forward slashes, strip leading/trailing slashes
+    normalized = folder_path.strip().replace("\\", "/").strip("/")
+    if not normalized:
+        return "", "folder_path is required and cannot be empty"
+    # Prevent path traversal: no ".." in segments
+    if ".." in normalized.split("/"):
+        return "", "folder_path must not contain '..'"
+    base_abs = os.path.abspath(IMPORT_BASE_PATH)
+    full = os.path.abspath(os.path.join(base_abs, normalized))
+    if not full.startswith(base_abs):
+        return full, "folder_path must be inside the allowed import base path"
+    return full, None
+
+
+async def process_network_import_from_folder_path(display_name: str, folder_path: str) -> dict:
+    """
+    Run the same import as process_network_import using a user-provided folder path.
+    folder_path is relative to IMPORT_BASE_PATH (e.g. 'wing/HK_1_Hong Kong City Hall/SHP').
+    On Docker with ./data mounted at /data, this resolves to /data/wing/.../SHP.
+    """
+    resolved, err = _resolve_import_folder_path(folder_path)
+    if err is not None:
+        return {"status": "error", "message": err}
+    return await process_network_import(display_name, resolved)
+
+
+# Expected shapefile name for indoor network (must exist inside uploaded ZIP or folder)
+INDOOR_NETWORK_SHP_NAME = "3D Indoor Network.shp"
+
+
+def _find_folder_containing_shp(extract_dir: str, shp_name: str = INDOOR_NETWORK_SHP_NAME) -> str | None:
+    """Return the path to the directory that contains shp_name, or None if not found."""
+    for root, _dirs, files in os.walk(extract_dir):
+        if shp_name in files:
+            return root
+    return None
+
+
+async def process_network_import_from_zip(display_name: str, zip_file_content: bytes) -> dict:
+    """
+    Save ZIP to a temp dir, extract it, find the folder containing '3D Indoor Network.shp',
+    run process_network_import(display_name, that_folder), then clean up. Accepts ZIP format only.
+    """
+    if not zip_file_content or len(zip_file_content) == 0:
+        return {"status": "error", "message": "Uploaded file is empty"}
+    tmp_dir = tempfile.mkdtemp(prefix="network_import_")
+    try:
+        zip_path = os.path.join(tmp_dir, "upload.zip")
+        with open(zip_path, "wb") as f:
+            f.write(zip_file_content)
+        if not zipfile.is_zipfile(zip_path):
+            return {"status": "error", "message": "File is not a valid ZIP archive. Please upload a ZIP file."}
+        extract_dir = os.path.join(tmp_dir, "extracted")
+        os.makedirs(extract_dir, exist_ok=True)
+        with zipfile.ZipFile(zip_path, "r") as zf:
+            zf.extractall(extract_dir)
+        folder = _find_folder_containing_shp(extract_dir)
+        if folder is None:
+            return {
+                "status": "error",
+                "message": f"ZIP must contain a folder with '{INDOOR_NETWORK_SHP_NAME}'. No such file found in the archive.",
+            }
+        return await process_network_import(display_name, folder)
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+
+
 async def process_network_import(displayName:str, filePath:str):
 
     job_id = str(uuid.uuid4())
 
-    shp_path = os.path.join(filePath, "3D Indoor Network.shp")
+    shp_path = os.path.join(filePath, INDOOR_NETWORK_SHP_NAME)
 
     if not os.path.exists(shp_path):
         return {"status": "error", "message": "Shapefile not found"}
