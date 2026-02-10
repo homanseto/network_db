@@ -427,7 +427,7 @@ paths:
                       type: string
   /import-network-upload/:
     post:
-      summary: Import network from an uploaded ZIP file
+      summary: Import network from multiple uploaded ZIP files
       servers:
         - url: http://smo3d26:8001
           description: AWS Data Set
@@ -438,20 +438,20 @@ paths:
             schema:
               type: object
               properties:
-                file:
-                  type: string
-                  format: binary
-                  description: ZIP file containing a folder with '3D Indoor Network.shp' (and .shx, .dbf, etc.)
-                displayname:
-                  type: string
-                  description: Display name for the building/venue (e.g. HK_1_Hong Kong City Hall). Must match IMDF data.
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: List of ZIP files containing '3D Indoor Network.shp'. Display name is derived from unique zip filename.
               required:
-                - file
-                - displayname
+                - files
       responses:
         "200":
-          description: Import result
+          description: Import result list
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  type: object

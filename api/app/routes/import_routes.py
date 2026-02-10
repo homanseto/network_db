@@ -1,3 +1,5 @@
+import os
+from typing import List
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 
@@ -18,20 +20,50 @@ class ImportFromPathRequest(BaseModel):
 
 @router.post("/import-network-upload/")
 async def import_network_upload(
-    file: UploadFile = File(..., description="ZIP file containing a folder with '3D Indoor Network.shp' (and .shx, .dbf, etc.)"),
-    displayname: str = Form(..., description="Display name for the building/venue (e.g. HK_1_Hong Kong City Hall). Must match IMDF data."),
+    files: List[UploadFile] = File(..., description="List of ZIP files. Each ZIP must contain '3D Indoor Network.shp' (or case-insensitive equivalent). Display name is derived from zip filename."),
 ):
     """
-    Import network from an uploaded ZIP file. The ZIP must contain '3D Indoor Network.shp' (at root or in any subfolder).
-    Same validation and processing as POST /import-network/. Use from Swagger (Choose File + displayname) or Postman (form-data: file + displayname).
+    Import network from multiple uploaded ZIP files.
+    - **files**: List of ZIP archives.
+    - **DisplayName**: Derived from the filename (e.g., 'HK_1_City Hall.zip' -> 'HK_1_City Hall').
+    - **Processing**: Sequential to ensure database staging table integrity.
     """
-    if not file.filename or not file.filename.lower().endswith(".zip"):
-        raise HTTPException(status_code=400, detail={"status": "error", "message": "File must be a ZIP archive (.zip)"})
-    content = await file.read()
-    result = await process_network_import_from_zip(displayname, content)
-    if result.get("status") == "error":
-        raise HTTPException(status_code=400, detail=result)
-    return result
+    results = []
+    
+    for file in files:
+        # 1. Basic validation
+        if not file.filename or not file.filename.lower().endswith(".zip"):
+            results.append({
+                "filename": file.filename,
+                "status": "error", 
+                "message": "File must be a ZIP archive (.zip)"
+            })
+            continue
+
+        # 2. Derive Display Name
+        displayname = os.path.splitext(os.path.basename(file.filename))[0]
+
+        try:
+            # 3. Read and Process
+            content = await file.read()
+            result = await process_network_import_from_zip(displayname, content)
+            
+            # 4. Format Result
+            results.append({
+                "filename": file.filename,
+                "displayname": displayname,
+                **result
+            })
+            
+        except Exception as e:
+            results.append({
+                "filename": file.filename,
+                "displayname": displayname,
+                "status": "error",
+                "message": str(e)
+            })
+            
+    return results
 
 
 @router.post("/import-network-from-path/")
