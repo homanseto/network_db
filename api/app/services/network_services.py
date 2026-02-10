@@ -5,6 +5,7 @@ import tempfile
 import uuid
 import zipfile
 import subprocess
+import traceback
 from sqlalchemy import text
 from app.core.database import SessionLocal
 from app.services.imdf_service import (
@@ -77,10 +78,12 @@ INDOOR_NETWORK_SHP_NAME = "3D Indoor Network.shp"
 
 
 def _find_folder_containing_shp(extract_dir: str, shp_name: str = INDOOR_NETWORK_SHP_NAME) -> str | None:
-    """Return the path to the directory that contains shp_name, or None if not found."""
+    """Return the path to the directory that contains shp_name (case-insensitive), or None if not found."""
+    target_name = shp_name.lower()
     for root, _dirs, files in os.walk(extract_dir):
-        if shp_name in files:
-            return root
+        for f in files:
+            if f.lower() == target_name:
+                return root
     return None
 
 
@@ -106,7 +109,7 @@ async def process_network_import_from_zip(display_name: str, zip_file_content: b
         if folder is None:
             return {
                 "status": "error",
-                "message": f"ZIP must contain a folder with '{INDOOR_NETWORK_SHP_NAME}'. No such file found in the archive.",
+                "message": f"ZIP must contain a folder with '{INDOOR_NETWORK_SHP_NAME}' or '3D indoor network.shp'. No such file found in the archive.",
             }
         return await process_network_import(display_name, folder)
     finally:
@@ -119,8 +122,20 @@ async def process_network_import(displayName:str, filePath:str):
 
     shp_path = os.path.join(filePath, INDOOR_NETWORK_SHP_NAME)
 
+    # Check for exact match first; if not found, look for case-insensitive match
     if not os.path.exists(shp_path):
-        return {"status": "error", "message": "Shapefile not found"}
+        found_path = None
+        if os.path.exists(filePath) and os.path.isdir(filePath):
+            target_lower = INDOOR_NETWORK_SHP_NAME.lower()
+            for fname in os.listdir(filePath):
+                if fname.lower() == target_lower:
+                    found_path = os.path.join(filePath, fname)
+                    break
+        
+        if found_path:
+            shp_path = found_path
+        else:
+            return {"status": "error", "message": f"Shapefile '{INDOOR_NETWORK_SHP_NAME}' (or case variant) not found in {filePath}"}
 
     cmd = [
         "ogr2ogr",
@@ -135,27 +150,43 @@ async def process_network_import(displayName:str, filePath:str):
     ]
 
     try:
-        # subprocess.run(cmd, shell=True, check=True)
-        subprocess.run(cmd, check=True)
+        # Capture output to help debug ogr2ogr issues
+        subprocess.run(cmd, check=True, capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
-        return {"status": "error", "message": str(e)}
+        # Return stderr in the message
+        return {"status": "error", "message": f"Ogr2ogr failed: {e.stderr}"}
 
     # 🔽 Now database validation + merge
     with SessionLocal() as session:
         try:
-            validation = session.execute(
+            # Execute function calling scalar() to retrieve the JSON object directly
+            validation_output = session.execute(
                 text("SELECT validate_network_staging();")
             ).scalar()
-# Check if validation is valid
-            if not validation["valid"]:
+
+            # The function returns a JSON object (dict in Python), e.g. {"valid": true, "error_count": 0}
+            is_valid = False
+            if isinstance(validation_output, dict):
+                is_valid = validation_output.get("valid", False)
+            elif validation_output is None:
+                 is_valid = False
+            else:
+                 # In case it returns a Mapping/Row proxy or other type, try attribute access or generic get
+                 is_valid = getattr(validation_output, "valid", False)
+
+            if not is_valid:
                 errors = session.execute(
                     text("SELECT * FROM network_staging_errors;")
                 ).mappings().all()
 
+                # If validation failed, we return early. 
+                # Note: network_staging data is RETAINED here to allow debugging the data in the DB.
+                # If you prefer to clear it, you would need to truncate here.
                 return {
                     "status": "validation_failed",
                     "errors": errors
                 }
+            
             # Select all columns + explicitly convert shape to WKB Hex for validation
             # We use ST_AsBinary -> encode hex to match Pydantic expectation of 'shape' string
             staging_result = session.execute(text("SELECT *, ST_AsGeoJSON(shape) AS geojson FROM network_staging"))
@@ -165,10 +196,8 @@ async def process_network_import(displayName:str, filePath:str):
                 # Convert RowMapping to dict
                 row_dict = dict(r)
                 
-                
                 # 2. Key Step: specific handling for 'crtby' default behavior
                 # If crtby is None (NULL in DB), remove it so Pydantic uses the default "03".
-                # (We can do this for all attributes if we want NULL -> Default behavior generally)
                 if row_dict.get("crtby") is None:
                     row_dict.pop("crtby", None)
                 if row_dict.get("lstamdby") is None:
@@ -176,8 +205,6 @@ async def process_network_import(displayName:str, filePath:str):
 
                 staging_rows.append(row_dict)
 
-            # rows_result = [NetworkStagingRow.model_validate(r) for r in staging_rows]
-            
             rows_result = []
             for i, r in enumerate(staging_rows):
                 try:
@@ -186,16 +213,21 @@ async def process_network_import(displayName:str, filePath:str):
                     # Provide helpful context: which row failed and why
                     return {
                         "status": "error",
-                        "message": f"Validation failed at row index {i} (ID: {r.get('inetworkid')}). Error: {str(e)}",
-                        "row_data": r  # optionally return the bad data so you can see what failed
+                        "message": f"Pydantic Validation failed at row index {i} (ID: {r.get('inetworkid')}). Error: {str(e)}",
+                        "row_data": r
                     }
 
             session.execute(text("TRUNCATE TABLE network_staging"))
+            
             # Update only property fields; geometry (shape/geojson) from staging must not be changed.
+            # update_pedestrian_fields might fail if external services are down or logic errors exist.
             await update_pedestrian_fields(displayName, rows_result)
+            
             indoor_upserted = insert_network_rows_into_indoor_network(session, displayName, rows_result)
             session.commit()
+            
             updatepedrouteresult = await sync_pedrouterelfloorpoly_from_imdf(displayName)
+            
             return {
                 "status": "success",
                 "staging_count": len(rows_result),
@@ -205,7 +237,15 @@ async def process_network_import(displayName:str, filePath:str):
 
         except Exception as e:
             session.rollback()
-            return {"status": "error", "message": str(e)}
+            # Print traceback to server logs for debugging
+            traceback.print_exc()
+            
+            # Return full error details
+            return {
+                "status": "error", 
+                "message": f"Processing failed: {str(e)}", 
+                "traceback": traceback.format_exc()
+            }
 
 async def update_pedestrian_fields(displayName: str, rows: list[NetworkStagingRow]) -> list[NetworkStagingRow]:
     """

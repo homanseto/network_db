@@ -1,0 +1,457 @@
+openapi: 3.0.0
+info:
+  title: Indoor API
+  description: Indoor API List
+  version: 1.0.0
+servers:
+  - url: http://3dmapweb3:8093
+    description: 3D Map Web
+paths:
+  /swagger/checkSubmission:
+    post:
+      summary: Check Submission (Excel) dataType need to be "open" or "full"
+      # servers:
+      #   - url: http://localhost:3004
+      #     description: Local Testing Server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dataType:
+                  type: string
+                  default: ""
+                buildingType:
+                  type: string
+                  default: ""
+                displayNames:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+      responses:
+        "200":
+          description: Excel file download
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /swagger/duplicateCheck:
+    post:
+      summary: Check Duplicate ID(Excel)
+      servers:
+        - url: http://localhost:3004
+          description: Local Testing Server
+      responses:
+        "200":
+          description: Excel file download
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /swagger/download/groupBuildingInfo:
+    post:
+      summary: Get Level, Unit and POI information (Excel) - featureType unit or poi
+      servers:
+        - url: http://localhost:3004
+          description: Local Testing Server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                featureType:
+                  type: string
+                  default: ""
+                buildingType:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                region:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                displayNames:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+      responses:
+        "200":
+          description: Excel file download
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /swagger/updateUnitOrPOIInfo:
+    post:
+      summary: udpate unit or poi information - updatetype unit or poi
+      # servers:
+      #   - url: http://localhost:3004
+      #     description: Local Testing Server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                updateType:
+                  type: string
+                  default: ""
+                excelPath:
+                  type: string
+                  default: ""
+      responses:
+        "200":
+          description: update successful
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /swagger/updateMTRShops:
+    post:
+      summary: udpate MTR Shops
+      # servers:
+      #   - url: http://localhost:3004
+      #     description: Local Testing Server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                excelPath:
+                  type: string
+                  default: ""
+      responses:
+        "200":
+          description: update successful
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /swagger/convertOpeningToRestricted:
+    post:
+      summary: convert opening on restricted unit to restricted
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                buildingType:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                region:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                displayNames:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+      responses:
+        "200":
+          description: conversion successful
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /swagger/updateLevelInfo:
+    post:
+      summary: update Level and 3D Floor Info
+      # servers:
+      #   - url: http://localhost:3004
+      #     description: Local Testing Server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                excelPath:
+                  type: string
+                  default: ""
+      responses:
+        "200":
+          description: update successful
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /swagger/download/fullversion:
+    post:
+      summary: Get Full Data Set
+      # servers:
+      #   - url: http://localhost:3004
+      #     description: Full Data Set
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                outputDir:
+                  type: string
+                  default: ""
+                buildingType:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                region:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                displayNames:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+      responses:
+        "200":
+          description: Download status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: integer
+                  failed:
+                    type: array
+                    items:
+                      type: string
+  /swagger/download/opendata:
+    post:
+      summary: Get Open Data Set
+      # servers:
+      #   - url: http://localhost:3004
+      #     description: Open Data Set
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                outputDir:
+                  type: string
+                  default: ""
+                buildingType:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                region:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                displayNames:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+      responses:
+        "200":
+          description: Download status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: integer
+                  failed:
+                    type: array
+                    items:
+                      type: string
+  /swagger/download/indoorNetwork:
+    post:
+      summary: Get Indoor Network (Zip file)
+      # servers:
+      #   - url: http://localhost:3004
+      #     description: Get Indoor Network
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                outputDir:
+                  type: string
+                  default: ""
+                buildingType:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                region:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                displayNames:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+      responses:
+        "200":
+          description: Download indoorNetwork zip file
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /swagger/download/aws:
+    post:
+      summary: Get AWS Data Set
+      servers:
+        - url: http://localhost:3004
+          description: AWS Data Set
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                outputDir:
+                  type: string
+                  default: ""
+                dataType:
+                  type: string
+                  default: ""
+                buildingType:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                region:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                displayNames:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+      responses:
+        "200":
+          description: Download status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: integer
+                  failed:
+                    type: array
+                    items:
+                      type: string
+  /swagger/upload/uat:
+    post:
+      summary: upload Data to UAT, dataType need to be "data" or "network", and displayNames cannot be empty array
+      servers:
+        - url: http://localhost:3004
+          description: AWS Data Set
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dataType:
+                  type: string
+                  default: ""
+                buildingType:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                region:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+                displayNames:
+                  type: array
+                  items:
+                    type: string
+                  default: []
+      responses:
+        "200":
+          description: Upload status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: integer
+                  failed:
+                    type: array
+                    items:
+                      type: string
+  /import-network-upload/:
+    post:
+      summary: Import network from an uploaded ZIP file
+      servers:
+        - url: http://smo3d26:8001
+          description: AWS Data Set
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: ZIP file containing a folder with '3D Indoor Network.shp' (and .shx, .dbf, etc.)
+                displayname:
+                  type: string
+                  description: Display name for the building/venue (e.g. HK_1_Hong Kong City Hall). Must match IMDF data.
+              required:
+                - file
+                - displayname
+      responses:
+        "200":
+          description: Import result
+          content:
+            application/json:
+              schema:
+                type: object

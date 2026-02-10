@@ -13,9 +13,9 @@ class NetworkStagingRow(BaseModel):
     displayname: Optional[str] = None
     inetworkid: str
     highway: str
-    oneway: Optional[Literal["yes", "reverse"]] = None      # could narrow later: Literal["yes", "no"]
-    emergency: Literal["yes", "no"]     # e.g. "yes"/"no"
-    wheelchair: str     # e.g. "yes"/"no"
+    oneway: Optional[Literal["yes", "reverse", "no"]]    # could narrow later: Literal["yes", "no"]
+    emergency: Optional[Literal["yes", "no"]]      # e.g. "yes"/"no"
+    wheelchair: Optional[Literal["yes", "no"]]       # e.g. "yes"/"no"
     flpolyid: str
     crtdt: str        # default "03"; can be date string e.g. "28/11/2025"
     crtby:  str = "03"
