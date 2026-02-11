@@ -1,6 +1,6 @@
 ### create error table 
 
-
+--------network_staging_errors-------------------------------
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS network_staging_errors (
     INETWORKID text,
@@ -8,8 +8,9 @@ CREATE TABLE IF NOT EXISTS network_staging_errors (
     error_message text,
     created_at timestamp default now()
 );
+-------------------------------------------------------------
 
-#### Validation Procedure (Production Version)
+---------------- Validation Procedure (Production Version)-----------------
 CREATE OR REPLACE FUNCTION validate_network_staging()
 RETURNS json
 LANGUAGE plpgsql
@@ -95,6 +96,7 @@ BEGIN
 
 END;
 $$;
+-------------------------------------------------------------------------------
 
 #### create PedouteRelFloorPolyID 
 CREATE TABLE pedrouterelfloorpoly (
@@ -183,5 +185,200 @@ CREATE TABLE indoor_network (
     buildnamzh TEXT,
     leveleng TEXT,
     levelzh TEXT,
-    mainexit BOOLEAN
+    mainexit BOOLEAN,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+--------------------------------------------------------------------------------------
+
+-- 1. Create History Table------------------------------------------------------------
+-- This table mirrors the structure of indoor_network but adds operation tracking
+CREATE TABLE IF NOT EXISTS indoor_network_history (
+    history_id SERIAL PRIMARY KEY,
+    pedrouteid INTEGER, -- Not a PK here, just a reference
+    inetworkid TEXT,
+    displayname TEXT,
+    operation TEXT, -- 'UPDATE' or 'DELETE'
+    history_recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Include all original columns from indoor_network
+    highway TEXT,
+    oneway TEXT,
+    emergency TEXT,
+    wheelchair TEXT,
+    flpolyid TEXT,
+    crtdt TEXT,
+    crtby TEXT,
+    lstamddt TEXT,
+    lstamdby TEXT,
+    restricted TEXT,
+    shape GEOMETRY(LineStringZ, 2326),
+    feattype INTEGER,
+    floorid INTEGER,
+    location INTEGER,
+    gradient DOUBLE PRECISION,
+    wc_access INTEGER,
+    wc_barrier INTEGER,
+    direction INTEGER,
+    bldgid_1 INTEGER,
+    bldgid_2 INTEGER,
+    siteid INTEGER,
+    aliasnamtc TEXT,
+    aliasnamen TEXT,
+    terminalid INTEGER,
+    acstimeid INTEGER,
+    crossfeat TEXT,
+    st_code TEXT,
+    st_nametc TEXT,
+    st_nameen TEXT,
+    modifiedby TEXT,
+    poscertain INTEGER,
+    datasrc INTEGER,
+    levelsrc INTEGER,
+    enabled INTEGER,
+    shape_len DOUBLE PRECISION,
+    level_id TEXT,
+    buildnamen TEXT,
+    buildnamzh TEXT,
+    leveleng TEXT,
+    levelzh TEXT,
+    mainexit BOOLEAN,
+    -- Also track the timestamps from the original row
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_history_inetworkid ON indoor_network_history(inetworkid);
+-- history table----------------------------------------------------------
+
+
+-- 2. Create Trigger Function
+-- Automatically saves the OLD version of a row before an Update or Delete
+--------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION log_indoor_network_changes()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'UPDATE') THEN
+        -- OPTIMIZATION: Stop! If the data hasn't changed, don't save history.
+        IF NEW IS NOT DISTINCT FROM OLD THEN
+            RETURN NULL;
+        END IF;
+
+        INSERT INTO indoor_network_history (
+            pedrouteid, inetworkid, displayname, operation,
+            highway, oneway, emergency, wheelchair, flpolyid, crtdt, crtby, 
+            lstamddt, lstamdby, restricted, shape, feattype, floorid, location, 
+            gradient, wc_access, wc_barrier, direction, bldgid_1, bldgid_2, siteid, 
+            aliasnamtc, aliasnamen, terminalid, acstimeid, crossfeat, st_code, 
+            st_nametc, st_nameen, modifiedby, poscertain, datasrc, levelsrc, 
+            enabled, shape_len, level_id, buildnamen, buildnamzh, leveleng, 
+            levelzh, mainexit, created_at, updated_at
+        )
+        VALUES (
+            OLD.pedrouteid, OLD.inetworkid, OLD.displayname, 'UPDATE',
+            OLD.highway, OLD.oneway, OLD.emergency, OLD.wheelchair, OLD.flpolyid, OLD.crtdt, OLD.crtby, 
+            OLD.lstamddt, OLD.lstamdby, OLD.restricted, OLD.shape, OLD.feattype, OLD.floorid, OLD.location, 
+            OLD.gradient, OLD.wc_access, OLD.wc_barrier, OLD.direction, OLD.bldgid_1, OLD.bldgid_2, OLD.siteid, 
+            OLD.aliasnamtc, OLD.aliasnamen, OLD.terminalid, OLD.acstimeid, OLD.crossfeat, OLD.st_code, 
+            OLD.st_nametc, OLD.st_nameen, OLD.modifiedby, OLD.poscertain, OLD.datasrc, OLD.levelsrc, 
+            OLD.enabled, OLD.shape_len, OLD.level_id, OLD.buildnamen, OLD.buildnamzh, OLD.leveleng, 
+            OLD.levelzh, OLD.mainexit, OLD.created_at, OLD.updated_at
+        );
+        RETURN NEW;
+    ELSIF (TG_OP = 'DELETE') THEN
+        INSERT INTO indoor_network_history (
+            pedrouteid, inetworkid, displayname, operation,
+            highway, shape, created_at, updated_at 
+            -- (Include all other columns here in production as well)
+        )
+        VALUES (
+            OLD.pedrouteid, OLD.inetworkid, OLD.displayname, 'DELETE',
+            OLD.highway, OLD.shape, OLD.created_at, OLD.updated_at
+        );
+        RETURN OLD;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+--------------------------------------------------------------------------------
+
+-- 4. Create Trigger Function: Auto-Update Timestamp
+-- This keeps the "updated_at" column fresh.
+CREATE OR REPLACE FUNCTION set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+--------------------------------------------------------------------------------
+
+
+-- 5. Attach the Triggers to the Main Table--------------------------------------
+DROP TRIGGER IF EXISTS trg_indoor_network_history ON indoor_network;
+CREATE TRIGGER trg_indoor_network_history
+BEFORE UPDATE OR DELETE ON indoor_network
+FOR EACH ROW EXECUTE FUNCTION log_indoor_network_changes();
+
+DROP TRIGGER IF EXISTS trg_set_updated_at ON indoor_network;
+CREATE TRIGGER trg_set_updated_at
+BEFORE UPDATE ON indoor_network
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+----------------------------------------------------------------------------------
+
+
+/* View State on Specific Date */
+WITH target_date AS (
+    SELECT '2024-02-10 12:00:00'::timestamp as point_in_time
+)
+SELECT * FROM indoor_network
+WHERE created_at <= (SELECT point_in_time FROM target_date)
+  -- The row has not been updated since the target date
+  AND updated_at <= (SELECT point_in_time FROM target_date)
+
+UNION ALL
+
+SELECT 
+    -- Explicitly select columns to match the main table structure if needed
+    pedrouteid, displayname, inetworkid, highway, oneway, emergency, wheelchair, 
+    flpolyid, crtdt, crtby, lstamddt, lstamdby, restricted, shape, feattype, 
+    floorid, location, gradient, wc_access, wc_barrier, direction, bldgid_1, 
+    bldgid_2, siteid, aliasnamtc, aliasnamen, terminalid, acstimeid, crossfeat, 
+    st_code, st_nametc, st_nameen, modifiedby, poscertain, datasrc, levelsrc, 
+    enabled, shape_len, level_id, buildnamen, buildnamzh, leveleng, levelzh, 
+    mainexit, created_at, updated_at
+FROM indoor_network_history
+WHERE created_at <= (SELECT point_in_time FROM target_date)
+  -- It was recorded in history AFTER our target date (meaning it was valid THEN)
+  AND history_recorded_at > (SELECT point_in_time FROM target_date)
+  -- Filter to ignore 'DELETE' entries if you only want valid lines
+  AND operation = 'UPDATE';
+
+  
+------By Business ID (inetworkid), In data engineering, the "Business Key" usually describes the ID that comes from the external business source (the shapefile).
+  SELECT 
+    history_recorded_at as changed_at, 
+    operation, 
+    modifiedby as changed_by,
+    shape, -- Geometry geometry
+    highways -- or other attributes to compare
+FROM indoor_network_history
+WHERE inetworkid = 'Walkway_L1_001' -- Replace with specific ID
+ORDER BY history_recorded_at DESC;
+
+
+------By Database ID (pedrouteid), In data engineering, the "Surrogate Key" usually describes the internal database ID (the pedrouteid).
+------Technically, it is generated by the Database engine.
+  SELECT 
+    history_recorded_at as changed_at, 
+    operation, 
+    modifiedby as changed_by,
+    shape, -- Geometry geometry
+    highways -- or other attributes to compare
+
+
+----- fubd deleted features
+SELECT * 
+FROM indoor_network_history
+WHERE operation = 'DELETE'
+AND history_recorded_at > NOW() - INTERVAL '7 days'; -- Deleted in last week

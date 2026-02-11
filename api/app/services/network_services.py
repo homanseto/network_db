@@ -219,11 +219,30 @@ async def process_network_import(displayName:str, filePath:str):
 
             session.execute(text("TRUNCATE TABLE network_staging"))
             
-            # Update only property fields; geometry (shape/geojson) from staging must not be changed.
-            # update_pedestrian_fields might fail if external services are down or logic errors exist.
-            await update_pedestrian_fields(displayName, rows_result)
+            # Split rows based on pedrouteid for optimization
+            rows_to_calculate = []
+            rows_direct = []
             
-            indoor_upserted = insert_network_rows_into_indoor_network(session, displayName, rows_result)
+            for row in rows_result:
+                # Logic: if pedrouteid is 0/empty/null -> calc
+                if not row.pedrouteid or row.pedrouteid == 0:
+                    rows_to_calculate.append(row)
+                else:
+                    rows_direct.append(row)
+            
+            final_rows = []
+            if rows_to_calculate:
+                # Update only property fields; geometry (shape/geojson) from staging must not be changed.
+                calculated_rows = await update_pedestrian_fields(displayName, rows_to_calculate)
+                final_rows.extend(calculated_rows)
+            
+            if rows_direct:
+                # Ensure displayname is set for direct import rows
+                for r in rows_direct:
+                    r.displayname = displayName
+                final_rows.extend(rows_direct)
+            
+            indoor_upserted = insert_network_rows_into_indoor_network(session, displayName, final_rows)
             session.commit()
             
             updatepedrouteresult = await sync_pedrouterelfloorpoly_from_imdf(displayName)

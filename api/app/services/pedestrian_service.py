@@ -212,7 +212,29 @@ ON CONFLICT (inetworkid) DO UPDATE SET
   enabled           = EXCLUDED.enabled,
   shape_len         = EXCLUDED.shape_len,
   mainexit          = EXCLUDED.mainexit
+WHERE 
+  indoor_network.displayname IS DISTINCT FROM EXCLUDED.displayname OR
+  indoor_network.highway     IS DISTINCT FROM EXCLUDED.highway OR
+  indoor_network.oneway      IS DISTINCT FROM EXCLUDED.oneway OR
+  indoor_network.emergency   IS DISTINCT FROM EXCLUDED.emergency OR
+  indoor_network.wheelchair  IS DISTINCT FROM EXCLUDED.wheelchair OR
+  indoor_network.flpolyid    IS DISTINCT FROM EXCLUDED.flpolyid OR
+  indoor_network.restricted  IS DISTINCT FROM EXCLUDED.restricted OR
+  indoor_network.shape       IS DISTINCT FROM EXCLUDED.shape OR
+  indoor_network.level_id    IS DISTINCT FROM EXCLUDED.level_id OR
+  indoor_network.feattype    IS DISTINCT FROM EXCLUDED.feattype OR
+  indoor_network.floorid     IS DISTINCT FROM EXCLUDED.floorid OR
+  indoor_network.location    IS DISTINCT FROM EXCLUDED.location OR
+  indoor_network.gradient    IS DISTINCT FROM EXCLUDED.gradient OR
+  indoor_network.wc_access   IS DISTINCT FROM EXCLUDED.wc_access OR
+  indoor_network.wc_barrier  IS DISTINCT FROM EXCLUDED.wc_barrier OR
+  indoor_network.direction   IS DISTINCT FROM EXCLUDED.direction OR
+  indoor_network.bldgid_1    IS DISTINCT FROM EXCLUDED.bldgid_1 OR
+  indoor_network.aliasnamtc  IS DISTINCT FROM EXCLUDED.aliasnamtc OR
+  indoor_network.aliasnamen  IS DISTINCT FROM EXCLUDED.aliasnamen OR
+  indoor_network.mainexit    IS DISTINCT FROM EXCLUDED.mainexit
 """)
+
 
 
 def _geojson_to_wkt_2326(geojson_str: str) -> str | None:
