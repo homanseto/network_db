@@ -345,6 +345,7 @@ def export_indoor_network_by_displayname(
     output_dir: str | None = None,
     export_type: str | None = None,  # "indoor", "pedestrian", or None (all)
     export_format: str = "shapefile",  # "shapefile" or "geojson"
+    opendata: str = "full", # "open" or "full"
 ) -> dict:
     """
     Get data from indoor_network table by displayname, write to output_dir (default data/result),
@@ -378,9 +379,11 @@ def export_indoor_network_by_displayname(
         db_col = field.get("database")
         output_cats = field.get("output", [])
         
-        # If export_type is None, include all fields
+        # If export_type is None or "all", include all fields
         # If export_type is specified, only include fields tagged with that type
-        if export_type is None or export_type in output_cats:
+        is_included = (export_type is None) or (export_type.lower() == "all") or (export_type in output_cats)
+        
+        if is_included:
             target_name = field.get("shapefile") if export_format == "shapefile" else field.get("geojson")
             if db_col and target_name:
                 # Cast IDs to text for Shapefiles to prevent 0 instead of NULL and handle potential large ID overflows
@@ -422,7 +425,11 @@ def export_indoor_network_by_displayname(
         lco_opts = ["-lco", "ENCODING=UTF-8"]
         t_srs_opts = [] # Keep original SRID (2326) for shapefiles usually
 
-    sql_query = f"SELECT {sql_select} FROM indoor_network WHERE displayname='{displayname_escaped}'"
+    where_clause = f"displayname='{displayname_escaped}'"
+    if opendata == "open":
+        where_clause += " AND restricted = 'N'"
+
+    sql_query = f"SELECT {sql_select} FROM indoor_network WHERE {where_clause}"
 
     output_filename = f"{safe_name}_{export_type or 'all'}_network{ext}"
     output_path = os.path.join(out_dir, output_filename)

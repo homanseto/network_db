@@ -455,3 +455,45 @@ paths:
                 type: array
                 items:
                   type: object
+  /download-indoor-network-zip/:
+    get:
+      summary: Download zipped ShapeFile and GeoJSON folder for the given displayname
+      servers:
+        - url: http://smo3d26:8001
+          description: AWS Data Set
+      parameters:
+        - name: displayname
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum:
+              - pedestrian
+              - indoor
+              - all
+            default: all
+        - name: opendata
+          in: query
+          schema:
+            type: string
+            enum:
+              - open
+              - full
+            default: full
+      responses:
+        "200":
+          description: Zip file containing ShapeFile and GeoJSON folders
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              example: 'attachment; filename="data.zip"'
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
