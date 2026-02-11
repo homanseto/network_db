@@ -431,7 +431,7 @@ def export_indoor_network_by_displayname(
 
     sql_query = f"SELECT {sql_select} FROM indoor_network WHERE {where_clause}"
 
-    output_filename = f"{safe_name}_{export_type or 'all'}_network{ext}"
+    output_filename = f"3D Indoor Network{ext}"
     output_path = os.path.join(out_dir, output_filename)
 
     # Manually remove file if it exists to prevent ogr2ogr "DeleteLayer" errors

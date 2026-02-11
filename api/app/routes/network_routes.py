@@ -43,7 +43,7 @@ def download_indoor_network_zip(
     
     try:
         # Define 3 sub-paths
-        shp_dir_name = "ShapeFile"
+        shp_dir_name = "SHP"
         geojson_dir_name = "GeoJSON"
         
         shp_full_path = os.path.join(temp_dir, shp_dir_name)

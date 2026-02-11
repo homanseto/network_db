@@ -186,8 +186,8 @@ CREATE TABLE indoor_network (
     leveleng TEXT,
     levelzh TEXT,
     mainexit BOOLEAN,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'Asia/Hong_Kong'),
+    updated_at TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'Asia/Hong_Kong')
 );
 
 -- OPTION A: PostGIS Automatic Level Calculation Trigger
@@ -218,7 +218,7 @@ CREATE TABLE IF NOT EXISTS indoor_network_history (
     inetworkid TEXT,
     displayname TEXT,
     operation TEXT, -- 'UPDATE' or 'DELETE'
-    history_recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    history_recorded_at TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'Asia/Hong_Kong'),
     
     -- Include all original columns from indoor_network
     highway TEXT,
@@ -307,12 +307,23 @@ BEGIN
     ELSIF (TG_OP = 'DELETE') THEN
         INSERT INTO indoor_network_history (
             pedrouteid, inetworkid, displayname, operation,
-            highway, shape, created_at, updated_at 
-            -- (Include all other columns here in production as well)
+            highway, oneway, emergency, wheelchair, flpolyid, crtdt, crtby,
+            lstamddt, lstamdby, restricted, shape, feattype, floorid, location,
+            gradient, wc_access, wc_barrier, direction, bldgid_1, bldgid_2, siteid,
+            aliasnamtc, aliasnamen, terminalid, acstimeid, crossfeat, st_code,
+            st_nametc, st_nameen, modifiedby, poscertain, datasrc, levelsrc,
+            enabled, shape_len, level_id, buildnamen, buildnamzh, leveleng,
+            levelzh, mainexit, created_at, updated_at
         )
         VALUES (
             OLD.pedrouteid, OLD.inetworkid, OLD.displayname, 'DELETE',
-            OLD.highway, OLD.shape, OLD.created_at, OLD.updated_at
+            OLD.highway, OLD.oneway, OLD.emergency, OLD.wheelchair, OLD.flpolyid, OLD.crtdt, OLD.crtby,
+            OLD.lstamddt, OLD.lstamdby, OLD.restricted, OLD.shape, OLD.feattype, OLD.floorid, OLD.location,
+            OLD.gradient, OLD.wc_access, OLD.wc_barrier, OLD.direction, OLD.bldgid_1, OLD.bldgid_2, OLD.siteid,
+            OLD.aliasnamtc, OLD.aliasnamen, OLD.terminalid, OLD.acstimeid, OLD.crossfeat, OLD.st_code,
+            OLD.st_nametc, OLD.st_nameen, OLD.modifiedby, OLD.poscertain, OLD.datasrc, OLD.levelsrc,
+            OLD.enabled, OLD.shape_len, OLD.level_id, OLD.buildnamen, OLD.buildnamzh, OLD.leveleng,
+            OLD.levelzh, OLD.mainexit, OLD.created_at, OLD.updated_at
         );
         RETURN OLD;
     END IF;
@@ -326,7 +337,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION set_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
+    NEW.updated_at = (NOW() AT TIME ZONE 'Asia/Hong_Kong');
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

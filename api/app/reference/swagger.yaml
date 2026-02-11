@@ -486,14 +486,19 @@ paths:
             default: full
       responses:
         "200":
-          description: Zip file containing ShapeFile and GeoJSON folders
-          headers:
-            Content-Disposition:
-              schema:
-                type: string
-              example: 'attachment; filename="data.zip"'
-          content:
-            application/zip:
-              schema:
-                type: string
-                format: binary
+          description: A zip file
+          schema:
+            type: file # Use 'file' type in Swagger 2.0 schema for downloads
+      # responses:
+      #   "200":
+      #     description: Zip file containing ShapeFile and GeoJSON folders
+      #     headers:
+      #       Content-Disposition:
+      #         schema:
+      #           type: string
+      #         example: 'attachment; filename="data.zip"'
+      #     content:
+      #       application/zip:
+      #         schema:
+      #           type: string
+      #           format: binary
