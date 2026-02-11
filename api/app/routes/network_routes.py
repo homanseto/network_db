@@ -11,7 +11,7 @@ def export_indoor_network(
     displayname: str = "KLN_256_Ho Man Tin Sports Centre",
     output_dir: Optional[str] = None,
     export_type: Optional[str] = "pedestrian", # "indoor", "pedestrian"
-    export_format: str = "shapefile", # "shapefile" or "geojson"
+    export_format: str = "geojson", # "shapefile" or "geojson"
 ):
     """
     Export indoor_network rows for the given displayname to a shapefile or GeoJSON.

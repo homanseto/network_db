@@ -224,7 +224,7 @@
   {
     "database": "shape_len",
     "shapefile": "Shape_Len",
-    "geojson": "Shape_Len",
+    "geojson": "Shape_Length",
     "output": ["pedestrian"]
   },
   {

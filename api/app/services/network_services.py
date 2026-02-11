@@ -394,29 +394,58 @@ def export_indoor_network_by_displayname(
     
     sql_select = ", ".join(select_fields)
     displayname_escaped = (displayname or "").replace("'", "''")
-    sql_query = f"SELECT {sql_select} FROM indoor_network WHERE displayname='{displayname_escaped}'"
-
+    
     # Define output file extension and creation options
     if export_format.lower() == "geojson":
         ext = ".geojson"
         driver = "GeoJSON"
-        lco_opts = [] # GeoJSON typically doesn't need encoding options like shapefile
+        # RFC 7946 GeoJSON is always 4326.
+        # We transform in SQL so ogr2ogr receives WGS84 data.
+        # We use ST_Transform(shape, 4326) to get Lat/Lon/Z.
+        # ogr2ogr GeoJSON driver supports COORDINATE_PRECISION lco.
+        
+        # Modify SQL selection for geometry: transform to 4326
+        # Replace the raw 'shape' column or 'ST_AsBinary(shape)' from select_keys if present,
+        # but since select_fields is built dynamically, we inject the transform here.
+        # However, select_fields usually maps 'db_col as output_name'. 
+        # We need to find the geometry part or assume we are handling it via ogr2ogr -t_srs.
+        
+        # Best approach for ogr2ogr: let it handle the reprojection with -t_srs EPSG:4326
+        # Strategy: Use high precision (15) for ogr2ogr to ensure it sees valid 3D lines and writes them as LineStrings.
+        # Then we post-process the file in Python to round to 8 decimals. 
+        # We restore RFC7946=YES to ensure Z values are handled as they were previously (user confirmed this worked for Z).
+        lco_opts = ["-lco", "COORDINATE_PRECISION=15", "-lco", "RFC7946=YES"] 
+        t_srs_opts = ["-t_srs", "EPSG:4326"]
     else:
         ext = ".shp"
         driver = "ESRI Shapefile"
         lco_opts = ["-lco", "ENCODING=UTF-8"]
+        t_srs_opts = [] # Keep original SRID (2326) for shapefiles usually
+
+    sql_query = f"SELECT {sql_select} FROM indoor_network WHERE displayname='{displayname_escaped}'"
 
     output_filename = f"{safe_name}_{export_type or 'all'}_network{ext}"
     output_path = os.path.join(out_dir, output_filename)
 
+    # Manually remove file if it exists to prevent ogr2ogr "DeleteLayer" errors
+    # especially common with GeoJSON driver or Docker volume mounts.
+    if os.path.exists(output_path):
+        try:
+            os.remove(output_path)
+        except Exception as e:
+            return {
+                "status": "error", 
+                "message": f"Cannot overwrite file '{output_path}'. It may be open in another application. Error: {e}",
+                "path": None
+            }
+
     cmd = [
         "ogr2ogr",
         "-f", driver,
-        "-overwrite",
         output_path,
         PG_CONNECTION,
         "-sql", sql_query
-    ] + lco_opts
+    ] + lco_opts + t_srs_opts
     
     # Ensure environment variables are set for UTF-8 handling
     env = os.environ.copy()
@@ -424,7 +453,18 @@ def export_indoor_network_by_displayname(
     env["SHAPE_ENCODING"] = "UTF-8" # Helps some GDAL versions
 
     try:
-        subprocess.run(cmd, check=True, env=env)
+        # Run with output capturing to debug errors
+        result = subprocess.run(cmd, capture_output=True, text=True, env=env)
+        
+        if result.returncode != 0:
+            # Mask password in command for logging
+            cmd_log = [arg if "password=" not in arg else "PG:..." for arg in cmd]
+            return {
+                "status": "error",
+                "message": f"ogr2ogr command failed: {result.stderr}",
+                "stdout": result.stdout,
+                "path": None
+            }
         
         # Create a .cpg file to explicitly tell ArcGIS/QGIS the encoding is UTF-8 (only for Shapefiles)
         if driver == "ESRI Shapefile":
@@ -432,11 +472,38 @@ def export_indoor_network_by_displayname(
             with open(cpg_path, "w", encoding="utf-8") as f:
                 f.write("UTF-8")
             
-    except subprocess.CalledProcessError as e:
-        return {"status": "error", "message": str(e), "path": None}
     except Exception as e:
         return {"status": "error", "message": f"Export failed: {str(e)}", "path": None}
         
+    # Post-processing for GeoJSON: Round coordinates to 8 decimal places
+    # We do this here because ogr2ogr with precision=8 collapses vertical lines into Points or empty geometries.
+    # By generating with precision=15 first, we get valid LineStrings. 
+    # Python rounding allows us to keep the "LineString" type even if points become vertically stacked in 2D.
+    if driver == "GeoJSON" and os.path.exists(output_path):
+        try:
+            with open(output_path, 'r', encoding='utf-8') as f:
+                geojson_data = json.load(f)
+            
+            def round_coords(obj):
+                if isinstance(obj, float):
+                    return round(obj, 8)
+                if isinstance(obj, list):
+                    return [round_coords(x) for x in obj]
+                return obj
+
+            if "features" in geojson_data:
+                for feature in geojson_data["features"]:
+                    if "geometry" in feature and feature["geometry"] and "coordinates" in feature["geometry"]:
+                        feature["geometry"]["coordinates"] = round_coords(feature["geometry"]["coordinates"])
+            
+            with open(output_path, 'w', encoding='utf-8') as f:
+                json.dump(geojson_data, f, ensure_ascii=False)
+                
+        except Exception as e:
+            # If post-processing fails, we return success but warn about precision or log it.
+            # For now, we'll treat it as a non-fatal error or just let the file be 15 decimals.
+            print(f"Warning: Failed to post-process decimal precision: {e}")
+
     return {
         "status": "success",
         "path": output_path,
