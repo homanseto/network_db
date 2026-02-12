@@ -117,6 +117,7 @@ async def process_network_import_from_zip(display_name: str, zip_file_content: b
         shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
+async def process_network_import(displayName:str, filePath:str):
     
     # Log the start of the heavy processing task
     logger.info(f"START Network Import: DisplayName='{displayName}', Path='{filePath}'")
@@ -276,8 +277,7 @@ async def process_network_import_from_zip(display_name: str, zip_file_content: b
             session.rollback()
             # Log the full traceback internally
             logger.error(f"CRITICAL processing failure for {displayName}: {str(e)}")
-            logger.error(traceback.format_exc() server logs for debugging
-            traceback.print_exc()
+            logger.error(traceback.format_exc())
             
             # Return full error details
             return {
