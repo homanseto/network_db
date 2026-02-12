@@ -6,7 +6,7 @@ WHERE event_object_table = 'indoor_network';
 
 SELECT proname, prosrc
 FROM pg_proc
-WHERE proname = 'set_updated_at';
+WHERE proname = 'update_shape_len';
 
 --------------------------------------------------------------------------------------------
 

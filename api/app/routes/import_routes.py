@@ -78,7 +78,13 @@ async def import_network_upload(
                 "status": "error",
                 "message": msg
             })
-            
+    
+    # Check if any error occurred in the batch
+    if any(r.get("status") == "error" for r in results):
+        # Construct a summary error message
+        errors = [r.get("message") for r in results if r.get("status") == "error"]
+        raise HTTPException(status_code=500, detail=f"Import failed for {len(errors)} file(s): {'; '.join(errors)}")
+
     return results
 
 

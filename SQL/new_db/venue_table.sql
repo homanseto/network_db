@@ -8,15 +8,15 @@ CREATE TABLE IF NOT EXISTS venue (
     -- Identification
     id TEXT PRIMARY KEY,                    -- Properties.id as Primary Key
     -- Properties
-    category TEXT,
+    category TEXT ,
     restriction TEXT,
-    name_en TEXT,
+    name_en TEXT NOT NULL,
     name_zh TEXT,
     alt_name TEXT,
     hours TEXT,
     website TEXT,
     phone TEXT,
-    address_id TEXT,
+    address_id TEXT NOT NULL,
     organization_id TEXT,
     
     -- Additional Metadata

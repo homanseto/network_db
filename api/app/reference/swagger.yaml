@@ -42,9 +42,9 @@ paths:
   /swagger/duplicateCheck:
     post:
       summary: Check Duplicate ID(Excel)
-      servers:
-        - url: http://localhost:3004
-          description: Local Testing Server
+      # servers:
+      #   - url: http://localhost:3004
+      #     description: Local Testing Server
       responses:
         "200":
           description: Excel file download
@@ -56,9 +56,9 @@ paths:
   /swagger/download/groupBuildingInfo:
     post:
       summary: Get Level, Unit and POI information (Excel) - featureType unit or poi
-      servers:
-        - url: http://localhost:3004
-          description: Local Testing Server
+      # servers:
+      #   - url: http://localhost:3004
+      #     description: Local Testing Server
       requestBody:
         required: true
         content:
@@ -335,9 +335,9 @@ paths:
   /swagger/download/aws:
     post:
       summary: Get AWS Data Set
-      servers:
-        - url: http://localhost:3004
-          description: AWS Data Set
+      # servers:
+      #   - url: http://localhost:3004
+      #     description: AWS Data Set
       requestBody:
         required: true
         content:
@@ -383,9 +383,9 @@ paths:
   /swagger/upload/uat:
     post:
       summary: upload Data to UAT, dataType need to be "data" or "network", and displayNames cannot be empty array
-      servers:
-        - url: http://localhost:3004
-          description: AWS Data Set
+      # servers:
+      #   - url: http://localhost:3004
+      #     description: AWS Data Set
       requestBody:
         required: true
         content:
@@ -455,6 +455,15 @@ paths:
                 type: array
                 items:
                   type: object
+        "500":
+          description: Import failed error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
   /download-indoor-network-zip/:
     get:
       summary: Download zipped ShapeFile and GeoJSON folder for the given displayname
@@ -486,19 +495,23 @@ paths:
             default: full
       responses:
         "200":
-          description: A zip file
-          schema:
-            type: file # Use 'file' type in Swagger 2.0 schema for downloads
-      # responses:
-      #   "200":
-      #     description: Zip file containing ShapeFile and GeoJSON folders
-      #     headers:
-      #       Content-Disposition:
-      #         schema:
-      #           type: string
-      #         example: 'attachment; filename="data.zip"'
-      #     content:
-      #       application/zip:
-      #         schema:
-      #           type: string
-      #           format: binary
+          description: Zip file containing ShapeFile and GeoJSON folders
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              example: 'attachment; filename="data.zip"'
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        "500":
+          description: Export failed error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string

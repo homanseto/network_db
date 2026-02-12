@@ -279,6 +279,7 @@ CREATE INDEX IF NOT EXISTS idx_indoor_network_shape_3d ON indoor_network USING G
 -- 2. Create Trigger Function
 -- Automatically saves the OLD version of a row before an Update or Delete
 --------------------------------------------------------------------------------
+-- 3. Update the Trigger Function (Run the full definition)
 CREATE OR REPLACE FUNCTION log_indoor_network_changes()
 RETURNS TRIGGER AS $$
 BEGIN

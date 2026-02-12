@@ -32,3 +32,5 @@ app.include_router(system.router)
 app.include_router(import_routes.router)
 app.include_router(imdf_routes.router)
 app.include_router(network_routes.router)
+from app.routes import pedestrian
+app.include_router(pedestrian.router)

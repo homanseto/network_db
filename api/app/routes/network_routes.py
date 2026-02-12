@@ -4,7 +4,7 @@ import shutil
 import tempfile
 import zipfile
 import io
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from app.services.network_services import export_indoor_network_by_displayname
 from app.core.logger import logger
@@ -30,6 +30,7 @@ def export_indoor_network(
     
     if result.get("status") == "error":
         logger.error(f"EXPORT FAILED: {result.get('message')}")
+        raise HTTPException(status_code=500, detail=result.get("message"))
     else:
         logger.info(f"EXPORT SUCCESS: {result.get('path')}")
         
@@ -67,7 +68,7 @@ def download_indoor_network_zip(
             opendata=opendata
         )
         if res_shp.get("status") == "error":
-            return res_shp
+            raise HTTPException(status_code=500, detail=res_shp.get("message"))
 
         # 2. Export GeoJSON
         res_geo = export_indoor_network_by_displayname(
@@ -78,7 +79,7 @@ def download_indoor_network_zip(
             opendata=opendata
         )
         if res_geo.get("status") == "error":
-            return res_geo
+            raise HTTPException(status_code=500, detail=res_geo.get("message"))
 
         # 3. Zip the results into memory
         mem_zip = io.BytesIO()
