@@ -120,6 +120,16 @@ async def process_network_import(displayName:str, filePath:str):
 
     job_id = str(uuid.uuid4())
 
+    # 🔽 PRE-CLEANUP: Ensure staging table is empty before we start
+    # This prevents data contamination if ogr2ogr fails to overwrite or multiple runs overlap/fail
+    try:
+        with SessionLocal() as session:
+            session.execute(text("TRUNCATE TABLE network_staging"))
+            session.commit()
+    except Exception:
+        # Ignore errors if table doesn't exist yet (e.g. first run)
+        pass
+
     shp_path = os.path.join(filePath, INDOOR_NETWORK_SHP_NAME)
 
     # Check for exact match first; if not found, look for case-insensitive match
