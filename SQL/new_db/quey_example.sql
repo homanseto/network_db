@@ -66,3 +66,39 @@ SELECT *
 FROM indoor_network_history
 WHERE operation = 'DELETE'
 AND history_recorded_at > NOW() - INTERVAL '7 days'; -- Deleted in last week
+
+##  SQL Query for "Time Travel" to Feb 5, 2026
+WITH target_date AS (
+    SELECT '2026-02-05 23:59:59+08'::timestamptz AS snapshot_time
+)
+SELECT 
+    -- Select all columns you need
+    pedrouteid, shape, feattype, floorid, updated_at
+FROM pedestrian_network
+WHERE updated_at <= (SELECT snapshot_time FROM target_date)
+
+UNION ALL
+
+-- Restore deletions and pre-update versions from history
+SELECT 
+    pedrouteid, shape, feattype, floorid, updated_at
+FROM pedestrian_network_history h
+WHERE 
+    -- It was recorded in history AFTER our target date
+    -- (Meaning it was changed/deleted later, so this backup is the "valid" version for Feb 5)
+    h.history_recorded_at > (SELECT snapshot_time FROM target_date)
+    AND 
+    -- But ensure this specific historical version was actually created/updated BEFORE Feb 5
+    h.updated_at <= (SELECT snapshot_time FROM target_date)
+    -- Get the most recent valid version for each ID
+    AND h.history_id IN (
+        SELECT history_id 
+        FROM (
+            SELECT 
+                history_id, 
+                ROW_NUMBER() OVER (PARTITION BY pedrouteid ORDER BY history_recorded_at ASC) as rn
+            FROM pedestrian_network_history
+            WHERE history_recorded_at > (SELECT snapshot_time FROM target_date)
+        ) sub
+        WHERE rn = 1
+    );

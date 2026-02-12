@@ -143,6 +143,7 @@ CREATE TABLE buildings (
 ### indoor_network table (aligned with api/app/schema/network.py NetworkStagingRow)
 CREATE TABLE indoor_network (
     pedrouteid SERIAL PRIMARY KEY NOT NULL CHECK (floorid >= 1000000000 AND floorid <= 9999999999),
+    venue_id TEXT REFERENCES venue(id),
     displayname TEXT NOT NULL,
     inetworkid TEXT UNIQUE NOT NULL,
     highway TEXT NOT NULL,
@@ -217,6 +218,7 @@ EXECUTE FUNCTION update_shape_len();
 CREATE TABLE IF NOT EXISTS indoor_network_history (
     history_id SERIAL PRIMARY KEY,
     pedrouteid INTEGER, -- Not a PK here, just a reference
+    venue_id TEXT,
     inetworkid TEXT,
     displayname TEXT,
     operation TEXT, -- 'UPDATE' or 'DELETE'
@@ -290,7 +292,7 @@ BEGIN
         END IF;
 
         INSERT INTO indoor_network_history (
-            pedrouteid, inetworkid, displayname, operation,
+            pedrouteid, venue_id, inetworkid, displayname, operation,
             highway, oneway, emergency, wheelchair, flpolyid, crtdt, crtby, 
             lstamddt, lstamdby, restricted, shape, feattype, floorid, location, 
             gradient, wc_access, wc_barrier, wx_proof, direction, obstype, bldgid_1, bldgid_2, siteid, 
@@ -300,7 +302,7 @@ BEGIN
             levelzh, mainexit, created_at, updated_at
         )
         VALUES (
-            OLD.pedrouteid, OLD.inetworkid, OLD.displayname, 'UPDATE',
+            OLD.pedrouteid, OLD.venue_id, OLD.inetworkid, OLD.displayname, 'UPDATE',
             OLD.highway, OLD.oneway, OLD.emergency, OLD.wheelchair, OLD.flpolyid, OLD.crtdt, OLD.crtby, 
             OLD.lstamddt, OLD.lstamdby, OLD.restricted, OLD.shape, OLD.feattype, OLD.floorid, OLD.location, 
             OLD.gradient, OLD.wc_access, OLD.wc_barrier, OLD.wx_proof, OLD.direction, OLD.obstype, OLD.bldgid_1, OLD.bldgid_2, OLD.siteid, 
@@ -312,7 +314,7 @@ BEGIN
         RETURN NEW;
     ELSIF (TG_OP = 'DELETE') THEN
         INSERT INTO indoor_network_history (
-            pedrouteid, inetworkid, displayname, operation,
+            pedrouteid, venue_id, inetworkid, displayname, operation,
             highway, oneway, emergency, wheelchair, flpolyid, crtdt, crtby,
             lstamddt, lstamdby, restricted, shape, feattype, floorid, location,
             gradient, wc_access, wc_barrier, wx_proof, direction, obstype, bldgid_1, bldgid_2, siteid,
@@ -322,7 +324,7 @@ BEGIN
             levelzh, mainexit, created_at, updated_at
         )
         VALUES (
-            OLD.pedrouteid, OLD.inetworkid, OLD.displayname, 'DELETE',
+            OLD.pedrouteid, OLD.venue_id, OLD.inetworkid, OLD.displayname, 'DELETE',
             OLD.highway, OLD.oneway, OLD.emergency, OLD.wheelchair, OLD.flpolyid, OLD.crtdt, OLD.crtby,
             OLD.lstamddt, OLD.lstamdby, OLD.restricted, OLD.shape, OLD.feattype, OLD.floorid, OLD.location,
             OLD.gradient, OLD.wc_access, OLD.wc_barrier, OLD.wx_proof, OLD.direction, OLD.obstype, OLD.bldgid_1, OLD.bldgid_2, OLD.siteid, 

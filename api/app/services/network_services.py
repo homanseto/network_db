@@ -17,7 +17,8 @@ from app.services.imdf_service import (
     get_3d_units_by_displayName,
     get_buildinginfo_by_buildingCSUID,
     get_buildinginfo_by_displayName,
-    get_level_by_displayName
+    get_level_by_displayName,
+    get_venue_by_displayName
 )
 from app.services.utils import (calculate_feature_type,calculate_gradient)
 from app.services.pedestrian_service import (
@@ -121,6 +122,14 @@ async def process_network_import(displayName:str, filePath:str):
     
     # Log the start of the heavy processing task
     logger.info(f"START Network Import: DisplayName='{displayName}', Path='{filePath}'")
+
+    # 1. EARLY VALIDATION: Check if Venue exists
+    venue_doc = await get_venue_by_displayName(displayName)
+    if not venue_doc or not venue_doc.get("id"):
+        logger.error(f"Validation Failed: No matched venue found for DisplayName='{displayName}'")
+        return {"status": "error", "message": "no matched display name"}
+    
+    venue_id = venue_doc.get("id")
 
     job_id = str(uuid.uuid4())
 
@@ -247,16 +256,22 @@ async def process_network_import(displayName:str, filePath:str):
                 else:
                     rows_direct.append(row)
             
+            # venue_id is already retrieved at the start of the function
+
             final_rows = []
             if rows_to_calculate:
                 # Update only property fields; geometry (shape/geojson) from staging must not be changed.
                 calculated_rows = await update_pedestrian_fields(displayName, rows_to_calculate)
+                # Assign venue_id
+                for r in calculated_rows:
+                    r.venue_id = venue_id
                 final_rows.extend(calculated_rows)
             
             if rows_direct:
                 # Ensure displayname is set for direct import rows
                 for r in rows_direct:
                     r.displayname = displayName
+                    r.venue_id = venue_id
                 final_rows.extend(rows_direct)
             
             indoor_upserted = insert_network_rows_into_indoor_network(session, displayName, final_rows)

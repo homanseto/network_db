@@ -48,6 +48,7 @@ class NetworkStagingRow(BaseModel):
     poscertain: Optional[int] = 1
     datasrc: Optional[int] = 1
     levelsrc: Optional[int] = 2
+    venue_id: Optional[str] = None
     enabled: Optional[int] = 1
     shape_len: Optional[float] = None
     buildnamen: Optional[str] = None
