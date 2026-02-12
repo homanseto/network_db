@@ -6,6 +6,7 @@ import uuid
 import zipfile
 import subprocess
 import traceback
+import time
 from sqlalchemy import text
 from app.core.database import SessionLocal
 from app.core.logger import logger  # <--- Import the logger
@@ -242,6 +243,26 @@ async def process_network_import(displayName:str, filePath:str):
                         "message": msg,
                         "row_data": r
                     }
+
+            # 3. SYNC DELETE LOGIC
+            # Remove records from indoor_network that belong to this venue but are missing from the current import (staging).
+            # This must run BEFORE truncating staging.
+            if venue_id:
+                start_del = time.time()
+                # We use INETWORKID as the unique key to match
+                delete_query = text("""
+                    DELETE FROM indoor_network
+                    WHERE venue_id = :vid
+                    AND inetworkid NOT IN (
+                        SELECT inetworkid FROM network_staging WHERE inetworkid IS NOT NULL
+                    );
+                """)
+                del_result = session.execute(delete_query, {"vid": venue_id})
+                deleted_count = del_result.rowcount
+                logger.info(f"SYNC DELETE: Removed {deleted_count} stale records for venue_id='{venue_id}' in {time.time() - start_del:.2f}s")
+            else:
+                 logger.warning("SKIPPING SYNC DELETE: No venue_id found. Cannot safely scope deletions.")
+
 
             session.execute(text("TRUNCATE TABLE network_staging"))
             
