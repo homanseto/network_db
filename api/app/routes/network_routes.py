@@ -7,6 +7,7 @@ import io
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from app.services.network_services import export_indoor_network_by_displayname
+from app.core.logger import logger
 
 router = APIRouter()
 
@@ -24,7 +25,14 @@ def export_indoor_network(
     - **export_format**: "shapefile" (default) or "geojson".
     - **output_dir**: Optional override for export path.
     """
+    logger.info(f"EXPORT REQUEST: '{displayname}' Type={export_type} Format={export_format}")
     result = export_indoor_network_by_displayname(displayname, output_dir, export_type, export_format)
+    
+    if result.get("status") == "error":
+        logger.error(f"EXPORT FAILED: {result.get('message')}")
+    else:
+        logger.info(f"EXPORT SUCCESS: {result.get('path')}")
+        
     return result
 
 @router.get("/download-indoor-network-zip/")

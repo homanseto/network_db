@@ -8,6 +8,7 @@ import subprocess
 import traceback
 from sqlalchemy import text
 from app.core.database import SessionLocal
+from app.core.logger import logger  # <--- Import the logger
 from app.services.imdf_service import (
     flpolyid_slices,
     get_opening_by_displayName,
@@ -116,7 +117,9 @@ async def process_network_import_from_zip(display_name: str, zip_file_content: b
         shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
-async def process_network_import(displayName:str, filePath:str):
+    
+    # Log the start of the heavy processing task
+    logger.info(f"START Network Import: DisplayName='{displayName}', Path='{filePath}'")
 
     job_id = str(uuid.uuid4())
 
@@ -126,9 +129,9 @@ async def process_network_import(displayName:str, filePath:str):
         with SessionLocal() as session:
             session.execute(text("TRUNCATE TABLE network_staging"))
             session.commit()
-    except Exception:
-        # Ignore errors if table doesn't exist yet (e.g. first run)
-        pass
+    except Exception as e:
+        # Log warning but continue, as it might just be because the table doesn't exist yet
+        logger.warning(f"Pre-cleanup TRUNCATE failed (non-fatal): {e}")
 
     shp_path = os.path.join(filePath, INDOOR_NETWORK_SHP_NAME)
 
@@ -145,7 +148,9 @@ async def process_network_import(displayName:str, filePath:str):
         if found_path:
             shp_path = found_path
         else:
-            return {"status": "error", "message": f"Shapefile '{INDOOR_NETWORK_SHP_NAME}' (or case variant) not found in {filePath}"}
+            msg = f"Shapefile '{INDOOR_NETWORK_SHP_NAME}' (or case variant) not found in {filePath}"
+            logger.error(msg)
+            return {"status": "error", "message": msg}
 
     cmd = [
         "ogr2ogr",
@@ -163,7 +168,8 @@ async def process_network_import(displayName:str, filePath:str):
         # Capture output to help debug ogr2ogr issues
         subprocess.run(cmd, check=True, capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
-        # Return stderr in the message
+        # Log the specific OGR failure
+        logger.error(f"Ogr2ogr Failed for {displayName}: {e.stderr}")
         return {"status": "error", "message": f"Ogr2ogr failed: {e.stderr}"}
 
     # 🔽 Now database validation + merge
@@ -189,9 +195,8 @@ async def process_network_import(displayName:str, filePath:str):
                     text("SELECT * FROM network_staging_errors;")
                 ).mappings().all()
 
-                # If validation failed, we return early. 
-                # Note: network_staging data is RETAINED here to allow debugging the data in the DB.
-                # If you prefer to clear it, you would need to truncate here.
+                logger.warning(f"Validation Failed for {displayName}. Found {len(errors)} errors.")
+                
                 return {
                     "status": "validation_failed",
                     "errors": errors
@@ -220,10 +225,11 @@ async def process_network_import(displayName:str, filePath:str):
                 try:
                     rows_result.append(NetworkStagingRow.model_validate(r))
                 except Exception as e:
-                    # Provide helpful context: which row failed and why
+                    msg = f"Pydantic Validation failed at row index {i} (ID: {r.get('inetworkid')}). Error: {str(e)}"
+                    logger.error(msg)
                     return {
                         "status": "error",
-                        "message": f"Pydantic Validation failed at row index {i} (ID: {r.get('inetworkid')}). Error: {str(e)}",
+                        "message": msg,
                         "row_data": r
                     }
 
@@ -257,6 +263,8 @@ async def process_network_import(displayName:str, filePath:str):
             
             updatepedrouteresult = await sync_pedrouterelfloorpoly_from_imdf(displayName)
             
+            logger.info(f"SUCCESS Import {displayName}: Processed {len(rows_result)} rows, Upserted {indoor_upserted} to indoor_network.")
+
             return {
                 "status": "success",
                 "staging_count": len(rows_result),
@@ -266,7 +274,9 @@ async def process_network_import(displayName:str, filePath:str):
 
         except Exception as e:
             session.rollback()
-            # Print traceback to server logs for debugging
+            # Log the full traceback internally
+            logger.error(f"CRITICAL processing failure for {displayName}: {str(e)}")
+            logger.error(traceback.format_exc() server logs for debugging
             traceback.print_exc()
             
             # Return full error details

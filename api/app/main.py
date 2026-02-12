@@ -4,8 +4,13 @@ from app.routes import system
 from app.routes import import_routes
 from app.routes import imdf_routes
 from app.routes import network_routes
+from app.core.middleware import RequestContextMiddleware
+from app.core.error_handlers import global_exception_handler
 
 app = FastAPI()
+
+# 1. Register Context Middleware (Adds Request ID)
+app.add_middleware(RequestContextMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,6 +19,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 2. Register Global Exception Handler (Catches crashes)
+app.add_exception_handler(Exception, global_exception_handler)
 
 @app.get("/")
 def health():

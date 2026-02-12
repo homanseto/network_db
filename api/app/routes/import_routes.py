@@ -2,6 +2,7 @@ import os
 from typing import List
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field
+from app.core.logger import logger  # Added Logger
 
 from app.services.network_services import (
     process_network_import,
@@ -42,10 +43,12 @@ async def import_network_upload(
     for file in files:
         # 1. Basic validation
         if not file.filename or not file.filename.lower().endswith(".zip"):
+            msg = f"Invalid file skipped: {file.filename} (Must be .zip)"
+            logger.warning(msg)
             results.append({
                 "filename": file.filename,
                 "status": "error", 
-                "message": "File must be a ZIP archive (.zip)"
+                "message": msg
             })
             continue
 
@@ -55,6 +58,8 @@ async def import_network_upload(
         try:
             # 3. Read and Process
             content = await file.read()
+            logger.info(f"Received Upload: {file.filename} ({len(content)} bytes)")
+
             result = await process_network_import_from_zip(displayname, content)
             
             # 4. Format Result
@@ -65,11 +70,13 @@ async def import_network_upload(
             })
             
         except Exception as e:
+            msg = f"Unexpected failure importing {file.filename}: {str(e)}"
+            logger.error(msg)
             results.append({
                 "filename": file.filename,
                 "displayname": displayname,
                 "status": "error",
-                "message": str(e)
+                "message": msg
             })
             
     return results
