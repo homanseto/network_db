@@ -323,6 +323,7 @@ async def update_pedestrian_fields(displayName: str, rows: list[NetworkStagingRo
             )
             else 2
         )
+        row.wx_proof = 1
         row.wc_access = calculate_wheelchair_access(row, (opening_name_features or []))
         get_alias_name(row, opening_name_features or [])
         # if not mtr 

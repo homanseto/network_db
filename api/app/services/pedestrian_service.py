@@ -156,7 +156,7 @@ UPSERT_INDOOR_NETWORK = text("""
 INSERT INTO indoor_network (
   displayname, inetworkid, highway, oneway, emergency, wheelchair,
   flpolyid, crtdt, crtby, lstamddt, lstamdby, restricted,
-  shape, level_id, feattype, floorid, location, gradient, wc_access, wc_barrier, direction,
+  shape, level_id, feattype, floorid, location, gradient, wc_access, wc_barrier, wx_proof, direction, obstype,
   bldgid_1, bldgid_2, siteid, buildnamen, buildnamzh, leveleng, levelzh,
   aliasnamtc, aliasnamen, terminalid, acstimeid, crossfeat, st_code, st_nametc, st_nameen,
   modifiedby, poscertain, datasrc, levelsrc, enabled, shape_len, mainexit
@@ -164,7 +164,7 @@ INSERT INTO indoor_network (
 VALUES (
   :displayname, :inetworkid, :highway, :oneway, :emergency, :wheelchair,
   :flpolyid, :crtdt, :crtby, :lstamddt, :lstamdby, :restricted,
-  ST_GeomFromWKB(decode(:shape_hex, 'hex'), :srid), :level_id, :feattype, :floorid, :location, :gradient, :wc_access, :wc_barrier, :direction,
+  ST_GeomFromWKB(decode(:shape_hex, 'hex'), :srid), :level_id, :feattype, :floorid, :location, :gradient, :wc_access, :wc_barrier, :wx_proof, :direction, :obstype,
   :bldgid_1, :bldgid_2, :siteid, :buildnamen, :buildnamzh, :leveleng, :levelzh,
   :aliasnamtc, :aliasnamen, :terminalid, :acstimeid, :crossfeat, :st_code, :st_nametc, :st_nameen,
   :modifiedby, :poscertain, :datasrc, :levelsrc, :enabled, :shape_len, :mainexit
@@ -189,7 +189,9 @@ ON CONFLICT (inetworkid) DO UPDATE SET
   gradient          = EXCLUDED.gradient,
   wc_access         = EXCLUDED.wc_access,
   wc_barrier        = EXCLUDED.wc_barrier,
+  wx_proof         = EXCLUDED.wx_proof,
   direction         = EXCLUDED.direction,
+  obstype           = EXCLUDED.obstype,
   bldgid_1          = EXCLUDED.bldgid_1,
   bldgid_2          = EXCLUDED.bldgid_2,
   siteid            = EXCLUDED.siteid,
@@ -228,7 +230,7 @@ WHERE
   indoor_network.gradient    IS DISTINCT FROM EXCLUDED.gradient OR
   indoor_network.wc_access   IS DISTINCT FROM EXCLUDED.wc_access OR
   indoor_network.wc_barrier  IS DISTINCT FROM EXCLUDED.wc_barrier OR
-  indoor_network.direction   IS DISTINCT FROM EXCLUDED.direction OR
+  indoor_network.wx_proof     IS DISTINCT FROM EXCLUDED.wx_proof OR
   indoor_network.bldgid_1    IS DISTINCT FROM EXCLUDED.bldgid_1 OR
   indoor_network.aliasnamtc  IS DISTINCT FROM EXCLUDED.aliasnamtc OR
   indoor_network.aliasnamen  IS DISTINCT FROM EXCLUDED.aliasnamen OR
@@ -292,6 +294,8 @@ def insert_network_rows_into_indoor_network(session, displayname: str, rows: lis
                 "gradient": row.gradient,
                 "wc_access": row.wc_access,
                 "wc_barrier": row.wc_barrier,
+                "wx_proof": row.wx_proof,
+                "obstype": row.obstype,
                 "direction": row.direction,
                 "bldgid_1": row.bldgid_1,
                 "bldgid_2": row.bldgid_2,

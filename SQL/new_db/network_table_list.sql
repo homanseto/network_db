@@ -146,7 +146,7 @@ CREATE TABLE indoor_network (
     displayname TEXT NOT NULL,
     inetworkid TEXT UNIQUE NOT NULL,
     highway TEXT NOT NULL,
-    oneway TEXT NOT NULL CHECK (oneway IN ('yes', 'reverse')),
+    oneway TEXT NOT NULL CHECK (oneway IN ('yes', 'reverse', 'no')),
     emergency TEXT NOT NULL CHECK (emergency IN ('yes', 'no')),
     wheelchair TEXT NOT NULL CHECK (emergency IN ('yes', 'no')),
     flpolyid TEXT NOT NULL,
@@ -162,6 +162,8 @@ CREATE TABLE indoor_network (
     gradient DOUBLE PRECISION NOT NULL,
     wc_access INTEGER NOT NULL CHECK (wc_access IN (1, 2)),
     wc_barrier INTEGER NOT NULL CHECK (wc_barrier IN (1, 2)),
+    wx_proof INTEGER NOT NULL CHECK (wx_proof IN (1, 2)) DEFAULT 1,
+    obstype INTEGER,
     direction INTEGER NOT NULL CHECK (direction IN (0, 1, -1)),
     bldgid_1 INTEGER NOT NULL,
     bldgid_2 INTEGER,
@@ -238,7 +240,9 @@ CREATE TABLE IF NOT EXISTS indoor_network_history (
     gradient DOUBLE PRECISION,
     wc_access INTEGER,
     wc_barrier INTEGER,
+    wx_proof INTEGER,
     direction INTEGER,
+    obstype INTEGER,
     bldgid_1 INTEGER,
     bldgid_2 INTEGER,
     siteid INTEGER,
@@ -268,6 +272,7 @@ CREATE TABLE IF NOT EXISTS indoor_network_history (
 );
 
 CREATE INDEX IF NOT EXISTS idx_history_inetworkid ON indoor_network_history(inetworkid);
+CREATE INDEX IF NOT EXISTS idx_indoor_network_shape_3d ON indoor_network USING GIST (shape gist_geometry_ops_nd); -- 3D Index
 -- history table----------------------------------------------------------
 
 
@@ -287,7 +292,7 @@ BEGIN
             pedrouteid, inetworkid, displayname, operation,
             highway, oneway, emergency, wheelchair, flpolyid, crtdt, crtby, 
             lstamddt, lstamdby, restricted, shape, feattype, floorid, location, 
-            gradient, wc_access, wc_barrier, direction, bldgid_1, bldgid_2, siteid, 
+            gradient, wc_access, wc_barrier, wx_proof, direction, obstype, bldgid_1, bldgid_2, siteid, 
             aliasnamtc, aliasnamen, terminalid, acstimeid, crossfeat, st_code, 
             st_nametc, st_nameen, modifiedby, poscertain, datasrc, levelsrc, 
             enabled, shape_len, level_id, buildnamen, buildnamzh, leveleng, 
@@ -297,7 +302,7 @@ BEGIN
             OLD.pedrouteid, OLD.inetworkid, OLD.displayname, 'UPDATE',
             OLD.highway, OLD.oneway, OLD.emergency, OLD.wheelchair, OLD.flpolyid, OLD.crtdt, OLD.crtby, 
             OLD.lstamddt, OLD.lstamdby, OLD.restricted, OLD.shape, OLD.feattype, OLD.floorid, OLD.location, 
-            OLD.gradient, OLD.wc_access, OLD.wc_barrier, OLD.direction, OLD.bldgid_1, OLD.bldgid_2, OLD.siteid, 
+            OLD.gradient, OLD.wc_access, OLD.wc_barrier, OLD.wx_proof, OLD.direction, OLD.obstype, OLD.bldgid_1, OLD.bldgid_2, OLD.siteid, 
             OLD.aliasnamtc, OLD.aliasnamen, OLD.terminalid, OLD.acstimeid, OLD.crossfeat, OLD.st_code, 
             OLD.st_nametc, OLD.st_nameen, OLD.modifiedby, OLD.poscertain, OLD.datasrc, OLD.levelsrc, 
             OLD.enabled, OLD.shape_len, OLD.level_id, OLD.buildnamen, OLD.buildnamzh, OLD.leveleng, 
@@ -309,7 +314,7 @@ BEGIN
             pedrouteid, inetworkid, displayname, operation,
             highway, oneway, emergency, wheelchair, flpolyid, crtdt, crtby,
             lstamddt, lstamdby, restricted, shape, feattype, floorid, location,
-            gradient, wc_access, wc_barrier, direction, bldgid_1, bldgid_2, siteid,
+            gradient, wc_access, wc_barrier, wx_proof, direction, obstype, bldgid_1, bldgid_2, siteid,
             aliasnamtc, aliasnamen, terminalid, acstimeid, crossfeat, st_code,
             st_nametc, st_nameen, modifiedby, poscertain, datasrc, levelsrc,
             enabled, shape_len, level_id, buildnamen, buildnamzh, leveleng,
@@ -319,8 +324,8 @@ BEGIN
             OLD.pedrouteid, OLD.inetworkid, OLD.displayname, 'DELETE',
             OLD.highway, OLD.oneway, OLD.emergency, OLD.wheelchair, OLD.flpolyid, OLD.crtdt, OLD.crtby,
             OLD.lstamddt, OLD.lstamdby, OLD.restricted, OLD.shape, OLD.feattype, OLD.floorid, OLD.location,
-            OLD.gradient, OLD.wc_access, OLD.wc_barrier, OLD.direction, OLD.bldgid_1, OLD.bldgid_2, OLD.siteid,
-            OLD.aliasnamtc, OLD.aliasnamen, OLD.terminalid, OLD.acstimeid, OLD.crossfeat, OLD.st_code,
+            OLD.gradient, OLD.wc_access, OLD.wc_barrier, OLD.wx_proof, OLD.direction, OLD.obstype, OLD.bldgid_1, OLD.bldgid_2, OLD.siteid, 
+            OLD.aliasnamtc, OLD.aliasnamen, OLD.terminalid, OLD.acstimeid, OLD.crossfeat, OLD.st_code, 
             OLD.st_nametc, OLD.st_nameen, OLD.modifiedby, OLD.poscertain, OLD.datasrc, OLD.levelsrc,
             OLD.enabled, OLD.shape_len, OLD.level_id, OLD.buildnamen, OLD.buildnamzh, OLD.leveleng,
             OLD.levelzh, OLD.mainexit, OLD.created_at, OLD.updated_at

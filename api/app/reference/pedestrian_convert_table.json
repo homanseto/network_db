@@ -3,6 +3,7 @@
     "database": "pedrouteid",
     "shapefile": "PedRouteID",
     "geojson": "PedestrianRouteID",
+    "fgdb": "PedestrianRouteID",
     "output": ["pedestrian"]
   },
   {
@@ -51,6 +52,7 @@
     "database": "crtdt",
     "shapefile": "CrtDt",
     "geojson": "CreationDate",
+    "fgdb": "CreationDate",
     "output": ["indoor", "pedestrian"]
   },
   {
@@ -63,6 +65,7 @@
     "database": "lstamddt",
     "shapefile": "LstAmdDt",
     "geojson": "LastAmendmentDate",
+    "fgdb": "LastAmendmentDate",
     "output": ["indoor", "pedestrian"]
   },
   {
@@ -93,144 +96,182 @@
     "database": "feattype",
     "shapefile": "FeatType",
     "geojson": "FeatureType",
+    "fgdb": "FeatureType",
     "output": ["pedestrian"]
   },
   {
     "database": "floorid",
     "shapefile": "FloorID",
     "geojson": "FloorID",
+    "fgdb": "FloorID",
     "output": ["pedestrian"]
   },
   {
     "database": "location",
     "shapefile": "Location",
     "geojson": "Location",
+    "fgdb": "Location",
     "output": ["pedestrian"]
   },
   {
     "database": "gradient",
     "shapefile": "Gradient",
     "geojson": "Gradient",
+    "fgdb": "Gradient",
     "output": ["pedestrian"]
   },
   {
     "database": "wc_access",
     "shapefile": "WC_Access",
     "geojson": "WheelchairAccess",
+    "fgdb": "WheelchairAccess",
     "output": ["pedestrian"]
   },
   {
     "database": "wc_barrier",
     "shapefile": "WC_Barrier",
     "geojson": "WheelchairBarrier",
+    "fgdb": "WheelchairBarrier",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "wx_proof",
+    "shapefile": "WX_Proof",
+    "geojson": "WeatherProof",
+    "fgdb": "WeatherProof",
+    "output": ["pedestrian"]
+  },
+  {
+    "database": "obstype",
+    "shapefile": "ObsType",
+    "geojson": "ObstaclesType",
+    "fgdb": "ObstaclesType",
     "output": ["pedestrian"]
   },
   {
     "database": "direction",
     "shapefile": "Direction",
     "geojson": "Direction",
+    "fgdb": "Direction",
     "output": ["pedestrian"]
   },
   {
     "database": "bldgid_1",
     "shapefile": "BldgID_1",
     "geojson": "BuildingID_1",
+    "fgdb": "BuildingID_1",
     "output": ["pedestrian"]
   },
   {
     "database": "bldgid_2",
     "shapefile": "BldgID_2",
     "geojson": "BuildingID_2",
+    "fgdb": "BuildingID_2",
     "output": ["pedestrian"]
   },
   {
     "database": "siteid",
     "shapefile": "SiteID",
     "geojson": "SiteID",
+    "fgdb": "SiteID",
     "output": ["pedestrian"]
   },
   {
     "database": "aliasnamen",
     "shapefile": "AliasNamEN",
     "geojson": "AliasNameEN",
+    "fgdb": "AliasNameEN",
     "output": ["pedestrian"]
   },
   {
     "database": "aliasnamtc",
     "shapefile": "AliasNamTC",
     "geojson": "AliasNameTC",
+    "fgdb": "AliasNameTC",
     "output": ["pedestrian"]
   },
   {
     "database": "terminalid",
     "shapefile": "TerminalID",
     "geojson": "TerminalID",
+    "fgdb": "TerminalID",
     "output": ["pedestrian"]
   },
   {
     "database": "acstimeid",
     "shapefile": "AcsTimeID",
     "geojson": "AccessTimeID",
+    "fgdb": "AccessTimeID",
     "output": ["pedestrian"]
   },
   {
     "database": "crossfeat",
     "shapefile": "CrossFeat",
     "geojson": "CrossingFeature",
+    "fgdb": "CrossingFeature",
     "output": ["pedestrian"]
   },
   {
     "database": "st_code",
     "shapefile": "ST_CODE",
     "geojson": "ST_CODE",
+    "fgdb": "ST_CODE",
     "output": ["pedestrian"]
   },
   {
     "database": "st_nametc",
     "shapefile": "ST_NameTC",
     "geojson": "StreetNameTC",
+    "fgdb": "StreetNameTC",
     "output": ["pedestrian"]
   },
   {
     "database": "st_nameen",
     "shapefile": "ST_NameEN",
     "geojson": "StreetNameEN",
+    "fgdb": "StreetNameEN",
     "output": ["pedestrian"]
   },
   {
     "database": "poscertain",
     "shapefile": "PosCertain",
     "geojson": "PositionCertainty",
+    "fgdb": "PositionCertainty",
     "output": ["pedestrian"]
   },
   {
     "database": "datasrc",
     "shapefile": "DataSrc",
     "geojson": "DataSource",
+    "fgdb": "DataSource",
     "output": ["pedestrian"]
   },
   {
     "database": "levelsrc",
     "shapefile": "LevelSrc",
     "geojson": "LevelSource",
+    "fgdb": "LevelSource",
     "output": ["pedestrian"]
   },
   {
     "database": "enabled",
     "shapefile": "Enabled",
     "geojson": "Enabled",
+    "fgdb": "Enabled",
     "output": ["pedestrian"]
   },
   {
     "database": "shape_len",
     "shapefile": "Shape_Len",
     "geojson": "Shape_Length",
+    "fgdb": "Shape_Length",
     "output": ["pedestrian"]
   },
   {
     "database": "modifiedby",
     "shapefile": "ModifiedBy",
     "geojson": "ModifiedBy",
+    "fgdb": "ModifiedBy",
     "output": ["pedestrian"]
   },
   {

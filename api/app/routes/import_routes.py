@@ -18,6 +18,15 @@ class ImportFromPathRequest(BaseModel):
     displayname: str = Field(..., description="Display name for the building/venue (e.g. HK_1_Hong Kong City Hall). Must match IMDF data.")
 
 
+from app.services.imdf_service import import_all_venues_to_postgis
+
+@router.post("/import-venues")
+async def trigger_import_venues():
+    """
+    Triggers the migration of all Venue data from MongoDB to PostGIS 'venue' table.
+    """
+    return await import_all_venues_to_postgis()
+
 @router.post("/import-network-upload/")
 async def import_network_upload(
     files: List[UploadFile] = File(..., description="List of ZIP files. Each ZIP must contain '3D Indoor Network.shp' (or case-insensitive equivalent). Display name is derived from zip filename."),

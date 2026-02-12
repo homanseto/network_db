@@ -30,7 +30,9 @@ class NetworkStagingRow(BaseModel):
     gradient: Optional[float] = 0.0
     wc_access: Optional[Literal[1, 2]] = None
     wc_barrier: Optional[Literal[1, 2]] = None
+    wx_proof: Optional[Literal[1, 2]] = None
     direction: Optional[Literal[0, 1, -1]] = None
+    obstype:Optional[int] = None
     bldgid_1: Optional[int] = None
     bldgid_2: Optional[int] = None
     siteid: Optional[int] = None
