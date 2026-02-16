@@ -365,6 +365,91 @@ WHERE
 """)
 
 
+UPSERT_INDOOR_NETWORK_NO_PEDROUTEID = text("""
+INSERT INTO indoor_network (
+  venue_id, displayname, inetworkid, highway, oneway, emergency, wheelchair,
+  flpolyid, crtdt, crtby, lstamddt, lstamdby, restricted,
+  shape, level_id, feattype, floorid, location, gradient, wc_access, wc_barrier, wx_proof, direction, obstype,
+  bldgid_1, bldgid_2, siteid, buildnamen, buildnamzh, leveleng, levelzh,
+  aliasnamtc, aliasnamen, terminalid, acstimeid, crossfeat, st_code, st_nametc, st_nameen,
+  modifiedby, poscertain, datasrc, levelsrc, enabled, shape_len, mainexit
+)
+VALUES (
+  :venue_id, :displayname, :inetworkid, :highway, :oneway, :emergency, :wheelchair,
+  :flpolyid, :crtdt, :crtby, :lstamddt, :lstamdby, :restricted,
+  ST_GeomFromWKB(decode(:shape_hex, 'hex'), :srid), :level_id, :feattype, :floorid, :location, :gradient, :wc_access, :wc_barrier, :wx_proof, :direction, :obstype,
+  :bldgid_1, :bldgid_2, :siteid, :buildnamen, :buildnamzh, :leveleng, :levelzh,
+  :aliasnamtc, :aliasnamen, :terminalid, :acstimeid, :crossfeat, :st_code, :st_nametc, :st_nameen,
+  :modifiedby, :poscertain, :datasrc, :levelsrc, :enabled, :shape_len, :mainexit
+)
+ON CONFLICT (inetworkid) DO UPDATE SET
+  displayname       = EXCLUDED.displayname,
+  highway           = EXCLUDED.highway,
+  oneway            = EXCLUDED.oneway,
+  emergency         = EXCLUDED.emergency,
+  wheelchair        = EXCLUDED.wheelchair,
+  flpolyid          = EXCLUDED.flpolyid,
+  crtdt             = EXCLUDED.crtdt,
+  crtby             = EXCLUDED.crtby,
+  lstamddt          = EXCLUDED.lstamddt,
+  lstamdby          = EXCLUDED.lstamdby,
+  restricted        = EXCLUDED.restricted,
+  shape             = EXCLUDED.shape,
+  level_id          = EXCLUDED.level_id,
+  feattype          = EXCLUDED.feattype,
+  floorid           = EXCLUDED.floorid,
+  location          = EXCLUDED.location,
+  gradient          = EXCLUDED.gradient,
+  wc_access         = EXCLUDED.wc_access,
+  wc_barrier        = EXCLUDED.wc_barrier,
+  wx_proof         = EXCLUDED.wx_proof,
+  direction         = EXCLUDED.direction,
+  obstype           = EXCLUDED.obstype,
+  bldgid_1          = EXCLUDED.bldgid_1,
+  bldgid_2          = EXCLUDED.bldgid_2,
+  siteid            = EXCLUDED.siteid,
+  buildnamen        = EXCLUDED.buildnamen,
+  buildnamzh        = EXCLUDED.buildnamzh,
+  leveleng          = EXCLUDED.leveleng,
+  levelzh           = EXCLUDED.levelzh,
+  aliasnamtc        = EXCLUDED.aliasnamtc,
+  aliasnamen        = EXCLUDED.aliasnamen,
+  terminalid        = EXCLUDED.terminalid,
+  acstimeid         = EXCLUDED.acstimeid,
+  crossfeat         = EXCLUDED.crossfeat,
+  st_code           = EXCLUDED.st_code,
+  st_nametc         = EXCLUDED.st_nametc,
+  st_nameen         = EXCLUDED.st_nameen,
+  modifiedby        = EXCLUDED.modifiedby,
+  poscertain        = EXCLUDED.poscertain,
+  datasrc           = EXCLUDED.datasrc,
+  levelsrc          = EXCLUDED.levelsrc,
+  enabled           = EXCLUDED.enabled,
+  shape_len         = EXCLUDED.shape_len,
+  mainexit          = EXCLUDED.mainexit
+WHERE 
+  indoor_network.displayname IS DISTINCT FROM EXCLUDED.displayname OR
+  indoor_network.highway     IS DISTINCT FROM EXCLUDED.highway OR
+  indoor_network.oneway      IS DISTINCT FROM EXCLUDED.oneway OR
+  indoor_network.emergency   IS DISTINCT FROM EXCLUDED.emergency OR
+  indoor_network.wheelchair  IS DISTINCT FROM EXCLUDED.wheelchair OR
+  indoor_network.flpolyid    IS DISTINCT FROM EXCLUDED.flpolyid OR
+  indoor_network.restricted  IS DISTINCT FROM EXCLUDED.restricted OR
+  indoor_network.shape       IS DISTINCT FROM EXCLUDED.shape OR
+  indoor_network.level_id    IS DISTINCT FROM EXCLUDED.level_id OR
+  indoor_network.feattype    IS DISTINCT FROM EXCLUDED.feattype OR
+  indoor_network.floorid     IS DISTINCT FROM EXCLUDED.floorid OR
+  indoor_network.location    IS DISTINCT FROM EXCLUDED.location OR
+  indoor_network.gradient    IS DISTINCT FROM EXCLUDED.gradient OR
+  indoor_network.wc_access   IS DISTINCT FROM EXCLUDED.wc_access OR
+  indoor_network.wc_barrier  IS DISTINCT FROM EXCLUDED.wc_barrier OR
+  indoor_network.wx_proof     IS DISTINCT FROM EXCLUDED.wx_proof OR
+  indoor_network.bldgid_1    IS DISTINCT FROM EXCLUDED.bldgid_1 OR
+  indoor_network.aliasnamtc  IS DISTINCT FROM EXCLUDED.aliasnamtc OR
+  indoor_network.aliasnamen  IS DISTINCT FROM EXCLUDED.aliasnamen OR
+  indoor_network.mainexit    IS DISTINCT FROM EXCLUDED.mainexit
+""")
+
 
 def _geojson_to_wkt_2326(geojson_str: str) -> str | None:
     """Convert GeoJSON string (EPSG:2326 coordinates) to WKT for PostGIS. Preserves Z."""
@@ -397,12 +482,9 @@ def insert_network_rows_into_indoor_network(session, displayname: str, rows: lis
         if not row.shape:
              continue
 
-        session.execute(
-            UPSERT_INDOOR_NETWORK,
-            {
+        params = {
                 "displayname": displayname,
                 "venue_id": row.venue_id,
-                "pedrouteid": row.pedrouteid,
                 "inetworkid": row.inetworkid,
                 "highway": row.highway,
                 "oneway": row.oneway,
@@ -448,8 +530,15 @@ def insert_network_rows_into_indoor_network(session, displayname: str, rows: lis
                 "enabled": row.enabled,
                 "shape_len": row.shape_len,
                 "mainexit": row.mainexit
-            },
-        )
+            }
+        # Check if pedrouteid exists and is valid (not None and not 0)
+        if row.pedrouteid and row.pedrouteid != 0:
+            # Use query WITH ID
+            params["pedrouteid"] = row.pedrouteid
+            session.execute(UPSERT_INDOOR_NETWORK, params)
+        else:
+            # Use query WITHOUT ID (triggers SERIAL)
+            session.execute(UPSERT_INDOOR_NETWORK_NO_PEDROUTEID, params)
         count += 1
     return count
 
