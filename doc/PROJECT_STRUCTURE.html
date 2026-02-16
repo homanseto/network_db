@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network DB – Project Structure & Architecture</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 2rem;
+        line-height: 1.6;
+        color: #1a1a1a;
+      }
+      h1 {
+        border-bottom: 2px solid #333;
+        padding-bottom: 0.5rem;
+      }
+      h2 {
+        margin-top: 2rem;
+        color: #333;
+      }
+      h3 {
+        margin-top: 1.5rem;
+      }
+      .diagram {
+        margin: 1.5rem 0;
+        background: #fafafa;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      .diagram-box {
+        border: 1px solid #666;
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        margin: 0.25rem;
+        background: #fff;
+        font-size: 0.9rem;
+      }
+      .diagram-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0.5rem 0;
+      }
+      .diagram-arrow {
+        color: #666;
+        font-size: 1.2rem;
+      }
+      .diagram-group {
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .diagram-group .diagram-box {
+        background: #e8f4f8;
+      }
+      pre.diagram-pre {
+        margin: 0;
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+      /* Flowchart style (match attached process flowchart: dark blue start/end, light blue steps, white diamonds) */
+      .flowchart {
+        margin: 1.5rem 0;
+        padding: 1.5rem;
+        background: #fff;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        max-width: 28em;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .flow-node {
+        padding: 0.5rem 0.75rem;
+        margin: 0.35rem auto;
+        text-align: center;
+        max-width: 20em;
+        border: 2px solid #1e3a5f;
+        font-weight: 500;
+      }
+      .flow-node-start {
+        background: #1e3a5f;
+        color: #fff;
+        border-radius: 1.5rem;
+      }
+      .flow-node-end {
+        background: #1e3a5f;
+        color: #fff;
+        border-radius: 1.5rem;
+      }
+      .flow-node-end-success {
+        background: #c5d9ed;
+        color: #1e3a5f;
+        border: 2px solid #1e3a5f;
+        border-radius: 1.5rem;
+      }
+      .flow-node-step {
+        background: #c5d9ed;
+        color: #1e3a5f;
+        border-radius: 8px;
+      }
+      .flow-node-decision {
+        background: #fff;
+        border: 2px solid #1e3a5f;
+        color: #1e3a5f;
+        padding: 0.75rem 1.25rem;
+        margin: 0.5rem auto;
+        transform: rotate(-45deg);
+        width: 3.5em;
+        height: 3.5em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: none;
+      }
+      .flow-node-decision span {
+        transform: rotate(45deg);
+        font-style: italic;
+        font-weight: 500;
+        font-size: 0.85rem;
+        max-width: 5.5em;
+        text-align: center;
+      }
+      .flow-connector {
+        text-align: center;
+        color: #1e3a5f;
+        font-size: 1rem;
+        margin: 0.25rem 0;
+        line-height: 1.2;
+      }
+      .flow-connector .flow-arrow {
+        display: block;
+        font-size: 0.75rem;
+        color: #1e3a5f;
+      }
+      .flow-branch {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2.5rem;
+        margin: 0.5rem 0;
+        align-items: flex-start;
+      }
+      .flow-branch-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .flow-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #1e3a5f;
+        margin: 0 0.25rem;
+      }
+      /* ERD style (match attached ERD: dark blue table headers, columns with types) */
+      .erd-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+        align-items: flex-start;
+      }
+      .erd-table {
+        border: 2px solid #1e3a5f;
+        border-radius: 4px;
+        overflow: hidden;
+        min-width: 12em;
+      }
+      .erd-table-header {
+        background: #1e3a5f;
+        color: #fff;
+        padding: 0.4rem 0.6rem;
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+      .erd-table-body {
+        padding: 0.4rem 0.6rem;
+        background: #fff;
+        font-size: 0.85rem;
+      }
+      .erd-column {
+        padding: 0.15rem 0;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .erd-column:last-child {
+        border-bottom: none;
+      }
+      .erd-col-name {
+        font-weight: 500;
+      }
+      .erd-col-type {
+        color: #555;
+      }
+      .erd-relation {
+        align-self: center;
+        color: #1e3a5f;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 1rem 0;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 0.5rem 0.75rem;
+        text-align: left;
+      }
+      th {
+        background: #f5f5f5;
+      }
+      pre {
+        background: #f5f5f5;
+        padding: 1rem;
+        overflow-x: auto;
+        border-radius: 6px;
+        font-size: 0.9rem;
+      }
+      ul,
+      ol {
+        margin: 0.5rem 0;
+      }
+      .nav {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: #f0f0f0;
+        border-radius: 8px;
+      }
+      .nav a {
+        margin-right: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <strong>Quick links:</strong>
+      <a href="#overview">Overview</a>
+      <a href="#python-vs-node">Python vs Node</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#folder">Folder structure</a>
+      <a href="#schema">Database schema</a>
+      <a href="#db-chart-history">DB chart + history</a>
+      <a href="#using-history">Using history</a>
+      <a href="#history-pros-cons">History pros &amp; cons</a>
+      <a href="#versioning-requirements">Versioning requirements</a>
+      <a href="#workflow">Import workflow</a>
+      <a href="#export-workflow">Export workflow</a>
+      <a href="#api-interface-swagger">Swagger interface</a>
+      <a href="#staging-history">Staging and history</a>
+      <a href="#why-triggers">Why triggers</a>
+      <a href="#network-geometry">Network geometry logic</a>
+      <a href="#proscons">Pros &amp; cons</a>
+      <a href="#improvements">Improvements</a>
+    </div>
+
+    <h1>Network DB – Project Structure &amp; Architecture</h1>
+    <p>
+      This document describes the
+      <strong>Indoor GIS / Network DB</strong> project: structure, system
+      architecture, database schema, workflow, and recommendations. For full
+      detail (every section and table), see
+      <strong>PROJECT_STRUCTURE.md</strong>.
+    </p>
+
+    <h2 id="overview">1. Project Overview</h2>
+    <p>
+      <strong>Purpose:</strong> Ingest 3D indoor network shapefiles, validate
+      them, enrich with IMDF data (units, levels, openings, building info), and
+      persist into PostgreSQL/PostGIS. Venue is in Postgres; unit, level,
+      opening, and related IMDF layers are in MongoDB (to migrate to Postgres
+      later).
+    </p>
+    <p>
+      <strong>Stack:</strong> FastAPI (Python) in Docker; PostgreSQL + PostGIS
+      (EPSG:2326); MongoDB (IndoorMap) for IMDF.
+    </p>
+    <p>
+      <strong>Run:</strong>
+      <code
+        >docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+        --build</code
+      >
+    </p>
+
+    <h2 id="python-vs-node">2. Python over Node.js</h2>
+
+    <h3>Why Python (Shapely) fits this stack</h3>
+    <ul>
+      <li>
+        <strong>CRS / projection (critical for EPSG:2326):</strong> Shapely is
+        projection-agnostic and defers CRS to PyProj/Fiona/GDAL. You can keep
+        data in 2326 (meters) and use ogr2ogr or Fiona for ETL with no
+        unnecessary reprojection. <strong>Turf</strong> is tied to WGS84
+        (EPSG:4326); every operation assumes degrees. Using 2326 would require
+        constant <code>turf.toMercator</code> / <code>turf.toWgs84</code>,
+        adding floating-point error and overhead—a real risk for
+        precision-sensitive GIS work.
+      </li>
+      <li>
+        <strong>Performance and batch processing:</strong> Shapely 2.0+ (GEOS
+        via ufuncs) supports vectorized operations and
+        <strong>STRtree</strong> for spatial indexing. Large batches (e.g. 100k
+        points or spatial joins) scale well. Turf is synchronous JavaScript with
+        no built-in spatial index (no R-tree); it can become slow with very
+        large or complex geometries.
+      </li>
+      <li>
+        <strong>Mixed geometry types:</strong> The workflow uses points, lines,
+        and polygons together. Shapely/GEOS handles heterogeneous geometry and
+        predicates (intersection, contains, etc.) consistently. Turf has
+        limitations: e.g. some predicates only for same-dimension geometries,
+        and edge cases can be brittle.
+      </li>
+      <li>
+        <strong>ETL and ogr2ogr:</strong> Python fits the GDAL ecosystem:
+        <strong>Fiona</strong> reads/writes shapefiles and GeoPackage;
+        <strong>GeoPandas</strong> can push DataFrames to PostGIS via
+        <code>to_postgis()</code>. You can also call ogr2ogr via subprocess with
+        data already in 2326. In Node, there are no native GDAL bindings; you
+        typically write GeoJSON to disk and shell out to ogr2ogr, which is
+        fragile and slower.
+      </li>
+    </ul>
+
+    <h3>Comparison: Python (Shapely) vs Node.js (Turf)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Criterion</th>
+          <th>Python (Shapely / GEOS)</th>
+          <th>Node.js (Turf.js)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>EPSG:2326 native support</td>
+          <td>Yes (via PyProj, Fiona, ogr2ogr)</td>
+          <td>No (WGS84 only)</td>
+        </tr>
+        <tr>
+          <td>Performance (large data)</td>
+          <td>Strong (STRtree, vectorized ufuncs)</td>
+          <td>Weak (no spatial indexing)</td>
+        </tr>
+        <tr>
+          <td>Mixed geometry operations</td>
+          <td>Full GEOS predicate support</td>
+          <td>Partial; dimension restrictions</td>
+        </tr>
+        <tr>
+          <td>ogr2ogr / GDAL integration</td>
+          <td>Direct (Fiona, subprocess, GeoPandas)</td>
+          <td>CLI wrapper only</td>
+        </tr>
+        <tr>
+          <td>PostGIS ingestion</td>
+          <td>GeoPandas <code>to_postgis()</code>, ogr2ogr</td>
+          <td>Manual COPY or external ogr2ogr</td>
+        </tr>
+        <tr>
+          <td>Maturity</td>
+          <td>Shapely/GEOS 15+ years</td>
+          <td>Turf 8+ years</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Pros and cons summary</h3>
+    <p><strong>Python (Shapely):</strong></p>
+    <ul>
+      <li>
+        <strong>Pros:</strong> Native 2326 and GDAL workflow; STRtree and
+        vectorized ops; robust mixed geometry handling; clean path from
+        Fiona/GeoPandas to PostGIS; fits FastAPI + ogr2ogr pipeline.
+      </li>
+      <li>
+        <strong>Cons:</strong> Different language if the rest of your stack is
+        Node; buffer operations may drop Z (check docs if you need 3D).
+      </li>
+    </ul>
+    <p><strong>Node.js (Turf):</strong></p>
+    <ul>
+      <li>
+        <strong>Pros:</strong> Single language if the API is Node/Express;
+        modular packages (e.g. <code>@turf/intersect</code>).
+      </li>
+      <li>
+        <strong>Cons:</strong> No native projection model for 2326; no spatial
+        indexing (O(n²) risk); GeoJSON-centric and inefficient for large PostGIS
+        loads; ogr2ogr only via temp files and CLI.
+      </li>
+    </ul>
+
+    <h3>Architecture choice in this project</h3>
+    <p>
+      <strong>ETL:</strong> ogr2ogr (or Fiona) reads/writes
+      shapefiles/GeoPackage in EPSG:2326.
+      <strong>Geometry engine:</strong> Shapely 2.0+ (vectorized creation,
+      STRtree for spatial joins). <strong>API:</strong> FastAPI (Python)
+      exposing GeoJSON/endpoints. <strong>PostGIS load:</strong> GeoPandas
+      <code>to_postgis()</code> or ogr2ogr. This keeps projection, performance,
+      and GDAL in one coherent stack.
+    </p>
+
+    <h2 id="architecture">3. System Architecture</h2>
+    <p>High-level components and data flow:</p>
+    <div class="diagram">
+      <div class="diagram-row">
+        <span class="diagram-group">
+          <span class="diagram-box">Postman / Swagger / curl</span>
+          <span class="diagram-box">Upload ZIP or path</span>
+        </span>
+        <span class="diagram-arrow">→</span>
+        <span class="diagram-group">
+          <span class="diagram-box"
+            >Routes (import, network, imdf, pedestrian)</span
+          >
+          <span class="diagram-box">Services (network, imdf, pedestrian)</span>
+        </span>
+      </div>
+      <div class="diagram-row">
+        <span class="diagram-arrow">↓</span>
+      </div>
+      <div class="diagram-row">
+        <span class="diagram-group">
+          <span class="diagram-box"
+            >PostgreSQL: venue, network_staging, network_staging_errors,
+            indoor_network, pedrouterelfloorpoly, buildings</span
+          >
+        </span>
+        <span class="diagram-arrow">←</span>
+        <span class="diagram-group">
+          <span class="diagram-box"
+            >MongoDB: IMDFUnit, 3DUnits, IMDFLevel, IMDFOpening,
+            BuildingInfo</span
+          >
+        </span>
+      </div>
+      <p style="margin: 0.5rem 0 0; font-size: 0.9rem; color: #555">
+        Staging validates → errors table; after validation, rows go to
+        indoor_network (venue_id FK).
+      </p>
+    </div>
+
+    <h2 id="folder">4. Folder Structure (API focus)</h2>
+    <pre>
+network-db/
+├── api/
+│   ├── app/
+│   │   ├── core/       # Config, DB, MongoDB, middleware, logging
+│   │   ├── main.py     # FastAPI app, CORS, routers
+│   │   ├── models/     # ORM-style models
+│   │   ├── reference/  # pedestrian_convert_table.json, swagger.yaml
+│   │   ├── routes/     # import, network, imdf, pedestrian
+│   │   ├── schema/     # Pydantic (e.g. NetworkStagingRow)
+│   │   └── services/   # network_services, imdf_service, pedestrian_service, utils
+│   ├── Dockerfile
+│   └── requirements.txt
+├── SQL/new_db/
+│   ├── venue_table.sql
+│   ├── network_table_list.sql
+│   └── pedestrian._table._list.sql
+├── data/               # Mounted as /data in container
+├── docs/               # This documentation
+├── docker-compose.yml
+└── docker-compose.dev.yml</pre
+    >
+    <div class="diagram">
+      <div class="diagram-row">
+        <span class="diagram-box">main.py</span>
+        <span class="diagram-arrow">→</span>
+        <span class="diagram-box">routes</span>
+        <span class="diagram-arrow">→</span>
+        <span class="diagram-box">services</span>
+        <span class="diagram-arrow">→</span>
+        <span class="diagram-box">schema</span>
+      </div>
+      <div class="diagram-row">
+        <span class="diagram-box">services</span>
+        <span class="diagram-arrow">→</span>
+        <span class="diagram-box">core</span>
+        <span style="margin-left: 1rem"></span>
+        <span class="diagram-box">reference</span>
+      </div>
+    </div>
+
+    <h2 id="schema">5. Database Schema (from SQL/new_db)</h2>
+    <ul>
+      <li>
+        <strong>venue</strong> (venue_table.sql): id PK, displayname,
+        name_en/zh, shape (2D 2326), display_point.
+      </li>
+      <li>
+        <strong>network_staging</strong>: Filled by ogr2ogr from shapefile;
+        validated by validate_network_staging().
+      </li>
+      <li>
+        <strong>network_staging_errors</strong>: Holds validation errors
+        (INETWORKID, error_type, error_message).
+      </li>
+      <li>
+        <strong>indoor_network</strong>: pedrouteid PK, venue_id FK, inetworkid
+        UK, shape LineStringZ 2326, feattype, floorid, wc_access, alias names,
+        etc. History table + triggers.
+      </li>
+      <li>
+        <strong>pedrouterelfloorpoly</strong>: level_id PK, floor_id,
+        floor_poly_id, buildingid, names, buildingcsuid.
+      </li>
+      <li>
+        <strong>buildings</strong>: id UUID, buildingCSUID, name_EN/CH,
+        sixDigitID, buildingID.
+      </li>
+      <li>
+        <strong>pedestrian_network</strong> +
+        <strong>pedestrian_staging</strong> (pedestrian._table._list.sql):
+        Pedestrian routes and history.
+      </li>
+    </ul>
+    <pre class="diagram diagram-pre">
+venue (id PK, displayname, shape)
+    ||--o{ indoor_network (pedrouteid PK, venue_id FK, inetworkid UK, shape)
+network_staging (inetworkid, shape)
+network_staging_errors (INETWORKID, error_type, error_message)
+    </pre>
+
+    <h3 id="db-chart-history">Database chart: main tables and history</h3>
+    <p>
+      The following tables are the main editable tables; each has a companion
+      history table populated only by a trigger (BEFORE UPDATE OR DELETE).
+      History stores the <strong>old</strong> row plus
+      <strong>operation</strong> ('UPDATE' or 'DELETE') and
+      <strong>history_recorded_at</strong> (when the change was logged).
+    </p>
+    <div class="erd-wrap">
+      <div class="erd-table">
+        <div class="erd-table-header">venue</div>
+        <div class="erd-table-body">
+          <div class="erd-column">
+            <span class="erd-col-name">id</span
+            ><span class="erd-col-type">TEXT PK</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">displayname</span
+            ><span class="erd-col-type">TEXT</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">shape</span
+            ><span class="erd-col-type">GEOMETRY</span>
+          </div>
+        </div>
+      </div>
+      <span class="erd-relation">1 ──► *</span>
+      <div class="erd-table">
+        <div class="erd-table-header">indoor_network</div>
+        <div class="erd-table-body">
+          <div class="erd-column">
+            <span class="erd-col-name">pedrouteid</span
+            ><span class="erd-col-type">SERIAL PK</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">venue_id</span
+            ><span class="erd-col-type">TEXT *</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">inetworkid</span
+            ><span class="erd-col-type">TEXT UK</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">shape</span
+            ><span class="erd-col-type">GEOMETRY</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">feattype, floorid, ...</span
+            ><span class="erd-col-type">—</span>
+          </div>
+        </div>
+      </div>
+      <span class="erd-relation">trigger ▼</span>
+      <div class="erd-table">
+        <div class="erd-table-header">indoor_network_history</div>
+        <div class="erd-table-body">
+          <div class="erd-column">
+            <span class="erd-col-name">history_id</span
+            ><span class="erd-col-type">SERIAL PK</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">pedrouteid</span
+            ><span class="erd-col-type">INTEGER *</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">operation</span
+            ><span class="erd-col-type">TEXT</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">history_recorded_at</span
+            ><span class="erd-col-type">TIMESTAMP</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">+ copy of row</span
+            ><span class="erd-col-type">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="erd-wrap">
+      <div class="erd-table">
+        <div class="erd-table-header">pedestrian_network</div>
+        <div class="erd-table-body">
+          <div class="erd-column">
+            <span class="erd-col-name">pedrouteid</span
+            ><span class="erd-col-type">INTEGER PK</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">shape</span
+            ><span class="erd-col-type">GEOMETRY</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">feattype, floorid, ...</span
+            ><span class="erd-col-type">—</span>
+          </div>
+        </div>
+      </div>
+      <span class="erd-relation">trigger ▼</span>
+      <div class="erd-table">
+        <div class="erd-table-header">pedestrian_network_history</div>
+        <div class="erd-table-body">
+          <div class="erd-column">
+            <span class="erd-col-name">history_id</span
+            ><span class="erd-col-type">SERIAL PK</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">pedrouteid</span
+            ><span class="erd-col-type">INTEGER *</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">operation</span
+            ><span class="erd-col-type">TEXT</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">history_recorded_at</span
+            ><span class="erd-col-type">TIMESTAMP</span>
+          </div>
+          <div class="erd-column">
+            <span class="erd-col-name">+ copy of row</span
+            ><span class="erd-col-type">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p>
+      <strong>Note:</strong> * = foreign key / reference. INSERTs into the main
+      table do <strong>not</strong> write to history; only UPDATE and DELETE do.
+      So the first version of a row exists only in the main table until it is
+      later updated or deleted.
+    </p>
+
+    <h3 id="using-history">Using history (examples)</h3>
+    <p>
+      History tables support point-in-time queries (“time travel”), auditing by
+      ID, and recovery of deleted rows. Example patterns (see
+      <code>SQL/new_db/quey_example.sql</code> for full context):
+    </p>
+    <p><strong>1. Time travel: restore state as at a specific date</strong></p>
+    <p>
+      Return the dataset as it was at a snapshot time (e.g. 2026-02-05): current
+      rows that were not changed after that time, plus rows that were later
+      updated or deleted but had a version valid at that time.
+    </p>
+    <pre class="diagram diagram-pre"><code>WITH target_date AS (
+    SELECT '2026-02-05 23:59:59+08'::timestamptz AS snapshot_time
+)
+SELECT pedrouteid, shape, feattype, floorid, updated_at
+FROM pedestrian_network
+WHERE updated_at &lt;= (SELECT snapshot_time FROM target_date)
+
+UNION ALL
+
+-- Restore deletions and pre-update versions from history
+SELECT pedrouteid, shape, feattype, floorid, updated_at
+FROM pedestrian_network_history h
+WHERE h.history_recorded_at &gt; (SELECT snapshot_time FROM target_date)
+  AND h.updated_at &lt;= (SELECT snapshot_time FROM target_date)
+  AND h.history_id IN (
+    SELECT history_id FROM (
+      SELECT history_id,
+        ROW_NUMBER() OVER (PARTITION BY pedrouteid ORDER BY history_recorded_at ASC) AS rn
+      FROM pedestrian_network_history
+      WHERE history_recorded_at &gt; (SELECT snapshot_time FROM target_date)
+    ) sub
+    WHERE rn = 1
+  );</code></pre>
+    <p>
+      <strong
+        >2. Audit by business key (e.g. inetworkid) or surrogate key
+        (pedrouteid)</strong
+      >
+    </p>
+    <p>
+      List all changes for one feature:
+      <code
+        >SELECT history_recorded_at, operation, modifiedby, shape, ... FROM
+        indoor_network_history WHERE inetworkid = 'Walkway_L1_001' ORDER BY
+        history_recorded_at DESC;</code
+      >
+    </p>
+    <p><strong>3. Find recently deleted features</strong></p>
+    <p>
+      <code
+        >SELECT * FROM pedestrian_network_history WHERE operation = 'DELETE' AND
+        history_recorded_at &gt; NOW() - INTERVAL '7 days';</code
+      >
+    </p>
+
+    <h3 id="history-pros-cons">History design: pros and cons</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Pros</th>
+          <th>Cons</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <strong>Application-agnostic:</strong> Trigger runs for any client
+            (API, ArcGIS Pro, QGIS, OpenLayers, Cesium); no need to implement
+            history in each app.
+          </td>
+          <td>
+            <strong>Storage:</strong> History grows with every UPDATE/DELETE; no
+            automatic retention or purging.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Audit trail:</strong> Every change is logged with operation
+            and timestamp; supports compliance and debugging.
+          </td>
+          <td>
+            <strong>INSERTs not versioned:</strong> The first version of a row
+            is only in the main table until it is updated or deleted.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Point-in-time restore:</strong> Queries can reconstruct the
+            dataset as at a past time (see “Time travel” above).
+          </td>
+          <td>
+            <strong>Query complexity:</strong> Time-travel and “latest version
+            per ID” require careful filters and ROW_NUMBER (or equivalent).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Recovery:</strong> Deleted or overwritten rows can be
+            recovered from history.
+          </td>
+          <td>
+            <strong>No built-in version labels:</strong> No “version 1, 2, 3” or
+            named snapshots unless you add them (e.g. application-level tags).
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="import-and-versioning">Import and versioning</h3>
+    <p>
+      <strong>How import interacts with history:</strong> The import pipeline
+      writes to the <strong>main</strong> table only (indoor_network or
+      pedestrian_network). It performs INSERT for new rows and UPDATE (upsert)
+      for existing rows. The trigger fires on UPDATE and DELETE, so:
+    </p>
+    <ul>
+      <li>
+        <strong>New rows (INSERT):</strong> No history row is created; the row
+        appears only in the main table.
+      </li>
+      <li>
+        <strong>Existing rows (UPDATE via upsert):</strong> The trigger runs and
+        inserts the <strong>previous</strong> version into the history table
+        before the new version is written. So each re-import that changes a row
+        creates one history record.
+      </li>
+      <li>
+        Deletes in the main table (e.g. “remove rows not in staging”) fire the
+        DELETE trigger and log the removed row to history.
+      </li>
+    </ul>
+    <p id="versioning-requirements">
+      <strong>Does this fulfill versioning requirements?</strong> If users need
+      <strong>versioning of the database</strong> (audit of changes and ability
+      to query or restore past states), this design
+      <strong>fulfills</strong> those requirements: every UPDATE and DELETE is
+      captured, and you can run time-travel queries and recover deleted or
+      overwritten data. If they need
+      <strong>full snapshot versioning</strong> (e.g. “version 2.0 of the whole
+      dataset” with a single label) or scheduled snapshots regardless of
+      changes, you would add application or ETL logic (e.g. periodic dumps or
+      version tags); the trigger-based history is change-based, not
+      snapshot-based.
+    </p>
+
+    <h2 id="workflow">6. Import Workflow</h2>
+    <p>
+      Process flow (staging → validation → enrich → main table). Decisions and
+      error paths match a single-run import; validation failures are returned to
+      the client and do not update the main table.
+    </p>
+    <div class="flowchart">
+      <div class="flow-node flow-node-start">Submit / upload network data</div>
+      <div class="flow-connector"><span class="flow-arrow">▼</span></div>
+      <div class="flow-node flow-node-decision"><span>Venue found?</span></div>
+      <div class="flow-branch">
+        <div class="flow-branch-item">
+          <span class="flow-label">No</span>
+          <div class="flow-connector"><span class="flow-arrow">▼</span></div>
+          <div class="flow-node flow-node-end">Return 400, stop</div>
+        </div>
+        <div class="flow-branch-item">
+          <span class="flow-label">Yes</span>
+          <div class="flow-connector"><span class="flow-arrow">▼</span></div>
+        </div>
+      </div>
+      <div class="flow-node flow-node-step">
+        Load shapefile to staging (ogr2ogr)
+      </div>
+      <div class="flow-connector"><span class="flow-arrow">▼</span></div>
+      <div class="flow-node flow-node-decision">
+        <span>Staging valid?</span>
+      </div>
+      <div class="flow-branch">
+        <div class="flow-branch-item">
+          <span class="flow-label">No</span>
+          <div class="flow-connector"><span class="flow-arrow">▼</span></div>
+          <div class="flow-node flow-node-step">
+            Corrective action / return errors (network_staging_errors)
+          </div>
+          <div class="flow-connector"><span class="flow-arrow">▼</span></div>
+          <div class="flow-node flow-node-end">
+            Stop (no write to main table)
+          </div>
+        </div>
+        <div class="flow-branch-item">
+          <span class="flow-label">Yes</span>
+          <div class="flow-connector"><span class="flow-arrow">▼</span></div>
+        </div>
+      </div>
+      <div class="flow-node flow-node-step">
+        Read staging, Pydantic validate, enrich (Mongo + Postgres)
+      </div>
+      <div class="flow-connector"><span class="flow-arrow">▼</span></div>
+      <div class="flow-node flow-node-step">Upsert indoor_network</div>
+      <div class="flow-connector"><span class="flow-arrow">▼</span></div>
+      <div class="flow-node flow-node-step">Sync pedrouterelfloorpoly</div>
+      <div class="flow-connector"><span class="flow-arrow">▼</span></div>
+      <div class="flow-node flow-node-end-success">Import complete</div>
+    </div>
+    <p>
+      <strong>User edits (ArcGIS Pro, QGIS, OpenLayers, Cesium):</strong> When
+      users edit <strong>indoor_network</strong> directly from these tools, the
+      same database trigger (<strong>log_indoor_network_changes()</strong>) runs
+      on UPDATE/DELETE and appends the old row to
+      <strong>indoor_network_history</strong>. No separate application logic is
+      required; the DB captures all edits regardless of client.
+    </p>
+    <p>
+      <strong>Workflow feedback:</strong> This flow aligns with the project:
+      staging → validate → enrich → main table keeps the main table clean and
+      allows validation to block bad data. One improvement is to document in
+      runbooks that ArcGIS Pro, QGIS, and OpenLayers connect directly to
+      Postgres so operators know the same trigger applies to all edits.
+      Idempotent re-runs (same ZIP/path) are already supported by truncating
+      staging and upserting by inetworkid.
+    </p>
+
+    <h3 id="export-workflow">6.2 Export Workflow</h3>
+    <p>
+      Export reads from <strong>indoor_network</strong> by venue
+      <strong>displayname</strong> and writes Shapefile and/or GeoJSON (via
+      ogr2ogr). Two API entry points are used:
+    </p>
+    <ol>
+      <li>
+        <strong>GET /export-indoor-network/</strong> — Exports to a path (or
+        default result dir). Parameters: <code>displayname</code>,
+        <code>export_type</code> (indoor, pedestrian, or all),
+        <code>export_format</code> (shapefile or geojson),
+        <code>output_dir</code> (optional). The service builds a SQL SELECT
+        using <strong>pedestrian_convert_table.json</strong> for field mapping,
+        filters by displayname (and <code>restricted = 'N'</code> when
+        opendata=open), then runs <strong>ogr2ogr</strong>: Shapefile stays in
+        EPSG:2326; GeoJSON is transformed to EPSG:4326 and coordinates are
+        rounded to 8 decimals. Returns JSON with status and output path.
+      </li>
+      <li>
+        <strong>GET /download-indoor-network-zip/</strong> — Returns a ZIP
+        containing both formats. Parameters:
+        <code>displayname</code> (required), <code>type</code> (pedestrian,
+        indoor, or all), <code>opendata</code>
+        (open or full). The API exports to temp dirs (SHP and GeoJSON), zips
+        them, and streams the ZIP as a download; temp dirs are removed
+        afterward.
+      </li>
+    </ol>
+    <p>
+      <strong>Flow summary:</strong> Request (displayname + options) → service
+      <strong>export_indoor_network_by_displayname()</strong> → load field
+      mapping → SQL on <strong>indoor_network</strong> → ogr2ogr → Shapefile
+      and/or GeoJSON (and optionally zip + stream). No staging table; export is
+      read-only from the main table.
+    </p>
+
+    <h3 id="api-interface-swagger">6.3 API interface: Swagger</h3>
+    <p>
+      The API interface for <strong>import</strong> and
+      <strong>export</strong> is described in
+      <strong><code>api/app/reference/swagger.yaml</code></strong
+      >. Users can use this OpenAPI definition (or the served Swagger UI) to
+      discover and call the endpoints.
+    </p>
+    <ul>
+      <li>
+        <strong>Import:</strong> <code>POST /import-network-upload/</code> —
+        multipart form with <code>files</code> (ZIPs). Display name is derived
+        from each ZIP filename; each file should contain
+        <code>3D Indoor Network.shp</code>. Responses: 200 with import result
+        list, 500 on failure.
+      </li>
+      <li>
+        <strong>Export:</strong>
+        <code>GET /download-indoor-network-zip/</code> — query parameters
+        <code>displayname</code> (required), <code>type</code> (pedestrian |
+        indoor | all), <code>opendata</code> (open | full). Returns a ZIP
+        containing a Shapefile folder and a GeoJSON folder for the given venue.
+        200 returns the binary ZIP; 500 on export error.
+      </li>
+    </ul>
+    <p>
+      The same <code>swagger.yaml</code> also documents other Indoor API paths
+      (e.g. checkSubmission, duplicateCheck, download/groupBuildingInfo,
+      updateUnitOrPOIInfo, fullversion, opendata). For network import and
+      export, the two paths above are the ones used by users.
+    </p>
+
+    <h2 id="staging-history">
+      6.4 Staging → main table → history (network and pedestrian)
+    </h2>
+    <p>
+      Data is <strong>never imported directly into history tables</strong>.
+      History is written automatically by database triggers when rows in the
+      <strong>main</strong> table are updated or deleted.
+    </p>
+
+    <h3>Network data flow</h3>
+    <ol>
+      <li>
+        <strong>Staging:</strong> The shapefile is loaded into
+        <strong>network_staging</strong> by ogr2ogr (one-time load per import).
+        Columns (e.g. INETWORKID, shape, highway, oneway, flpolyid) come from
+        the shapefile. The table is truncated before each new run.
+      </li>
+      <li>
+        <strong>Validation:</strong> The PL/pgSQL function
+        <strong>validate_network_staging()</strong> runs. It checks geometry NOT
+        NULL, ST_IsValid, SRID = 2326, ST_NDims = 3, INETWORKID NOT NULL, and no
+        duplicate INETWORKID. Failures go to
+        <strong>network_staging_errors</strong>. If invalid, the API returns
+        errors and does <strong>not</strong> move data to the main table.
+      </li>
+      <li>
+        <strong>Main table:</strong> After validation passes, the application
+        reads rows from network_staging, validates with Pydantic
+        (NetworkStagingRow), enriches them (feattype, wc_access, alias names,
+        level_id, floorid, etc.), then <strong>upserts</strong> into
+        <strong>indoor_network</strong>. Staging is then truncated.
+      </li>
+      <li>
+        <strong>History:</strong> <strong>indoor_network_history</strong> is
+        populated <strong>only by a trigger</strong> on
+        <strong>indoor_network</strong>: before UPDATE or DELETE,
+        <strong>log_indoor_network_changes()</strong> inserts the old row into
+        indoor_network_history. There is no separate “import into history”.
+      </li>
+    </ol>
+
+    <h3>Pedestrian data flow</h3>
+    <ol>
+      <li>
+        <strong>Staging:</strong> Pedestrian data is loaded into
+        <strong>pedestrian_staging</strong> from FGDB via ogr2ogr (layer
+        PedestrianRoute, -t_srs EPSG:2326).
+      </li>
+      <li>
+        <strong>Main table:</strong>
+        <strong>merge_staging_to_production(staging_table)</strong> maps staging
+        columns to <strong>pedestrian_network</strong> via
+        pedestrian_convert_table.json, then <strong>UPSERT</strong> (ON CONFLICT
+        pedrouteid DO UPDATE) and <strong>DELETE</strong> rows not in staging.
+        The main table is <strong>pedestrian_network</strong>.
+      </li>
+      <li>
+        <strong>History:</strong> <strong>pedestrian_network_history</strong> is
+        filled <strong>only by a trigger</strong> on
+        <strong>pedestrian_network</strong>:
+        <strong>log_pedestrian_network_changes()</strong> inserts the old row
+        before UPDATE/DELETE.
+      </li>
+    </ol>
+    <p>
+      <strong>Summary:</strong> Staging is the landing zone for raw import; the
+      main table (indoor_network or pedestrian_network) is the target of
+      processed data; history tables are append-only audit logs maintained by
+      triggers on the main table.
+    </p>
+
+    <h3 id="why-triggers">Why use triggers for history?</h3>
+    <p>
+      Users edit <strong>indoor_network</strong> from multiple tools:
+      <strong>QGIS</strong>, <strong>OpenLayers</strong>,
+      <strong>Cesium</strong>, and other custom applications. Because many users
+      may edit the same data concurrently, the system cannot rely on a single
+      application to write history. The <strong>database</strong> must
+      automatically record changes whenever rows are updated or deleted,
+      regardless of which client (ArcGIS Pro, QGIS, API, or another app)
+      performed the edit. Triggers on <strong>indoor_network</strong> (and
+      <strong>pedestrian_network</strong>) ensure that every change is logged to
+      the corresponding history table without requiring each application to
+      implement history logic.
+    </p>
+    <p>
+      This network-db import API is <strong>one part</strong> of the system. You
+      also have other applications for editing <strong>units</strong>,
+      <strong>openings</strong>, and <strong>points</strong>. You can refer to
+      each deployable, bounded-capability component (this API, the QGIS
+      workflow, the OpenLayers/Cesium editors, etc.) as a
+      <strong>service</strong> or <strong>microservice</strong> if that fits
+      your architecture vocabulary. The important point: the history trigger
+      lives in the <strong>database</strong>, so it is
+      <strong>application-agnostic</strong> and correctly captures edits from
+      any client.
+    </p>
+
+    <h2 id="network-geometry">
+      6.5 Logic for calculating each network (geometry and derived fields)
+    </h2>
+    <p>
+      How <strong>geometry</strong> is used and how each
+      <strong>derived field</strong> is computed for a network row (indoor
+      network import).
+    </p>
+
+    <h3>Source of geometry</h3>
+    <p>
+      The <strong>shape</strong> comes from the shapefile. ogr2ogr loads it into
+      <strong>network_staging</strong> as PostGIS <strong>LineStringZ</strong>,
+      <strong>SRID 2326</strong>. The application reads with
+      <strong>ST_AsGeoJSON(shape) AS geojson</strong> (coordinates in 2326). The
+      geometry is read for spatial calculations and written to
+      <strong>indoor_network</strong> (via WKT from the same GeoJSON).
+    </p>
+
+    <h3>Derived fields</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Logic</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>level_id</strong></td>
+          <td>
+            Level features (MongoDB): match <strong>row.flpolyid</strong> to
+            level.properties.FloorPolyID → that level’s <strong>id</strong>.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>floorid</strong></td>
+          <td>
+            <strong>flpolyid_slices(flpolyid)</strong> → buildingCSUID,
+            floorNumber. BuildingInfo (Mongo) by buildingCSUID → SixDigitID.
+            <strong>floorid = SixDigitID + floorNumber</strong>.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>bldgid_1, buildingnameeng, buildingnamechi</strong></td>
+          <td>From same BuildingInfo: BuildingID, Name_EN, Name_CH.</td>
+        </tr>
+        <tr>
+          <td><strong>levelenglishname, levelchinesename</strong></td>
+          <td>
+            From level feature (matched by flpolyid): properties.name.en,
+            properties.name.zh.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>feattype</strong></td>
+          <td>
+            <strong
+              >calculate_feature_type(row, unit_features,
+              unit3d_features)</strong
+            >: Line from geojson → transform to 4326; filter units by level_id;
+            find unit polygon with
+            <strong>longest intersection length</strong> with line; map unit
+            category (escalator, ramp, stairs, etc.) to feattype code
+            (1=walkway, 8=escalator, 10=lift, 11=ramp, 12=stairs, 13=stairlift).
+            Geometry: line–polygon intersection in 4326.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>gradient</strong></td>
+          <td>
+            <strong>calculate_gradient(geojson)</strong>: vertical change (delta
+            Z) and horizontal length from 3D line → angle (e.g. atan2).
+          </td>
+        </tr>
+        <tr>
+          <td><strong>wc_access</strong></td>
+          <td>
+            <strong>calculate_wheelchair_access(row, opening_features)</strong>:
+            If feattype ≠ 11 (ramp) return 2. Else: line to 4326; filter
+            openings by level_id; buffer each opening by 0.1 m; if line
+            intersects any buffer → 1, else 2.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>wc_barrier</strong></td>
+          <td>
+            1 if feattype in (8, 12) or wheelchair == 'no'; else 2. No geometry.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>direction</strong></td>
+          <td>From oneway: 'no' → 0, 'reverse' → -1, 'yes' → 1.</td>
+        </tr>
+        <tr>
+          <td><strong>emergency</strong></td>
+          <td>'no' if feattype == 10 (lift), else 'yes'.</td>
+        </tr>
+        <tr>
+          <td><strong>aliasnamen, aliasnamtc</strong></td>
+          <td>
+            <strong>get_alias_name(row, opening_features)</strong>: line to
+            4326; openings with name, same level; if line intersects 0.1 m
+            buffer of an opening → use opening name + building + facility name;
+            else building + level/facility. Chinese: spaces removed. Geometry:
+            line–buffered-opening intersection.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>shape_len</strong></td>
+          <td>
+            Trigger <strong>update_shape_len()</strong> on indoor_network sets
+            shape_len = ST_3DLength(shape) on INSERT/UPDATE. Computed in
+            PostGIS.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>In short:</strong> Geometry (LineStringZ, 2326) is read from
+      staging, transformed to 4326 for comparisons with MongoDB units/openings,
+      and used to compute feattype (intersection with units), wc_access and
+      alias names (intersection with buffered openings), and gradient (Z and
+      length). level_id, floorid, and building/level names come from flpolyid
+      and lookups, not from geometry.
+    </p>
+
+    <h2 id="proscons">7. Pros and Cons</h2>
+    <p>
+      <strong>Pros:</strong> Clear separation (routes → services → schema);
+      single import pipeline for ZIP/path; strong validation (Postgres +
+      Pydantic); audit (history tables); venue in Postgres with FK; reference
+      docs (pedestrian_convert_table.json, SQL); Docker one-command run.
+    </p>
+    <p>
+      <strong>Cons:</strong> Dual store (MongoDB still required for
+      unit/level/opening/BuildingInfo); blocking I/O in async path; hardcoded
+      /import-network/ route; network_staging schema from ogr2ogr not DDL in
+      repo; mixed error response shapes.
+    </p>
+
+    <h2 id="improvements">8. Areas for Improvement</h2>
+    <ol>
+      <li>
+        Fix the shifted connection point in the indoor network with pedestrians.
+        Detailed workflow will be provided in the next update.
+      </li>
+      <li>
+        Migrate MongoDB IMDF data (unit, level, opening, BuildingInfo) to
+        Postgres.
+      </li>
+      <li>Add canonical CREATE TABLE for network_staging and align ogr2ogr.</li>
+      <li>Use async Postgres driver and run ogr2ogr in thread pool.</li>
+      <li>
+        Make all import endpoints take explicit displayname/path or file;
+        deprecate hardcoded route.
+      </li>
+      <li>Unify error response format (status, code, message, details).</li>
+      <li>
+        Add unit and integration tests (flpolyid_slices, validation, minimal
+        import).
+      </li>
+      <li>Keep PROJECT_STRUCTURE.md and SQL in sync; add a short Runbook.</li>
+    </ol>
+
+    <hr />
+    <p>
+      <em
+        >Full detail (every section, all tables, code references) is in
+        <strong>PROJECT_STRUCTURE.md</strong>. Diagrams are HTML/CSS and ASCII;
+        no JavaScript required.</em
+      >
+    </p>
+  </body>
+</html>
