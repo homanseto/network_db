@@ -103,8 +103,8 @@ async def import_network_from_path(body: ImportFromPathRequest):
 
 @router.post("/import-network/")
 async def import_network():
-    displayName = "KLN_256_Ho Man Tin Sports Centre"
-    file = "/data/wing/KLN_256_Ho Man Tin Sports Centre/SHP/"
+    displayName = "KLN_243_Morse Park Sports Centre"
+    file = "/data/wing/KLN_243_Morse Park Sports Centre/SHP/"
     result = await process_network_import( displayName,file)
     return result
 

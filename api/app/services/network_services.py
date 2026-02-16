@@ -267,6 +267,7 @@ async def process_network_import(displayName:str, filePath:str):
             rows_direct = []
             
             for row in rows_result:
+                row.venue_id = venue_id  # Ensure venue_id is set on all rows for downstream processing
                 # Logic: if pedrouteid is 0/empty/null -> calc
                 if not row.pedrouteid or row.pedrouteid == 0:
                     row.pedrouteid = None

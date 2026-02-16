@@ -66,3 +66,10 @@ SELECT *
 FROM indoor_network_history
 WHERE operation = 'DELETE'
 AND history_recorded_at > NOW() - INTERVAL '7 days'; -- Deleted in last week
+
+
+-----update field by other field from other table
+UPDATE indoor_network ind
+SET venue_id = vn.id
+FROM venue vn
+WHERE ind.displayname = vn.displayname;
