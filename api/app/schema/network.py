@@ -9,6 +9,7 @@ class NetworkStagingRow(BaseModel):
     Fields here match current columns; you can safely add more later
     as the table evolves.
     """
+    venue_id: Optional[str] = None
     pedrouteid: Optional[int] = None
     displayname: Optional[str] = None
     inetworkid: str

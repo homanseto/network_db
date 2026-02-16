@@ -303,5 +303,11 @@
     "shapefile": "mainexit",
     "geojson": "mainexit",
     "output": ["internal"]
+  },
+  {
+    "database": "venue_id",
+    "shapefile": "venue_id",
+    "geojson": "venue_id",
+    "output": ["internal"]
   }
 ]

@@ -1,18 +1,145 @@
+import os
+import subprocess
 import json
-from typing import TYPE_CHECKING
-
 from sqlalchemy import text
-from shapely.geometry import shape
-
 from app.core.database import SessionLocal
+from app.core.logger import logger
+from app.core.config import settings
+from typing import TYPE_CHECKING, List, Any
+from shapely.geometry import shape
 
 if TYPE_CHECKING:
     from app.schema.network import NetworkStagingRow
+    from sqlalchemy.orm import Session
 from app.services.imdf_service import get_buildinginfo_by_displayName, get_level_by_displayName, flpolyid_slices, get_buildinginfo_by_buildingCSUID
 from app.services.utils import _line_from_geojson, _transform_2326_to_4326, _force_2d
 
+MAPPING_FILE = "app/reference/pedestrian_convert_table.json"
 # nf = EPSG:2326, opening features = EPSG:4326. 0.1 m buffer (ref: turf.buffer(..., 0.1/1000, { units: "kilometers" })); in 4326 use ~0.1/111320 deg
 BUFFER_DEGREES_0_1M = 0.1 / 111_320
+
+async def import_pedestrian_from_fgdb(fgdb_path: str):
+    if not os.path.exists(fgdb_path):
+        return {"status": "error", "message": "File path not found."}
+
+    layer_name = "PedestrianRoute"
+    staging_table = "pedestrian_staging"
+    
+    pg_conn = f"PG:host={settings.POSTGRES_SERVER} port={settings.POSTGRES_PORT} user={settings.POSTGRES_USER} dbname={settings.POSTGRES_DB} password={settings.POSTGRES_PASSWORD}"
+    
+    # 1. Load data to Staging with ogr2ogr
+    # -overwrite: Clears existing staging table
+    # -lco GEOMETRY_NAME=shape: Standardizes geometry column
+    # -lco FID=staging_fid: Standardizes generic ID
+    cmd = [
+        "ogr2ogr", "-f", "PostgreSQL", pg_conn, fgdb_path, layer_name,
+        "-nln", staging_table, "-overwrite", 
+        "-lco", "GEOMETRY_NAME=shape", "-lco", "FID=staging_fid",
+        "-nlt", "LINESTRINGZ",      # Force 3D LineString
+        "-t_srs", "EPSG:2326"
+    ]
+    
+    logger.info(f"Running ogr2ogr: {' '.join(cmd)}")
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+    
+    if proc.returncode != 0:
+        logger.error(f"ogr2ogr failed: {proc.stderr}")
+        return {"status": "error", "message": f"ogr2ogr failed: {proc.stderr}"}
+
+    # 2. Run the Merge (Upsert + Delete)
+    return await merge_staging_to_production(staging_table)
+
+async def merge_staging_to_production(staging_table: str):
+    # Load mapping
+    try:
+        with open(MAPPING_FILE, 'r') as f:
+            mapping = json.load(f)
+    except Exception as e:
+        return {"status": "error", "message": f"Failed to load mapping file: {e}"}
+
+    # Build Column Lists
+    target_cols = ["shape"]
+    source_cols = ["shape"]
+    update_sets = ["shape = EXCLUDED.shape"] # For the UPDATE part
+    # Update trigger condition: At least one column must be different
+    where_conditions = ["pedestrian_network.shape IS DISTINCT FROM EXCLUDED.shape"]
+    
+    # Track the source column name for the Primary Key (pedrouteid)
+    # We need this for the DELETE subquery to avoid ambiguity
+    staging_pk_col = "PedestrianRouteID" # Default fallback
+
+    for item in mapping:
+        if "pedestrian" in item.get("output", []):
+            db = item.get("database")
+            # Try 'fgdb', fallback to 'shapefile'
+            src = item.get("fgdb", item.get("shapefile"))
+            
+            if db == "pedrouteid":
+                staging_pk_col = src
+
+            if db and src and db != "shape":
+                target_cols.append(db)
+                # In staging, columns often arrive lowercased by OGR, dependending on driver.
+                # Just using them as-is here; database is case-insensitive unless quoted.
+                
+                # Handle NOT NULL text columns that might be NULL in source
+                if db in ["aliasnamtc", "aliasnamen"]:
+                     source_cols.append(f"COALESCE({src}, '')")
+                else:
+                     source_cols.append(src)  
+                
+                update_sets.append(f"{db} = EXCLUDED.{db}")
+                where_conditions.append(f"pedestrian_network.{db} IS DISTINCT FROM EXCLUDED.{db}")
+
+    cols_str = ", ".join(target_cols)
+    src_str = ", ".join(source_cols)
+    update_str = ", ".join(update_sets)
+    where_str = " OR ".join(where_conditions)
+
+    # 1. UPSERT Logic (Insert new, Update existing)
+    # Added WHERE clause to prevent updates if data hasn't changed (avoids triggering history)
+    upsert_sql = f"""
+    INSERT INTO pedestrian_network ({cols_str})
+    SELECT {src_str} FROM {staging_table}
+    ON CONFLICT (pedrouteid) 
+    DO UPDATE SET 
+        {update_str},
+        updated_at = (NOW() AT TIME ZONE 'Asia/Hong_Kong')
+    WHERE {where_str};
+    """
+
+    # 2. DELETE Logic (Remove rows not in source)
+    # FIX: Use the specific staging column name (e.g. PedestrianRouteID) to avoid SQL scoping ambiguity.
+    delete_sql = f"""
+    DELETE FROM pedestrian_network
+    WHERE pedrouteid NOT IN (
+        SELECT {staging_pk_col} FROM {staging_table} WHERE {staging_pk_col} IS NOT NULL
+    );
+    """
+
+    try:
+        with SessionLocal() as session:
+            # Execute Upsert
+            session.execute(text(upsert_sql))
+            
+            # Execute Delete (Sync)
+            # This triggers 'trg_pedestrian_network_history' with TG_OP='DELETE'
+            session.execute(text(delete_sql))
+            
+            session.commit()
+            
+            # Get stats
+            count_result = session.execute(text("SELECT COUNT(*) FROM pedestrian_network"))
+            final_count = count_result.scalar()
+            
+            return {
+                "status": "success", 
+                "message": "Import (Sync) completed successfully.",
+                "total_rows": final_count
+            }
+    except Exception as e:
+        logger.error(f"Merge failed: {e}")
+        return {"status": "error", "message": f"Database merge failed: {str(e)}"}
 
 # facilityMap from reference.ts: feattype code -> English and Chinese names
 FACILITY_MAP: dict[int, dict[str, str]] = {
@@ -154,7 +281,7 @@ INDOOR_NETWORK_SRID = 2326
 
 UPSERT_INDOOR_NETWORK = text("""
 INSERT INTO indoor_network (
-  displayname, inetworkid, highway, oneway, emergency, wheelchair,
+  venue_id,pedrouteid, displayname, inetworkid, highway, oneway, emergency, wheelchair,
   flpolyid, crtdt, crtby, lstamddt, lstamdby, restricted,
   shape, level_id, feattype, floorid, location, gradient, wc_access, wc_barrier, wx_proof, direction, obstype,
   bldgid_1, bldgid_2, siteid, buildnamen, buildnamzh, leveleng, levelzh,
@@ -162,7 +289,7 @@ INSERT INTO indoor_network (
   modifiedby, poscertain, datasrc, levelsrc, enabled, shape_len, mainexit
 )
 VALUES (
-  :displayname, :inetworkid, :highway, :oneway, :emergency, :wheelchair,
+  :venue_id, :pedrouteid, :displayname, :inetworkid, :highway, :oneway, :emergency, :wheelchair,
   :flpolyid, :crtdt, :crtby, :lstamddt, :lstamdby, :restricted,
   ST_GeomFromWKB(decode(:shape_hex, 'hex'), :srid), :level_id, :feattype, :floorid, :location, :gradient, :wc_access, :wc_barrier, :wx_proof, :direction, :obstype,
   :bldgid_1, :bldgid_2, :siteid, :buildnamen, :buildnamzh, :leveleng, :levelzh,
@@ -274,6 +401,8 @@ def insert_network_rows_into_indoor_network(session, displayname: str, rows: lis
             UPSERT_INDOOR_NETWORK,
             {
                 "displayname": displayname,
+                "venue_id": row.venue_id,
+                "pedrouteid": row.pedrouteid,
                 "inetworkid": row.inetworkid,
                 "highway": row.highway,
                 "oneway": row.oneway,

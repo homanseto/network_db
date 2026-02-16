@@ -6,6 +6,7 @@ import uuid
 import zipfile
 import subprocess
 import traceback
+import time
 from sqlalchemy import text
 from app.core.database import SessionLocal
 from app.core.logger import logger  # <--- Import the logger
@@ -17,7 +18,8 @@ from app.services.imdf_service import (
     get_3d_units_by_displayName,
     get_buildinginfo_by_buildingCSUID,
     get_buildinginfo_by_displayName,
-    get_level_by_displayName
+    get_level_by_displayName,
+    get_venue_by_displayName_from_postgres
 )
 from app.services.utils import (calculate_feature_type,calculate_gradient)
 from app.services.pedestrian_service import (
@@ -122,6 +124,12 @@ async def process_network_import(displayName:str, filePath:str):
     # Log the start of the heavy processing task
     logger.info(f"START Network Import: DisplayName='{displayName}', Path='{filePath}'")
 
+    venue_doc = await get_venue_by_displayName_from_postgres(displayName)
+    if not venue_doc or not venue_doc.get("id"):
+        logger.error(f"Validation Failed: No matched venue found for DisplayName='{displayName}'")
+        return {"status": "error", "message": "no matched display name"}
+    
+    venue_id = venue_doc.get("id")
     job_id = str(uuid.uuid4())
 
     # 🔽 PRE-CLEANUP: Ensure staging table is empty before we start
@@ -233,6 +241,24 @@ async def process_network_import(displayName:str, filePath:str):
                         "message": msg,
                         "row_data": r
                     }
+            # 3. SYNC DELETE LOGIC
+            # Remove records from indoor_network that belong to this venue but are missing from the current import (staging).
+            # This must run BEFORE truncating staging.
+            if venue_id:
+                start_del = time.time()
+                # We use INETWORKID as the unique key to match
+                delete_query = text("""
+                    DELETE FROM indoor_network
+                    WHERE venue_id = :vid
+                    AND inetworkid NOT IN (
+                        SELECT inetworkid FROM network_staging WHERE inetworkid IS NOT NULL
+                    );
+                """)
+                del_result = session.execute(delete_query, {"vid": venue_id})
+                deleted_count = del_result.rowcount
+                logger.info(f"SYNC DELETE: Removed {deleted_count} stale records for venue_id='{venue_id}' in {time.time() - start_del:.2f}s")
+            else:
+                 logger.warning("SKIPPING SYNC DELETE: No venue_id found. Cannot safely scope deletions.")
 
             session.execute(text("TRUNCATE TABLE network_staging"))
             
@@ -243,6 +269,7 @@ async def process_network_import(displayName:str, filePath:str):
             for row in rows_result:
                 # Logic: if pedrouteid is 0/empty/null -> calc
                 if not row.pedrouteid or row.pedrouteid == 0:
+                    row.pedrouteid = None
                     rows_to_calculate.append(row)
                 else:
                     rows_direct.append(row)

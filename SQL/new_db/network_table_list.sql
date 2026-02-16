@@ -142,8 +142,9 @@ CREATE TABLE buildings (
 
 ### indoor_network table (aligned with api/app/schema/network.py NetworkStagingRow)
 CREATE TABLE indoor_network (
-    pedrouteid SERIAL PRIMARY KEY NOT NULL CHECK (floorid >= 1000000000 AND floorid <= 9999999999),
     displayname TEXT NOT NULL,
+    venue_id TEXT NOT NULL, -- Foreign key to venue.displayname (or id if we switch to that)
+    pedrouteid SERIAL PRIMARY KEY NOT NULL CHECK (pedrouteid >= 1000000000 AND pedrouteid <= 9999999999),
     inetworkid TEXT UNIQUE NOT NULL,
     highway TEXT NOT NULL,
     oneway TEXT NOT NULL CHECK (oneway IN ('yes', 'reverse', 'no')),
@@ -216,6 +217,7 @@ EXECUTE FUNCTION update_shape_len();
 -- This table mirrors the structure of indoor_network but adds operation tracking
 CREATE TABLE IF NOT EXISTS indoor_network_history (
     history_id SERIAL PRIMARY KEY,
+    venue_id TEXT, -- Reference to venue, for easier querying
     pedrouteid INTEGER, -- Not a PK here, just a reference
     inetworkid TEXT,
     displayname TEXT,

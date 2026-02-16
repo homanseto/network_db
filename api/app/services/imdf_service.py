@@ -194,6 +194,22 @@ async def get_all_venues():
     
     return results
 
+async def get_venue_by_displayName_from_postgres(displayName: str) -> dict | None:
+    """
+    Get venue from Postgres venue table by displayname.
+    Returns a dict compatible with previous MongoDB shape: {"id": venue_id, "features": {"id": venue_id}},
+    or None if not found.
+    """
+    with SessionLocal() as session:
+        row = session.execute(
+            text("SELECT id FROM venue WHERE displayname = :dn"),
+            {"dn": displayName},
+        ).fetchone()
+        if not row:
+            return None
+        venue_id = row[0]
+        return {"id": venue_id, "features": {"id": venue_id}}
+
 async def get_venue_by_displayName(displayName: str):
     return await find_one_by_display_name("IMDFVenue", displayName)
 

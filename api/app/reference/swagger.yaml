@@ -486,9 +486,26 @@ paths:
             default: full
       responses:
         "200":
-          description: A zip file
-          schema:
-            type: file # Use 'file' type in Swagger 2.0 schema for downloads
+          description: Zip file containing ShapeFile and GeoJSON folders
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              example: 'attachment; filename="data.zip"'
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        "500":
+          description: Export failed error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
       # responses:
       #   "200":
       #     description: Zip file containing ShapeFile and GeoJSON folders
