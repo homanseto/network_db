@@ -272,3 +272,23 @@ def flpolyid_slices(flpolyid: str):
     floorNumber = flpolyid[22:26]    # JS slice(22, 26)
     return buildingCSUID, floorNumber
 
+
+async def get_network_from_mongodb(display_names: list[str]):
+    """
+    Fetch 3DIndoorNetwork documents for a given list of displayNames.
+    """
+    if not display_names:
+        return []
+        
+    collection = mongo_db["3DIndoorNetwork"]
+    query = {"displayName": {"$in": display_names}}
+    cursor = collection.find(query)
+    results = []
+    
+    async for doc in cursor:
+        if "_id" in doc:
+            doc["_id"] = str(doc["_id"])
+        results.append(doc)
+        
+    return results
+

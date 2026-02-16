@@ -1,12 +1,13 @@
-from typing import Optional
+from typing import Optional, List
 import os
 import shutil
 import tempfile
 import zipfile
 import io
-from fastapi import APIRouter
+from fastapi import APIRouter, Body
 from fastapi.responses import StreamingResponse
 from app.services.network_services import export_indoor_network_by_displayname
+from app.services.imdf_service import get_network_from_mongodb
 from app.core.logger import logger
 
 router = APIRouter()
@@ -115,3 +116,25 @@ def download_indoor_network_zip(
     finally:
         # Cleanup temporary directory
         shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+@router.post("/mongo/search")
+async def search_network_mongo(displaynames: List[str] = Body(...)):
+    """
+    Search 3DIndoorNetwork collection by a list of display names.
+    Expects a JSON array of strings in the request body.
+    """
+    if not displaynames:
+        return {"status": "error", "message": "display_names list is empty"}
+
+    logger.info(f"Searching Mongo network for {len(displaynames)} display names.")
+    try:
+        results = await get_network_from_mongodb(displaynames)
+        return {
+            "status": "success",
+            "count": len(results),
+            "data": results
+        }
+    except Exception as e:
+        logger.error(f"Mongo search failed: {e}")
+        return {"status": "error", "message": str(e)}
