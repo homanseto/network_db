@@ -7,6 +7,8 @@ import zipfile
 import subprocess
 import traceback
 import time
+import json
+from pathlib import Path
 from sqlalchemy import text
 from app.core.database import SessionLocal
 from app.core.logger import logger  # <--- Import the logger
@@ -19,7 +21,8 @@ from app.services.imdf_service import (
     get_buildinginfo_by_buildingCSUID,
     get_buildinginfo_by_displayName,
     get_level_by_displayName,
-    get_venue_by_displayName_from_postgres
+    get_venue_by_displayName_from_postgres,
+    get_network_from_mongodb,
 )
 from app.services.utils import (calculate_feature_type,calculate_gradient)
 from app.services.pedestrian_service import (
@@ -566,3 +569,299 @@ def export_indoor_network_by_displayname(
         "displayname": displayname,
         "output_dir": out_dir,
     }
+
+async def import_network_from_mongo_to_test(display_name: str) -> dict:
+    """
+    Imports 3DIndoorNetwork from MongoDB to PostgreSQL table 'indoor_network_test'.
+    Handles venue_id lookup, duplicate iNetworkID with UUID generation, and PostGIS geometry.
+    """
+    logger.info(f"Starting import_network_from_mongo_to_test for display_name: {display_name}")
+    start_time = time.time()
+
+    try:
+        # 1. Get Venue ID
+        venue_doc = await get_venue_by_displayName_from_postgres(display_name)
+        if not venue_doc or not venue_doc.get("id"):
+             logger.warning(f"Venue '{display_name}' not found in PostgreSQL.")
+             return {"status": "error", "message": f"Venue '{display_name}' not found."}
+        
+        venue_id = venue_doc["id"]
+        logger.info(f"Using venue_id: {venue_id} for {display_name}")
+
+        # 2. Get Network Data from MongoDB
+        network_data_array = await get_network_from_mongodb([display_name])
+        network_data = network_data_array[0] if network_data_array else None
+        # If network_data is a dict or object
+        if hasattr(network_data, "dict"):
+             network_data = network_data.dict()
+        
+        if not network_data or "features" not in network_data:
+             logger.warning(f"No network data found for {display_name} in MongoDB.")
+             return {"status": "error", "message": f"No network data found for {display_name}."}
+        
+        features = network_data["features"]
+        logger.info(f"Found {len(features)} network features for {display_name}")
+
+        # 3. Load Mapping Table
+        # Use relative path from current file location to ensure correct path in Docker
+        # __file__ is /app/app/services/network_services.py
+        # root is /app
+        # mapping file is /app/app/reference/pedestrian_convert_table.json
+        # So from services: ../reference/pedestrian_convert_table.json
+        
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        mapping_file = os.path.normpath(os.path.join(current_dir, "..", "reference", "pedestrian_convert_table.json"))
+        
+        if not os.path.exists(mapping_file):
+             # Fallback to _PROJECT_ROOT based path if relative path fails (though relative should be safer)
+             fallback_path = os.path.join(_PROJECT_ROOT, "api", "app", "reference", "pedestrian_convert_table.json")
+             if os.path.exists(fallback_path):
+                 mapping_file = fallback_path
+             else:
+                 return {"status": "error", "message": f"Mapping file not found: {mapping_file}"}
+
+        with open(mapping_file, "r", encoding="utf-8") as f:
+            mapping_data = json.load(f)
+
+        # Use all mappings (indoor, pedestrian, internal)
+        target_mapping = mapping_data
+        
+        if not target_mapping:
+            return {"status": "error", "message": "Mapping table is empty."}
+
+        # 4. Prepare SQL for bulk insert
+        
+        # We need ALL columns from the mapping to be part of the insert, plus venue_id and geom
+        # The user states indoor_network_test ALREADY EXISTS.
+        # DO NOT CREATE OR DROP TABLE.
+
+        # Construct column list for INSERT
+        # We'll dynamically build the list based on the mapping file
+        # plus keys that we handle specially (venue_id, geom, mainexit logic)
+        
+        insert_columns = ["venue_id", "shape", "mainexit"]
+        for item in target_mapping:
+            db_col = item["database"]
+            # Skip special handling columns if they appear in mapping (we handle them explicitly)
+            if db_col.lower() in ["venue_id", "mainexit", "shape", "geom"]:
+                continue
+            insert_columns.append(db_col)
+            
+        cols_str = ", ".join([f'{col}' for col in insert_columns])
+        
+        # values: :venue_id, ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON(:geom), 4326), 2326), :mainexit, ...
+        # Note: input geometry is 4326, target is 2326.
+        
+        vals_list = [":venue_id", "ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON(:geom), 4326), 2326)", ":mainexit"]
+        for item in target_mapping:
+            db_col = item["database"]
+            if db_col.lower() in ["venue_id", "mainexit", "shape", "geom"]:
+                continue
+            vals_list.append(f":{db_col}")
+            
+        vals_str = ", ".join(vals_list)
+        
+        insert_sql = text(f'INSERT INTO indoor_network_test ({cols_str}) VALUES ({vals_str})')
+
+        # 5. Process Features and Insert
+        inserted_count = 0
+        seen_ids = set()
+
+        with SessionLocal() as session:
+            # Prepare batch
+            batch_params = []
+            
+            # Detect which field is iNetworkID for UUID generation logic
+            inetwork_id_key = next((item["geojson"] for item in target_mapping if item["database"] == "inetworkid" or item["geojson"] == "iNetworkID"), "iNetworkID")
+            inetwork_id_db_col = next((item["database"] for item in target_mapping if item["geojson"] == inetwork_id_key), "inetworkid")
+
+            for feature in features:
+                props = feature.get("properties", {})
+                geom = feature.get("geometry")
+                
+                if not geom:
+                    continue
+                
+                # Logic for mainexit: if "exit" property is not null -> True
+                # The user previously emphasized checking the "exit" property existence.
+                is_main_exit = props.get("exit") is not None
+                
+                row_param = {
+                    "venue_id": venue_id,
+                    "geom": json.dumps(geom),
+                    "mainexit": is_main_exit
+                }
+                
+                # Check for duplication or missing iNetworkID
+                raw_id = props.get(inetwork_id_key)
+                final_id = raw_id
+                
+                # Treat empty string as None
+                if not final_id or final_id == "":
+                    final_id = None
+
+                if not final_id or final_id in seen_ids:
+                    final_id = str(uuid.uuid4()).upper()
+                
+                seen_ids.add(final_id)
+
+                # Fill other columns
+                for item in target_mapping:
+                    db_col = item["database"]
+                    json_key = item["geojson"]
+                    
+                    if db_col.lower() in ["venue_id", "mainexit", "shape", "geom"]:
+                        continue
+                    
+                    val = props.get(json_key)
+                    
+                    # Override if it's the ID col we just handled (inetworkid)
+                    if db_col == inetwork_id_db_col:
+                        val = final_id
+
+                    # Ensure pedrouteid is strictly integer
+                    if db_col == "pedrouteid" and val is not None:
+                        try:
+                            val = int(val)
+                        except (ValueError, TypeError):
+                            # If conversion fails, set to None or handle error. 
+                            # The DB requires an integer.
+                            logger.warning(f"Invalid pedrouteid '{val}' encountered. Setting to None.")
+                            val = None
+                    
+                    # Special handling for displayname if missing in props, fallback to argument
+                    if db_col == "displayname" and not val:
+                        val = display_name
+                    
+                    # Special handling for defaults if missing (to satisfy NOT NULL constraints)
+                    if val is None:
+                        if db_col == "crtby" or db_col == "lstamdby":
+                             val = '03'
+                        elif db_col == "restricted":
+                             val = 'N' 
+                        elif db_col == "feattype":
+                             val = 12 
+                        elif db_col == "wx_proof":
+                             val = 1
+                        elif db_col == "poscertain":
+                             val = 1
+                        elif db_col == "datasrc":
+                             val = 1
+                        elif db_col == "levelsrc":
+                             val = 2
+                        elif db_col == "enabled":
+                             val = 1
+                        elif db_col == "location":
+                             val = 1
+                        elif db_col == "gradient":
+                             val = 0.0
+                        elif db_col == "wc_access":
+                             val = 2
+                        elif db_col == "wc_barrier":
+                             val = 2
+                        elif db_col == "direction":
+                             val = 0
+                        elif db_col == "bldgid_1":
+                             val = 0
+                        # Missing string fields should be empty string, not None, if NOT NULL
+                        elif db_col in ["highway", "oneway", "emergency", "wheelchair", "flpolyid", "aliasnamtc", "aliasnamen", "level_id"]:
+                             # specific defaults based on schema check constraints or logical defaults
+                             if db_col == "highway": val = "footway"
+                             elif db_col == "oneway": val = "no"
+                             elif db_col == "emergency": val = "no"
+                             elif db_col == "wheelchair": val = "no"
+                             elif db_col == "flpolyid": val = "unknown"
+                             elif db_col == "level_id": val = "0"
+                             else: val = ""
+                    
+                    # Convert dict/list/etc to string, but keep int/float as is if possible for correct DB binding
+                    if isinstance(val, (dict, list)):
+                        val = json.dumps(val)
+                    elif val is None:
+                        val = None
+                    elif isinstance(val, (int, float)):
+                        # Keep it as number so SQLAlchemy binds it as number
+                        pass
+                    else:
+                        val = str(val)
+                        
+                    row_param[db_col] = val
+                
+                # Check required fields constraints based on user schema to avoid DB errors
+                # highway NOT NULL
+                if row_param.get("highway") is None:
+                     row_param["highway"] = "footway" # safe default
+                # oneway NOT NULL
+                if row_param.get("oneway") is None:
+                     row_param["oneway"] = "no"
+                # emergency NOT NULL
+                if row_param.get("emergency") is None:
+                     row_param["emergency"] = "no"
+                # wheelchair NOT NULL
+                if row_param.get("wheelchair") is None:
+                     row_param["wheelchair"] = "no"
+                # flpolyid NOT NULL
+                if row_param.get("flpolyid") is None:
+                     row_param["flpolyid"] = "unknown"
+                # restricted NOT NULL
+                if row_param.get("restricted") is None:
+                     row_param["restricted"] = "N"
+                # feattype NOT NULL
+                if row_param.get("feattype") is None:
+                     row_param["feattype"] = 12 
+                # floorid NOT NULL
+                if row_param.get("floorid") is None:
+                     row_param["floorid"] = 1000000000 # dummy default to pass check
+                # location NOT NULL
+                if row_param.get("location") is None:
+                     row_param["location"] = 1
+                # gradient NOT NULL
+                if row_param.get("gradient") is None:
+                     row_param["gradient"] = 0.0
+                # wc_access NOT NULL
+                if row_param.get("wc_access") is None:
+                     row_param["wc_access"] = 2
+                # wc_barrier NOT NULL
+                if row_param.get("wc_barrier") is None:
+                     row_param["wc_barrier"] = 2
+                # direction NOT NULL
+                if row_param.get("direction") is None:
+                     row_param["direction"] = 0
+                # bldgid_1 NOT NULL
+                if row_param.get("bldgid_1") is None:
+                     row_param["bldgid_1"] = 0 # Dummy?
+                # aliasnamtc NOT NULL
+                if row_param.get("aliasnamtc") is None:
+                     row_param["aliasnamtc"] = ""
+                # aliasnamen NOT NULL
+                if row_param.get("aliasnamen") is None:
+                     row_param["aliasnamen"] = ""
+                # level_id NOT NULL
+                if row_param.get("level_id") is None:
+                     row_param["level_id"] = "0"
+
+                batch_params.append(row_param)
+            
+            if batch_params:
+                try:
+                    session.execute(insert_sql, batch_params)
+                    session.commit()
+                    inserted_count = len(batch_params)
+                    logger.info(f"Inserted {inserted_count} rows into indoor_network_test.")
+                except Exception as db_err:
+                     session.rollback()
+                     logger.error(f"Batch insert failed: {db_err}")
+                     raise db_err
+            else:
+                logger.warning("No valid features found to insert.")
+        
+        return {
+            "status": "success",
+            "message": f"Successfully imported {inserted_count} features into indoor_network_test.",
+            "count": inserted_count
+        }
+
+    except Exception as e:
+        logger.error(f"Error in import_network_from_mongo_to_test: {str(e)}")
+        logger.error(traceback.format_exc())
+        return {"status": "error", "message": str(e)}

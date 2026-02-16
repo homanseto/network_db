@@ -4,6 +4,7 @@ from app.routes import system
 from app.routes import import_routes
 from app.routes import imdf_routes
 from app.routes import network_routes
+from app.routes import pedestrian_routes
 from app.core.middleware import RequestContextMiddleware
 from app.core.error_handlers import global_exception_handler
 
@@ -32,3 +33,4 @@ app.include_router(system.router)
 app.include_router(import_routes.router)
 app.include_router(imdf_routes.router)
 app.include_router(network_routes.router)
+app.include_router(pedestrian_routes.router)

@@ -652,3 +652,138 @@ async def sync_pedrouterelfloorpoly_from_imdf(displayName: str, modified_by: str
         except Exception as e:
             session.rollback()
             return {"status": "error", "message": str(e)}
+
+async def snap_indoor_exits_to_pedestrian_network():
+    """
+    Connects indoor main exits to the nearest pedestrian network node.
+    Uses Python-side logic (Programmatic approach) for better debugging and control.
+    """
+    return await snap_indoor_exits_to_pedestrian_network_programmatic()
+
+async def snap_indoor_exits_to_pedestrian_network_programmatic(snap_tolerance_2d: float = 2.0, snap_tolerance_z: float = 5.0):
+    """
+    Programmatic version of snapping logic:
+    1. Fetch all indoor 'mainexit' lines.
+    2. For each line, query DB for nearest pedestrian points to start/end points.
+    3. Modify geometry in Python (Shapely).
+    4. Update DB.
+    """
+    from shapely import wkb
+    from shapely.geometry import Point, LineString
+    
+    logger.info("START: Snapping indoor exits (Programmatic approach)...")
+    
+    updated_count = 0
+    updated_ids = []
+
+    with SessionLocal() as session:
+        try:
+            # 1. Fetch Candidates (pedrouteid, WKB Shape, and Start/End points as WKB)
+            # Fetching raw binary for shapely.
+            fetch_sql = text("""
+                SELECT pedrouteid, ST_AsBinary(shape) as shp_wkb
+                FROM indoor_network_test 
+                WHERE mainexit = true
+            """)
+            exits = session.execute(fetch_sql).fetchall()
+            
+            for row in exits:
+                ped_id = row[0]
+                shp_bytes = row[1]
+                
+                if not shp_bytes:
+                    continue
+                
+                try:
+                    indoor_line = wkb.loads(bytes(shp_bytes))
+                except Exception:
+                    continue
+
+                if indoor_line.is_empty:
+                    continue
+                
+                # Get endpoints to test
+                start_pt = Point(indoor_line.coords[0])
+                end_pt = Point(indoor_line.coords[-1])
+                
+                # --- Helper Logic to find nearest pedestrian node ---
+                # We search among START and END points of pedestrian_network lines within tolerance.
+                # Returns (point_wkb_bytes, distance_2d, point_z)
+                nearest_sql = text("""
+                    WITH candidates AS (
+                        SELECT ST_StartPoint(shape) as pt FROM pedestrian_network
+                        UNION ALL
+                        SELECT ST_EndPoint(shape) as pt FROM pedestrian_network
+                    )
+                    SELECT 
+                        ST_AsBinary(pt), 
+                        ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))), 
+                        ST_Z(pt)
+                    FROM candidates
+                    WHERE ST_DWithin(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326)), :tol)
+                    ORDER BY ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))) ASC
+                    LIMIT 1
+                """)
+
+                # Check Start Point
+                start_match = session.execute(nearest_sql, {"pt_wkb": start_pt.wkb, "tol": snap_tolerance_2d}).fetchone()
+                
+                # Check End Point
+                end_match = session.execute(nearest_sql, {"pt_wkb": end_pt.wkb, "tol": snap_tolerance_2d}).fetchone()
+                
+                best_target_pt = None
+                which_end = None # 'START' or 'END'
+                best_dist = float('inf')
+
+                # Evaluate Start Match
+                if start_match:
+                    p_wkb, dist_2d, z_val = start_match
+                    if abs(z_val - start_pt.z) <= snap_tolerance_z:
+                         best_dist = dist_2d
+                         best_target_pt = wkb.loads(bytes(p_wkb))
+                         which_end = 'START'
+                
+                # Evaluate End Match (Is it closer than start match?)
+                if end_match:
+                    p_wkb, dist_2d, z_val = end_match
+                    if abs(z_val - end_pt.z) <= snap_tolerance_z:
+                        if dist_2d < best_dist:
+                            best_dist = dist_2d
+                            best_target_pt = wkb.loads(bytes(p_wkb))
+                            which_end = 'END'
+                
+                # If we found a valid snap target, update the geometry
+                if best_target_pt and which_end:
+                    coords = list(indoor_line.coords)
+                    new_pt_coords = (best_target_pt.x, best_target_pt.y, best_target_pt.z)
+                    
+                    if which_end == 'START':
+                        coords[0] = new_pt_coords
+                    else:
+                        coords[-1] = new_pt_coords
+                    
+                    new_line = LineString(coords)
+                    
+                    # Update DB
+                    # We pass WKB hex string for ST_GeomFromWKB if using decode, or binary directly if binding usually works. 
+                    # Safest with SQLAlchemy text binding often uses hex string with 'decode'.
+                    # But here let's try direct binary binding or hex.
+                    
+                    update_sql = text("""
+                        UPDATE indoor_network_test 
+                        SET shape = ST_GeomFromWKB(decode(:hex_wkb, 'hex'), 2326),
+                            updated_at = (NOW() AT TIME ZONE 'Asia/Hong_Kong')
+                        WHERE pedrouteid = :pid
+                    """)
+                    session.execute(update_sql, {"hex_wkb": new_line.wkb_hex, "pid": ped_id})
+                    updated_count += 1
+                    updated_ids.append(ped_id)
+
+            session.commit()
+            logger.info(f"Programmatic Snap: Updated {updated_count} lines. IDs: {updated_ids}")
+            return {"status": "success", "updated_count": updated_count, "updated_ids": updated_ids}
+
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Programmatic Snap Failed: {str(e)}")
+            return {"status": "error", "message": f"Snap failed: {str(e)}"}

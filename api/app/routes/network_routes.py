@@ -6,7 +6,10 @@ import zipfile
 import io
 from fastapi import APIRouter, Body
 from fastapi.responses import StreamingResponse
-from app.services.network_services import export_indoor_network_by_displayname
+from app.services.network_services import (
+    export_indoor_network_by_displayname,
+    import_network_from_mongo_to_test
+)
 from app.services.imdf_service import get_network_from_mongodb
 from app.core.logger import logger
 
@@ -121,20 +124,28 @@ def download_indoor_network_zip(
 @router.post("/mongo/search")
 async def search_network_mongo(displaynames: List[str] = Body(...)):
     """
-    Search 3DIndoorNetwork collection by a list of display names.
+    Import 3DIndoorNetwork from MongoDB to PostgreSQL 'indoor_network_test' for the given display names.
     Expects a JSON array of strings in the request body.
     """
     if not displaynames:
         return {"status": "error", "message": "display_names list is empty"}
 
-    logger.info(f"Searching Mongo network for {len(displaynames)} display names.")
+    logger.info(f"Starting import for {len(displaynames)} display names.")
+    results = []
+    
     try:
-        results = await get_network_from_mongodb(displaynames)
+        for name in displaynames:
+            res = await import_network_from_mongo_to_test(name)
+            results.append({
+                "display_name": name,
+                "result": res
+            })
+            
         return {
             "status": "success",
             "count": len(results),
             "data": results
         }
     except Exception as e:
-        logger.error(f"Mongo search failed: {e}")
+        logger.error(f"Import process failed: {e}")
         return {"status": "error", "message": str(e)}
