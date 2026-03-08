@@ -620,6 +620,9 @@ async def import_network_from_mongodb(display_name: str) -> dict:
                 insert_columns.append(db_col)
                 
             cols_str = ", ".join([f'{col}' for col in insert_columns])
+            # Columns and placeholders without pedrouteid (so table default/SERIAL assigns it)
+            insert_columns_no_pedrouteid = [c for c in insert_columns if c != "pedrouteid"]
+            cols_str_no_pedrouteid = ", ".join([f'{col}' for col in insert_columns_no_pedrouteid])
             
             # values: :venue_id, ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON(:geom), 4326), 2326), :mainexit, ...
             # Note: input geometry is 4326, target is 2326.
@@ -632,8 +635,11 @@ async def import_network_from_mongodb(display_name: str) -> dict:
                 vals_list.append(f":{db_col}")
                 
             vals_str = ", ".join(vals_list)
+            vals_list_no_pedrouteid = [v for v in vals_list if v != ":pedrouteid"]
+            vals_str_no_pedrouteid = ", ".join(vals_list_no_pedrouteid)
             
             insert_sql = text(f'INSERT INTO indoor_network ({cols_str}) VALUES ({vals_str})')
+            insert_sql_no_pedrouteid = text(f'INSERT INTO indoor_network ({cols_str_no_pedrouteid}) VALUES ({vals_str_no_pedrouteid})')
             # 5. Process Features and Insert
             inserted_count = 0
             seen_ids = set()
@@ -642,8 +648,9 @@ async def import_network_from_mongodb(display_name: str) -> dict:
                 # Existing pedrouteids in DB to avoid unique violation
                 existing_pedrouteids = {row[0] for row in session.execute(text("SELECT pedrouteid FROM indoor_network")).fetchall()}
                 seen_pedrouteids = set(existing_pedrouteids)
-                # Prepare batch
-                batch_params = []
+                # Two batches: with pedrouteid (explicit) vs without (table default assigns)
+                batch_params_with_pedrouteid = []
+                batch_params_no_pedrouteid = []
                 # Detect which field is iNetworkID for UUID generation logic
                 inetwork_id_key = next((item["geojson"] for item in target_mapping if item["database"] == "inetworkid" or item["geojson"] == "iNetworkID"), "iNetworkID")
                 inetwork_id_db_col = next((item["database"] for item in target_mapping if item["geojson"] == inetwork_id_key), "inetworkid")
@@ -712,13 +719,6 @@ async def import_network_from_mongodb(display_name: str) -> dict:
                             val = str(val)
                             
                         row_param[db_col] = val
-                    # Resolve duplicate pedrouteid: assign new id in valid range if missing or already used
-                    ped = row_param.get("pedrouteid")
-                    if ped in seen_pedrouteids:
-                        row_param["pedrouteid"] = None
-                    else:
-                        seen_pedrouteids.add(ped)
-                    batch_params.append(row_param)
                     # Resolve missing floorid
                     if row_param.get("floorid") is None:
                         flpolyid = row_param.get("flpolyid")
@@ -750,19 +750,36 @@ async def import_network_from_mongodb(display_name: str) -> dict:
                             else 1
                         )
                     if row_param.get("bldgid_1") is None:
-                        row_param["bldgid_1"] = buildingCSUIDInfo.get("BuildingID")                      
-                if batch_params:
-                    try:
-                        session.execute(insert_sql, batch_params)
+                        row_param["bldgid_1"] = buildingCSUIDInfo.get("BuildingID")
+                    # Same as insert_network_rows_into_indoor_network: when pedrouteid is null/missing/duplicate, omit it so table default (SERIAL) assigns it
+                    ped = row_param.get("pedrouteid")
+                    ped_valid = (
+                        ped is not None
+                        and ped != 0
+                        and 1000000000 <= ped <= 9999999999
+                        and ped not in seen_pedrouteids
+                    )
+                    if ped_valid:
+                        seen_pedrouteids.add(ped)
+                        batch_params_with_pedrouteid.append(row_param)
+                    else:
+                        row_param_no_ped = {k: v for k, v in row_param.items() if k != "pedrouteid"}
+                        batch_params_no_pedrouteid.append(row_param_no_ped)
+                try:
+                    if batch_params_with_pedrouteid:
+                        session.execute(insert_sql, batch_params_with_pedrouteid)
+                    if batch_params_no_pedrouteid:
+                        session.execute(insert_sql_no_pedrouteid, batch_params_no_pedrouteid)
+                    inserted_count = len(batch_params_with_pedrouteid) + len(batch_params_no_pedrouteid)
+                    if inserted_count > 0:
                         session.commit()
-                        inserted_count = len(batch_params)
                         logger.info(f"Inserted {inserted_count} rows into indoor_network.")
-                    except Exception as db_err:
-                        session.rollback()
-                        logger.error(f"Batch insert failed: {db_err}")
-                        raise db_err
-                else:
-                    logger.warning("No valid features found to insert.")
+                    else:
+                        logger.warning("No valid features found to insert.")
+                except Exception as db_err:
+                    session.rollback()
+                    logger.error(f"Batch insert failed: {db_err}")
+                    raise db_err
             return {
                 "status": "success",
                 "message": f"Successfully imported {inserted_count} features into indoor_network.",
