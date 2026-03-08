@@ -642,9 +642,11 @@ async def import_network_from_mongodb(display_name: str) -> dict:
             insert_sql_no_pedrouteid = text(f'INSERT INTO indoor_network ({cols_str_no_pedrouteid}) VALUES ({vals_str_no_pedrouteid})')
             # 5. Process Features and Insert
             inserted_count = 0
-            seen_ids = set()
 
             with SessionLocal() as session:
+                # Existing inetworkids in DB to avoid unique violation; new UUID if duplicate or null
+                existing_inetworkids = {row[0] for row in session.execute(text("SELECT inetworkid FROM indoor_network")).fetchall()}
+                seen_ids = set(existing_inetworkids)
                 # Existing pedrouteids in DB to avoid unique violation
                 existing_pedrouteids = {row[0] for row in session.execute(text("SELECT pedrouteid FROM indoor_network")).fetchall()}
                 seen_pedrouteids = set(existing_pedrouteids)
@@ -728,7 +730,7 @@ async def import_network_from_mongodb(display_name: str) -> dict:
                         floorId = f"{sixDigitID}{floorNumber}"
                         row_param["floorid"] = int(floorId)
                     if row_param.get("gradient") is None:
-                        row_param["gradient"] = calculate_gradient(row_param.get("highway"), row_param.get("geojson"))
+                        row_param["gradient"] = calculate_gradient(row_param.get("highway"), row_param.get("geom"))
                     if row_param.get("wc_access") is None:
                         row_param["wc_access"] = calculate_wheelchair_access(row_param, (opening_name_features or []))
                     if row_param.get("wc_barrier") is None:

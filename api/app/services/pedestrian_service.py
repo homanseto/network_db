@@ -1,12 +1,14 @@
 import os
 import subprocess
 import json
-from sqlalchemy import text
+from sqlalchemy import bindparam, text
 from app.core.database import SessionLocal
 from app.core.logger import logger
 from app.core.config import settings
 from typing import TYPE_CHECKING, List, Any
 from shapely.geometry import shape
+from shapely import wkb
+from shapely.geometry import Point, LineString
 
 if TYPE_CHECKING:
     from app.schema.network import NetworkStagingRow
@@ -653,14 +655,14 @@ async def sync_pedrouterelfloorpoly_from_imdf(displayName: str, modified_by: str
             session.rollback()
             return {"status": "error", "message": str(e)}
 
-async def snap_indoor_exits_to_pedestrian_network():
+async def snap_indoor_exits_to_pedestrian_network(displaynames: List[str]):
     """
     Connects indoor main exits to the nearest pedestrian network node.
     Uses Python-side logic (Programmatic approach) for better debugging and control.
     """
-    return await snap_indoor_exits_to_pedestrian_network_programmatic()
+    return await snap_indoor_exits_to_pedestrian_network_programmatic(displaynames)
 
-async def snap_indoor_exits_to_pedestrian_network_programmatic(snap_tolerance_2d: float = 2.0, snap_tolerance_z: float = 5.0):
+async def snap_indoor_exits_to_pedestrian_network_programmatic(displaynames):
     """
     Programmatic version of snapping logic:
     1. Fetch all indoor 'mainexit' lines.
@@ -668,24 +670,27 @@ async def snap_indoor_exits_to_pedestrian_network_programmatic(snap_tolerance_2d
     3. Modify geometry in Python (Shapely).
     4. Update DB.
     """
-    from shapely import wkb
-    from shapely.geometry import Point, LineString
     
     logger.info("START: Snapping indoor exits (Programmatic approach)...")
     
     updated_count = 0
     updated_ids = []
+    snap_tolerance_2d: float = 2.0
+    snap_tolerance_z: float = 5.0
 
     with SessionLocal() as session:
         try:
             # 1. Fetch Candidates (pedrouteid, WKB Shape, and Start/End points as WKB)
-            # Fetching raw binary for shapely.
+            # Fetching raw binary for shapely. Expanding bind so IN (:displaynames) accepts a list.
+            if not displaynames:
+                return {"status": "ok", "message": "No display names provided.", "updated_count": 0, "updated_ids": []}
             fetch_sql = text("""
                 SELECT pedrouteid, ST_AsBinary(shape) as shp_wkb
-                FROM indoor_network_test 
+                FROM indoor_network
                 WHERE mainexit = true
-            """)
-            exits = session.execute(fetch_sql).fetchall()
+                AND displayname IN :displaynames
+            """).bindparams(bindparam("displaynames", expanding=True))
+            exits = session.execute(fetch_sql, {"displaynames": tuple(displaynames)}).fetchall()
             
             for row in exits:
                 ped_id = row[0]
@@ -770,7 +775,7 @@ async def snap_indoor_exits_to_pedestrian_network_programmatic(snap_tolerance_2d
                     # But here let's try direct binary binding or hex.
                     
                     update_sql = text("""
-                        UPDATE indoor_network_test 
+                        UPDATE indoor_network
                         SET shape = ST_GeomFromWKB(decode(:hex_wkb, 'hex'), 2326),
                             updated_at = (NOW() AT TIME ZONE 'Asia/Hong_Kong')
                         WHERE pedrouteid = :pid

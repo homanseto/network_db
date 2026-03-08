@@ -44,7 +44,7 @@ def _horizontal_distance_meters(fp: list[float], ep: list[float]) -> float:
     return math.sqrt(dx * dx + dy * dy)
 
 
-def calculate_gradient(highway: str, geojson_str: str) -> float:
+def calculate_gradient(highway: str, geojson_str: str | None) -> float:
     """
     Calculate gradient (absolute slope angle in radians) for a 3D linestring.
 
@@ -53,6 +53,8 @@ def calculate_gradient(highway: str, geojson_str: str) -> float:
     - line: 3D linestring as list of [x, y, z] in EPSG:2326 (Hong Kong 1980); x,y in meters, z elevation.
     - Returns absolute gradient in radians (0 = flat, pi/2 = vertical).
     """
+    if geojson_str is None or (isinstance(geojson_str, str) and not geojson_str.strip()):
+        return 0.0
     geojson = json.loads(geojson_str)
     geom = geojson.get("geometry") or geojson
     line = geom.get("coordinates") or []
