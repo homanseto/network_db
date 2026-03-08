@@ -1,4 +1,5 @@
 import os
+import random
 import re
 import shutil
 import tempfile
@@ -570,6 +571,183 @@ def export_indoor_network_by_displayname(
         "output_dir": out_dir,
     }
 
+async def import_network_from_mongodb(display_name: str) -> dict:
+        logger.info(f"Starting import_network_from_mongo_to_test for display_name: {display_name}")
+        start_time = time.time()
+        try:
+            venue_doc = await get_venue_by_displayName_from_postgres(display_name)
+            buildingInfo = await get_buildinginfo_by_displayName(display_name)
+            if not venue_doc or not venue_doc.get("id"):
+                 logger.warning(f"Venue '{display_name}' not found in PostgreSQL.")
+                 return {"status": "error", "message": f"Venue '{display_name}' not found."}
+            
+            venue_id = venue_doc["id"]
+            logger.info(f"Using venue_id: {venue_id} for {display_name}")
+            network_data_array = await get_network_from_mongodb([display_name])
+            network_data = network_data_array[0] if network_data_array else None
+            # If network_data is a dict or object
+            if hasattr(network_data, "dict"):
+                 network_data = network_data.dict()
+            if not network_data or "features" not in network_data:
+                 logger.warning(f"No network data found for {display_name} in MongoDB.")
+                 return {"status": "error", "message": f"No network data found for {display_name}."}
+            features = network_data["features"]
+            logger.info(f"Found {len(features)} network features for {display_name}")
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            mapping_file = os.path.normpath(os.path.join(current_dir, "..", "reference", "pedestrian_convert_table.json"))
+            if not os.path.exists(mapping_file):
+                 # Fallback to _PROJECT_ROOT based path if relative path fails (though relative should be safer)
+                 fallback_path = os.path.join(_PROJECT_ROOT, "api", "app", "reference", "pedestrian_convert_table.json")
+                 if os.path.exists(fallback_path):
+                     mapping_file = fallback_path
+                 else:
+                     return {"status": "error", "message": f"Mapping file not found: {mapping_file}"}
+    
+            with open(mapping_file, "r", encoding="utf-8") as f:
+                mapping_data = json.load(f)
+    
+            # Use all mappings (indoor, pedestrian, internal)
+            target_mapping = mapping_data
+            if not target_mapping:
+                return {"status": "error", "message": "Mapping table is empty."}
+            insert_columns = ["venue_id", "shape", "mainexit"]
+            for item in target_mapping:
+                db_col = item["database"]
+                # Skip special handling columns if they appear in mapping (we handle them explicitly)
+                if db_col.lower() in ["venue_id", "mainexit", "shape", "geom"]:
+                    continue
+                insert_columns.append(db_col)
+                
+            cols_str = ", ".join([f'{col}' for col in insert_columns])
+            
+            # values: :venue_id, ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON(:geom), 4326), 2326), :mainexit, ...
+            # Note: input geometry is 4326, target is 2326.
+            
+            vals_list = [":venue_id", "ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON(:geom), 4326), 2326)", ":mainexit"]
+            for item in target_mapping:
+                db_col = item["database"]
+                if db_col.lower() in ["venue_id", "mainexit", "shape", "geom"]:
+                    continue
+                vals_list.append(f":{db_col}")
+                
+            vals_str = ", ".join(vals_list)
+            
+            insert_sql = text(f'INSERT INTO indoor_network ({cols_str}) VALUES ({vals_str})')
+            # 5. Process Features and Insert
+            inserted_count = 0
+            seen_ids = set()
+
+            with SessionLocal() as session:
+                # Existing pedrouteids in DB to avoid unique violation
+                existing_pedrouteids = {row[0] for row in session.execute(text("SELECT pedrouteid FROM indoor_network")).fetchall()}
+                seen_pedrouteids = set(existing_pedrouteids)
+                # Prepare batch
+                batch_params = []
+                # Detect which field is iNetworkID for UUID generation logic
+                inetwork_id_key = next((item["geojson"] for item in target_mapping if item["database"] == "inetworkid" or item["geojson"] == "iNetworkID"), "iNetworkID")
+                inetwork_id_db_col = next((item["database"] for item in target_mapping if item["geojson"] == inetwork_id_key), "inetworkid")
+    
+                for feature in features:
+                    props = feature.get("properties", {})
+                    geom = feature.get("geometry")
+                    
+                    if not geom:
+                        continue
+                    
+                    # Logic for mainexit: if "exit" property is not null -> True
+                    # The user previously emphasized checking the "exit" property existence.
+                    # Logic for mainexit: if "exit" property is not null -> True
+                    # The user previously emphasized checking the "exit" property existence.
+                    is_main_exit = props.get("exit") is not None
+    
+                    row_param = {
+                        "venue_id": venue_id,
+                        "geom": json.dumps(geom),
+                        "mainexit": is_main_exit
+                    }
+                    # Check for duplication or missing iNetworkID
+                    raw_id = props.get(inetwork_id_key)
+                    final_id = raw_id
+                    # Treat empty string as None
+                    if not final_id or final_id == "":
+                        final_id = None
+    
+                    if not final_id or final_id in seen_ids:
+                        final_id = str(uuid.uuid4()).upper()
+                    
+                    seen_ids.add(final_id)
+                    # Fill other columns           
+                    for item in target_mapping:
+                        db_col = item["database"]
+                        json_key = item["geojson"]
+                        if db_col.lower() in ["venue_id", "mainexit", "shape", "geom"]:
+                            continue
+                        
+                        val = props.get(json_key)
+                        # Ensure pedrouteid is strictly integer
+                        if db_col == "pedrouteid" and val is not None:
+                            try:
+                                val = int(val)
+                            except (ValueError, TypeError):
+                                # If conversion fails, set to None or handle error. 
+                                # The DB requires an integer.
+                                logger.warning(f"Invalid pedrouteid '{val}' encountered. Setting to None.")
+                                val = None
+                        # Special handling for displayname if missing in props, fallback to argument
+                        if db_col == "displayname" and not val:
+                            val = display_name
+                        if db_col == "terminalid" and val == 0:
+                            val = None
+                        if db_col == inetwork_id_db_col:
+                            val = final_id
+                        if isinstance(val, (dict, list)):
+                            val = json.dumps(val)
+                        elif val is None:
+                            val = None
+                        elif isinstance(val, (int, float)):
+                            # Keep it as number so SQLAlchemy binds it as number
+                            pass
+                        else:
+                            val = str(val)
+                            
+                        row_param[db_col] = val
+                    # Resolve duplicate pedrouteid: assign new id in valid range if missing or already used
+                    ped = row_param.get("pedrouteid")
+                    if ped in seen_pedrouteids:
+                        row_param["pedrouteid"] = None
+                    else:
+                        seen_pedrouteids.add(ped)
+                    batch_params.append(row_param)
+                    # Resolve missing floorid
+                    if row_param.get("floorid") is None:
+                        flpolyid = row_param.get("flpolyid")
+                        buildingCSUID, floorNumber = flpolyid_slices(flpolyid)
+                        buildingCSUIDInfo = next((doc for doc in buildingInfo if doc['buildingCSUID'] == buildingCSUID), None)
+                        sixDigitID = buildingCSUIDInfo.get("SixDigitID")
+                        floorId = f"{sixDigitID}{floorNumber}"
+                        row_param["floorid"] = floorid
+                if batch_params:
+                    try:
+                        session.execute(insert_sql, batch_params)
+                        session.commit()
+                        inserted_count = len(batch_params)
+                        logger.info(f"Inserted {inserted_count} rows into indoor_network.")
+                    except Exception as db_err:
+                        session.rollback()
+                        logger.error(f"Batch insert failed: {db_err}")
+                        raise db_err
+                else:
+                    logger.warning("No valid features found to insert.")
+            return {
+                "status": "success",
+                "message": f"Successfully imported {inserted_count} features into indoor_network.",
+                "count": inserted_count
+            }
+        except Exception as e:
+            logger.error(f"Error in import_network_from_mongo_to_test: {str(e)}")
+            logger.error(traceback.format_exc())
+            return {"status": "error", "message": str(e)}
+
 async def import_network_from_mongo_to_test(display_name: str) -> dict:
     """
     Imports 3DIndoorNetwork from MongoDB to PostgreSQL table 'indoor_network_test'.
@@ -668,6 +846,9 @@ async def import_network_from_mongo_to_test(display_name: str) -> dict:
         seen_ids = set()
 
         with SessionLocal() as session:
+            # Existing pedrouteids in DB to avoid unique violation
+            existing_pedrouteids_test = {row[0] for row in session.execute(text("SELECT pedrouteid FROM indoor_network_test")).fetchall()}
+            seen_pedrouteids = set(existing_pedrouteids_test)
             # Prepare batch
             batch_params = []
             
@@ -840,6 +1021,19 @@ async def import_network_from_mongo_to_test(display_name: str) -> dict:
                 if row_param.get("level_id") is None:
                      row_param["level_id"] = "0"
 
+                # Resolve duplicate pedrouteid: assign new id in valid range if missing or already used
+                ped = row_param.get("pedrouteid")
+                if ped is None or ped in seen_pedrouteids:
+                    while True:
+                        new_id = random.randint(1000000000, 9999999999)
+                        if new_id not in seen_pedrouteids:
+                            break
+                    row_param["pedrouteid"] = new_id
+                    seen_pedrouteids.add(new_id)
+                    if ped is not None and ped in existing_pedrouteids_test:
+                        logger.debug(f"Duplicate pedrouteid {ped} replaced with {new_id} (indoor_network_test)")
+                else:
+                    seen_pedrouteids.add(ped)
                 batch_params.append(row_param)
             
             if batch_params:

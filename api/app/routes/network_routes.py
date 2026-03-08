@@ -8,7 +8,8 @@ from fastapi import APIRouter, Body
 from fastapi.responses import StreamingResponse
 from app.services.network_services import (
     export_indoor_network_by_displayname,
-    import_network_from_mongo_to_test
+    import_network_from_mongo_to_test,
+    import_network_from_mongodb
 )
 from app.services.imdf_service import get_network_from_mongodb
 from app.core.logger import logger
@@ -135,7 +136,8 @@ async def search_network_mongo(displaynames: List[str] = Body(...)):
     
     try:
         for name in displaynames:
-            res = await import_network_from_mongo_to_test(name)
+            res = await import_network_from_mongodb(name)
+            # res = await import_network_from_mongo_to_test(name)
             results.append({
                 "display_name": name,
                 "result": res

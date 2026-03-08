@@ -57,7 +57,7 @@ CREATE TABLE pedestrian_network (
     siteid INTEGER,
     aliasnamtc TEXT NOT NULL,
     aliasnamen TEXT NOT NULL,
-    terminalid INTEGER CHECK (terminalid >= 1000000000 AND terminalid <= 9999999999),
+    terminalid INTEGER CHECK (terminalid IS NULL OR (terminalid >= 1000000000 AND terminalid <= 9999999999)),
     acstimeid INTEGER,
     crossfeat TEXT,
     st_code TEXT,
