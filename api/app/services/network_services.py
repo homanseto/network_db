@@ -355,7 +355,7 @@ async def update_pedestrian_fields(displayName: str, rows: list[NetworkStagingRo
         matched_level_feature = next((f for f in level_features if f.get("id") == row.level_id), None)
         row.leveleng = matched_level_feature.get("properties", {}).get("name",{}).get("en","")
         row.levelzh = matched_level_feature.get("properties",{}).get("name",{}).get("zh","")
-        row.floorid = floorId
+        row.floorid = int(floorId)
         row.emergency = (
             'no' if row.feattype == 10
             else 'yes'
@@ -577,6 +577,7 @@ async def import_network_from_mongodb(display_name: str) -> dict:
         try:
             venue_doc = await get_venue_by_displayName_from_postgres(display_name)
             buildingInfo = await get_buildinginfo_by_displayName(display_name)
+            opening_name_features = await get_openings_with_name_by_displayName(display_name)
             if not venue_doc or not venue_doc.get("id"):
                  logger.warning(f"Venue '{display_name}' not found in PostgreSQL.")
                  return {"status": "error", "message": f"Venue '{display_name}' not found."}
@@ -725,7 +726,31 @@ async def import_network_from_mongodb(display_name: str) -> dict:
                         buildingCSUIDInfo = next((doc for doc in buildingInfo if doc['buildingCSUID'] == buildingCSUID), None)
                         sixDigitID = buildingCSUIDInfo.get("SixDigitID")
                         floorId = f"{sixDigitID}{floorNumber}"
-                        row_param["floorid"] = floorid
+                        row_param["floorid"] = int(floorId)
+                    if row_param.get("gradient") is None:
+                        row_param["gradient"] = calculate_gradient(row_param.get("highway"), row_param.get("geojson"))
+                    if row_param.get("wc_access") is None:
+                        row_param["wc_access"] = calculate_wheelchair_access(row_param, (opening_name_features or []))
+                    if row_param.get("wc_barrier") is None:
+                        row_param["wc_barrier"] = (
+                            1
+                            if (
+                                row_param.get("feattype") == 8
+                                or row_param.get("feattype") == 12
+                                or (row_param.get("wheelchair") == "no")
+                            )
+                            else 2
+                        )
+                    if row_param.get("wx_proof") is None:
+                        row_param["wx_proof"] = 1
+                    if row_param.get("direction") is None:
+                        row_param["direction"] = (
+                            0 if row_param["oneway"] == 'no' 
+                            else -1 if row_param["oneway"] == 'reverse'
+                            else 1
+                        )
+                    if row_param.get("bldgid_1") is None:
+                        row_param["bldgid_1"] = buildingCSUIDInfo.get("BuildingID")                      
                 if batch_params:
                     try:
                         session.execute(insert_sql, batch_params)

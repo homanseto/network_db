@@ -125,7 +125,10 @@ def download_indoor_network_zip(
 @router.post("/mongo/search")
 async def search_network_mongo(displaynames: List[str] = Body(...)):
     """
-    Import 3DIndoorNetwork from MongoDB to PostgreSQL 'indoor_network_test' for the given display names.
+    Import 3DIndoorNetwork from MongoDB to PostgreSQL indoor_network for the given display names.
+    If any record fails to insert for a displayname, that displayname's entire insert is rolled back,
+    the displayname is recorded as failed, and the process continues with the next displayname.
+    Returns a list of failed displaynames and per-displayname results.
     Expects a JSON array of strings in the request body.
     """
     if not displaynames:
@@ -133,21 +136,36 @@ async def search_network_mongo(displaynames: List[str] = Body(...)):
 
     logger.info(f"Starting import for {len(displaynames)} display names.")
     results = []
-    
-    try:
-        for name in displaynames:
+    failed_displaynames: List[str] = []
+
+    for name in displaynames:
+        try:
             res = await import_network_from_mongodb(name)
-            # res = await import_network_from_mongo_to_test(name)
+            if res.get("status") == "error":
+                failed_displaynames.append(name)
+                logger.warning(f"Import failed for '{name}': {res.get('message', 'unknown')}")
+            results.append({"display_name": name, "result": res})
+        except Exception as e:
+            failed_displaynames.append(name)
+            logger.error(f"Import failed for '{name}': {e}")
             results.append({
                 "display_name": name,
-                "result": res
+                "result": {"status": "error", "message": str(e)},
             })
-            
-        return {
-            "status": "success",
-            "count": len(results),
-            "data": results
-        }
-    except Exception as e:
-        logger.error(f"Import process failed: {e}")
-        return {"status": "error", "message": str(e)}
+
+    if failed_displaynames:
+        logger.warning(
+            f"Import completed with failures. Failed displaynames ({len(failed_displaynames)}): %s",
+            failed_displaynames,
+        )
+
+    success_count = len(displaynames) - len(failed_displaynames)
+    overall_status = "error" if success_count == 0 else ("partial" if failed_displaynames else "success")
+    return {
+        "status": overall_status,
+        "count": len(results),
+        "success_count": success_count,
+        "failed_count": len(failed_displaynames),
+        "failed_displaynames": failed_displaynames,
+        "data": results,
+    }
