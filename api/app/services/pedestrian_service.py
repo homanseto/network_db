@@ -26,6 +26,7 @@ async def import_pedestrian_from_fgdb(fgdb_path: str):
 
     layer_name = "PedestrianRoute"
     staging_table = "pedestrian_staging"
+    production_table = "pedestrian_network"
     
     pg_conn = f"PG:host={settings.POSTGRES_SERVER} port={settings.POSTGRES_PORT} user={settings.POSTGRES_USER} dbname={settings.POSTGRES_DB} password={settings.POSTGRES_PASSWORD}"
     
@@ -33,13 +34,34 @@ async def import_pedestrian_from_fgdb(fgdb_path: str):
     # -overwrite: Clears existing staging table
     # -lco GEOMETRY_NAME=shape: Standardizes geometry column
     # -lco FID=staging_fid: Standardizes generic ID
+
+    # cmd = [
+    #     "ogr2ogr", "-f", "PostgreSQL", pg_conn, fgdb_path, layer_name,
+    #     "-nln", staging_table, "-overwrite", 
+    #     "-lco", "GEOMETRY_NAME=shape", "-lco", "FID=staging_fid",
+    #     "-nlt", "LINESTRINGZ",      # Force 3D LineString
+    #     "-t_srs", "EPSG:2326"
+    # ]
+
     cmd = [
         "ogr2ogr", "-f", "PostgreSQL", pg_conn, fgdb_path, layer_name,
-        "-nln", staging_table, "-overwrite", 
+        "-nln", production_table, "-overwrite", 
         "-lco", "GEOMETRY_NAME=shape", "-lco", "FID=staging_fid",
-        "-nlt", "LINESTRINGZ",      # Force 3D LineString
-        "-t_srs", "EPSG:2326"
+        "-nlt", "LINESTRINGZ",
+        # "-a_srs", "EPSG:2326"       # <--- ASSIGNS CRS, PRESERVES COORDINATES
     ]
+
+    # cmd = [
+    #     "ogr2ogr",
+    #     "-f", "PostgreSQL",
+    #     'PG:host=postgis user=postgres dbname=gis password=postgres',
+    #     "/data/pedestrian/3DPN_P2_20260302/shp/PedestrianRoute.shp",
+    #     "-nln", "public.pedestrian_staging",
+    #     "-nlt", "LINESTRINGZ",
+    #     "-lco", "GEOMETRY_NAME=shape",
+    #     # "-t_srs", "EPSG:2326",
+    #     "-overwrite"
+    # ]
     
     logger.info(f"Running ogr2ogr: {' '.join(cmd)}")
     proc = subprocess.run(cmd, capture_output=True, text=True)
@@ -49,7 +71,7 @@ async def import_pedestrian_from_fgdb(fgdb_path: str):
         return {"status": "error", "message": f"ogr2ogr failed: {proc.stderr}"}
 
     # 2. Run the Merge (Upsert + Delete)
-    return await merge_staging_to_production(staging_table)
+    # return await merge_staging_to_production(staging_table)
 
 async def merge_staging_to_production(staging_table: str):
     # Load mapping
@@ -62,6 +84,7 @@ async def merge_staging_to_production(staging_table: str):
     # Build Column Lists
     target_cols = ["shape"]
     source_cols = ["shape"]
+    # source_cols = ["ST_SnapToGrid(shape, 0.00001) as shape"] 
     update_sets = ["shape = EXCLUDED.shape"] # For the UPDATE part
     # Update trigger condition: At least one column must be different
     where_conditions = ["pedestrian_network.shape IS DISTINCT FROM EXCLUDED.shape"]
@@ -685,7 +708,7 @@ async def snap_indoor_exits_to_pedestrian_network_programmatic(displaynames):
             if not displaynames:
                 return {"status": "ok", "message": "No display names provided.", "updated_count": 0, "updated_ids": []}
             fetch_sql = text("""
-                SELECT pedrouteid, ST_AsBinary(shape) as shp_wkb
+                SELECT inetworkid,pedrouteid, ST_AsBinary(shape) as shp_wkb
                 FROM indoor_network
                 WHERE mainexit = true
                 AND displayname IN :displaynames
@@ -693,8 +716,9 @@ async def snap_indoor_exits_to_pedestrian_network_programmatic(displaynames):
             exits = session.execute(fetch_sql, {"displaynames": tuple(displaynames)}).fetchall()
             
             for row in exits:
-                ped_id = row[0]
-                shp_bytes = row[1]
+                inet_id = row[0] 
+                ped_id = row[1]
+                shp_bytes = row[2]
                 
                 if not shp_bytes:
                     continue
@@ -714,6 +738,36 @@ async def snap_indoor_exits_to_pedestrian_network_programmatic(displaynames):
                 # --- Helper Logic to find nearest pedestrian node ---
                 # We search among START and END points of pedestrian_network lines within tolerance.
                 # Returns (point_wkb_bytes, distance_2d, point_z)
+                # nearest_sql = text("""
+                #     WITH candidates AS (
+                #         SELECT ST_StartPoint(shape) as pt FROM pedestrian_network
+                #         UNION ALL
+                #         SELECT ST_EndPoint(shape) as pt FROM pedestrian_network
+                #     )
+                #     SELECT 
+                #         ST_AsBinary(pt), 
+                #         ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))), 
+                #         ST_Z(pt)
+                #     FROM candidates
+                #     WHERE ST_DWithin(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326)), :tol)
+                #     ORDER BY ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))) ASC
+                #     LIMIT 1
+                # """)
+                # nearest_sql = text("""
+                #     WITH candidates AS (
+                #         SELECT ST_SetSRID(ST_StartPoint(shape), 2326) as pt FROM pedestrian_network
+                #         UNION ALL
+                #         SELECT ST_SetSRID(ST_EndPoint(shape), 2326) as pt FROM pedestrian_network
+                #     )
+                #     SELECT 
+                #         ST_AsBinary(pt), 
+                #         ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))), 
+                #         ST_Z(pt)
+                #     FROM candidates
+                #     WHERE ST_DWithin(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326)), :tol)
+                #     ORDER BY ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))) ASC
+                #     LIMIT 1
+                # """)
                 nearest_sql = text("""
                     WITH candidates AS (
                         SELECT ST_StartPoint(shape) as pt FROM pedestrian_network
@@ -722,19 +776,19 @@ async def snap_indoor_exits_to_pedestrian_network_programmatic(displaynames):
                     )
                     SELECT 
                         ST_AsBinary(pt), 
-                        ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))), 
+                        ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 900914))), 
                         ST_Z(pt)
                     FROM candidates
-                    WHERE ST_DWithin(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326)), :tol)
-                    ORDER BY ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))) ASC
+                    WHERE ST_DWithin(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 900914)), :tol)
+                    ORDER BY ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 900914))) ASC
                     LIMIT 1
                 """)
-
                 # Check Start Point
                 start_match = session.execute(nearest_sql, {"pt_wkb": start_pt.wkb, "tol": snap_tolerance_2d}).fetchone()
                 
                 # Check End Point
                 end_match = session.execute(nearest_sql, {"pt_wkb": end_pt.wkb, "tol": snap_tolerance_2d}).fetchone()
+
                 
                 best_target_pt = None
                 which_end = None # 'START' or 'END'
@@ -778,9 +832,9 @@ async def snap_indoor_exits_to_pedestrian_network_programmatic(displaynames):
                         UPDATE indoor_network
                         SET shape = ST_GeomFromWKB(decode(:hex_wkb, 'hex'), 2326),
                             updated_at = (NOW() AT TIME ZONE 'Asia/Hong_Kong')
-                        WHERE pedrouteid = :pid
+                        WHERE inetworkid = :uid
                     """)
-                    session.execute(update_sql, {"hex_wkb": new_line.wkb_hex, "pid": ped_id})
+                    session.execute(update_sql, {"hex_wkb": new_line.wkb_hex, "uid": inet_id})
                     updated_count += 1
                     updated_ids.append(ped_id)
 
