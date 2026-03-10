@@ -69,6 +69,8 @@ async def import_pedestrian_from_fgdb(fgdb_path: str):
     if proc.returncode != 0:
         logger.error(f"ogr2ogr failed: {proc.stderr}")
         return {"status": "error", "message": f"ogr2ogr failed: {proc.stderr}"}
+    
+    return {"status": "success", "message": "Data imported to staging successfully."}
 
     # 2. Run the Merge (Upsert + Delete)
     # return await merge_staging_to_production(staging_table)
@@ -738,49 +740,20 @@ async def snap_indoor_exits_to_pedestrian_network_programmatic(displaynames):
                 # --- Helper Logic to find nearest pedestrian node ---
                 # We search among START and END points of pedestrian_network lines within tolerance.
                 # Returns (point_wkb_bytes, distance_2d, point_z)
-                # nearest_sql = text("""
-                #     WITH candidates AS (
-                #         SELECT ST_StartPoint(shape) as pt FROM pedestrian_network
-                #         UNION ALL
-                #         SELECT ST_EndPoint(shape) as pt FROM pedestrian_network
-                #     )
-                #     SELECT 
-                #         ST_AsBinary(pt), 
-                #         ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))), 
-                #         ST_Z(pt)
-                #     FROM candidates
-                #     WHERE ST_DWithin(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326)), :tol)
-                #     ORDER BY ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))) ASC
-                #     LIMIT 1
-                # """)
-                # nearest_sql = text("""
-                #     WITH candidates AS (
-                #         SELECT ST_SetSRID(ST_StartPoint(shape), 2326) as pt FROM pedestrian_network
-                #         UNION ALL
-                #         SELECT ST_SetSRID(ST_EndPoint(shape), 2326) as pt FROM pedestrian_network
-                #     )
-                #     SELECT 
-                #         ST_AsBinary(pt), 
-                #         ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))), 
-                #         ST_Z(pt)
-                #     FROM candidates
-                #     WHERE ST_DWithin(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326)), :tol)
-                #     ORDER BY ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 2326))) ASC
-                #     LIMIT 1
-                # """)
+
                 nearest_sql = text("""
                     WITH candidates AS (
-                        SELECT ST_StartPoint(shape) as pt FROM pedestrian_network
+                        SELECT ST_SetSRID(ST_StartPoint(shape), 0) AS pt FROM pedestrian_network
                         UNION ALL
-                        SELECT ST_EndPoint(shape) as pt FROM pedestrian_network
+                        SELECT ST_SetSRID(ST_EndPoint(shape), 0) AS pt FROM pedestrian_network
                     )
                     SELECT 
-                        ST_AsBinary(pt), 
-                        ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 900914))), 
+                        ST_AsBinary(pt),
+                        ST_Distance(ST_Force2D(pt), ST_Force2D(ST_SetSRID(ST_GeomFromWKB(:pt_wkb, 0), 0))),
                         ST_Z(pt)
                     FROM candidates
-                    WHERE ST_DWithin(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 900914)), :tol)
-                    ORDER BY ST_Distance(ST_Force2D(pt), ST_Force2D(ST_GeomFromWKB(:pt_wkb, 900914))) ASC
+                    WHERE ST_DWithin(ST_Force2D(pt), ST_Force2D(ST_SetSRID(ST_GeomFromWKB(:pt_wkb, 0), 0)), :tol)
+                    ORDER BY ST_Distance(ST_Force2D(pt), ST_Force2D(ST_SetSRID(ST_GeomFromWKB(:pt_wkb, 0), 0))) ASC
                     LIMIT 1
                 """)
                 # Check Start Point

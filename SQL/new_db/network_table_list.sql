@@ -144,8 +144,8 @@ CREATE TABLE buildings (
 CREATE TABLE indoor_network (
     displayname TEXT NOT NULL,
     venue_id TEXT NOT NULL, -- Foreign key to venue.displayname (or id if we switch to that)
-    pedrouteid SERIAL PRIMARY KEY NOT NULL CHECK (pedrouteid >= 1000000000 AND pedrouteid <= 9999999999),
-    inetworkid TEXT UNIQUE NOT NULL,
+    pedrouteid SERIAL NOT NULL UNIQUE CHECK (pedrouteid >= 1000000000 AND pedrouteid <= 9999999999),
+    inetworkid TEXT PRIMARY KEY NOT NULL,
     highway TEXT NOT NULL,
     oneway TEXT NOT NULL CHECK (oneway IN ('yes', 'reverse', 'no')),
     emergency TEXT NOT NULL CHECK (emergency IN ('yes', 'no')),
@@ -363,4 +363,9 @@ BEFORE UPDATE ON indoor_network
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 ----------------------------------------------------------------------------------
 
-
+-----------------------add number for pedrouteid----------------------after inserted data
+SELECT setval(
+    pg_get_serial_sequence('indoor_network', 'pedrouteid'),
+    GREATEST(MAX(pedrouteid), 999999999) + 1
+)
+FROM indoor_network;

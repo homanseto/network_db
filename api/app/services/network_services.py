@@ -173,7 +173,7 @@ async def process_network_import(displayName:str, filePath:str):
         "-nln", "public.network_staging",
         "-nlt", "LINESTRINGZ",
         "-lco", "GEOMETRY_NAME=shape",
-        "-t_srs", "EPSG:2326",
+        # "-t_srs", "EPSG:2326",
         "-overwrite"
     ]
 
@@ -721,6 +721,11 @@ async def import_network_from_mongodb(display_name: str) -> dict:
                             val = str(val)
                             
                         row_param[db_col] = val
+                    # get level name and buildingName 
+                    row_param["leveleng"] = props.get("LevelEnglishName")
+                    row_param["levelzh"] = props.get("LevelChineseName")
+                    row_param["buildnamen"] = props.get("BuildingNameEng")
+                    row_param["buildnamzh"] = props.get("BuildingNameChi")
                     # Resolve missing floorid
                     if row_param.get("floorid") is None:
                         flpolyid = row_param.get("flpolyid")
