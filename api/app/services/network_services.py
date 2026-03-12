@@ -173,6 +173,7 @@ async def process_network_import(displayName:str, filePath:str):
         "-nln", "public.network_staging",
         "-nlt", "LINESTRINGZ",
         "-lco", "GEOMETRY_NAME=shape",
+        "-s_srs EPSG:2326+5738",
         # "-t_srs", "EPSG:2326",
         "-overwrite"
     ]
